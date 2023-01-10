@@ -1,25 +1,39 @@
-import { InitialParam, Param, FormElement, ValidatedError } from './types'
+import {
+    InitialParam,
+    InitialParamValidator,
+    Param,
+    FormElement,
+    ValidatedError,
+    FormElementValidator,
+} from './types'
 import { createElement } from './model/Element'
 
 export default (formEl: FormElement, params: InitialParam) => {
-    /**
-     * Convert formEl to HTMLFormElement if it's string
-     */
-    if (typeof formEl === 'string') {
-        const el = document.querySelector(formEl)
+    FormElementValidator.parse(formEl)
+    InitialParamValidator.parse(params)
 
-        if (!el) {
-            throw new Error(`Not found target form element: ${formEl}`)
+    const targetFormElement = (() => {
+        /**
+         * Convert formEl to HTMLFormElement if it's string
+         */
+        if (typeof formEl === 'string') {
+            const el = document.querySelector(formEl)
+
+            if (!el) {
+                throw new Error(`Not found target form element: ${formEl}`)
+            }
+
+            return el as HTMLFormElement
         }
 
-        formEl = el as HTMLFormElement
-    }
+        return formEl
+    })()
 
-    if (formEl.tagName !== 'FORM') {
+    if (targetFormElement.tagName.toLowerCase() !== 'form') {
         throw new Error(`Target element is not <form> element`)
     }
 
-    formEl.addEventListener('submit', function (e) {
+    targetFormElement.addEventListener('submit', function (e) {
         let flag = true
 
         validate()
@@ -46,7 +60,7 @@ export default (formEl: FormElement, params: InitialParam) => {
         }
 
         if (typeof params.submit_button === 'string') {
-            return formEl.querySelector(params.submit_button)
+            return targetFormElement.querySelector(params.submit_button)
         }
 
         return params.submit_button
@@ -57,8 +71,8 @@ export default (formEl: FormElement, params: InitialParam) => {
      */
     const arrangedParams: Param = {
         ...{
-            error_class: 'error',
-            valid_class: 'valid',
+            error_class: 'has-error',
+            valid_class: 'is-valid',
             initial_error_view: false,
         },
         ...params,
@@ -102,12 +116,28 @@ export default (formEl: FormElement, params: InitialParam) => {
     /**
      * Preparing Checking Elements
      */
-    const inputs = formEl.querySelectorAll<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input,textarea,select')
     const elements: ReturnType<typeof createElement>[] = []
-    inputs.forEach((input) => {
-        const Element = createElement(input, arrangedParams, errors)
+    Object.keys(arrangedParams.rules).map((name) => {
+        const rules = (() => {
+            const rules = arrangedParams.rules[name]
+
+            if (Array.isArray(rules)) {
+                return rules
+            }
+
+            return [rules]
+        })()
+        if (!rules || !rules.length) {
+            return
+        }
+
+        const Element = createElement(
+            targetFormElement,
+            name,
+            rules,
+            arrangedParams,
+            errors
+        )
 
         if (!Element) {
             return
@@ -131,5 +161,5 @@ export default (formEl: FormElement, params: InitialParam) => {
     // Initial validate
     validate(true)
 
-    return { formEl, elements, validate }
+    return { formEl: targetFormElement, elements, validate }
 }

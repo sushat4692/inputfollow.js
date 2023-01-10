@@ -33,13 +33,16 @@ form input.full,
 form textarea.full {
   width: 100%;
 }
-form input.error,
-form textarea.error {
+form input.has-error,
+form textarea.has-error {
   border-color: #a94442;
 }
-form input.valid,
-form textarea.valid {
+form input.is-valid,
+form textarea.is-valid {
   border-color: #3c763d;
+}
+form label:has(input[type=checkbox].has-error) {
+  color: #a94442;
 }
 
 /*# sourceMappingURL=style.css.map */

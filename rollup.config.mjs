@@ -3,14 +3,18 @@ import pluginNodeResolve from '@rollup/plugin-node-resolve'
 import pluginCommonjs from '@rollup/plugin-commonjs'
 import pluginTypescript from '@rollup/plugin-typescript'
 import { babel as pluginBabel } from '@rollup/plugin-babel'
-import { terser as pluginTerser } from 'rollup-plugin-terser'
+import pluginTerser from '@rollup/plugin-terser'
 
-import * as path from 'path'
+import path from 'path'
 
 import camelCase from 'lodash.camelcase'
 import upperFirst from 'lodash.upperfirst'
 
-import pkg from './package.json'
+import pkg from './package.json' assert { type: 'json' }
+
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Scopeを除去する
 const moduleName = upperFirst(camelCase(pkg.name.replace(/^@.*\//, '')))
@@ -56,7 +60,7 @@ export default [
             pluginTypescript({
                 declaration: true,
                 rootDir: 'src',
-                declarationDir: 'dist',
+                declarationDir: 'types',
             }),
             pluginCommonjs({
                 extensions: ['.js', '.ts'],
