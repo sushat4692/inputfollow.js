@@ -56,6 +56,17 @@ if (formEl) {
                     message: 'Check boxes is required',
                 },
             ],
+            if_target: [
+                {
+                    type: 'required',
+                    message:
+                        "If condition's text field is required if If check this is checked",
+                    if: {
+                        mode: 'and',
+                        target: { if_from: 'checked' },
+                    },
+                },
+            ],
         },
     })
 }

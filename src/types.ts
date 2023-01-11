@@ -9,11 +9,22 @@ export const ValidationTypeValidator = z.enum([
 ])
 export type ValidationType = z.infer<typeof ValidationTypeValidator>
 
+export const WithOptionValidator = z.record(ValidationTypeValidator)
+export type WithOption = z.infer<typeof WithOptionValidator>
+
+export const ModeOptionValidator = z.enum(['or', 'and'])
+export type ModeOption = z.infer<typeof ModeOptionValidator>
+
 export const RuleOptionValidator = z.object({
     type: ValidationTypeValidator,
-    mode: z.enum(['or', 'and']).optional(),
-    with: z.record(ValidationTypeValidator).optional(),
-    if: z.record(z.string()).optional(),
+    mode: ModeOptionValidator.optional(),
+    with: WithOptionValidator.optional(),
+    if: z
+        .object({
+            mode: ModeOptionValidator.optional(),
+            target: z.record(z.string()),
+        })
+        .optional(),
     message: z.string().optional(),
 })
 export type RuleOption = z.infer<typeof RuleOptionValidator>
@@ -32,6 +43,7 @@ export type ValidatedError = { type: string; message?: string }
 export const ParamValidator = z.object({
     rules: RuleValidator,
     error_class: z.string(),
+    error_message_class: z.string(),
     valid_class: z.string(),
     initial_error_view: z.boolean(),
     submit_button: z
@@ -53,6 +65,7 @@ export type Param = z.infer<typeof ParamValidator>
 
 export const InitialParamValidator = ParamValidator.partial({
     error_class: true,
+    error_message_class: true,
     valid_class: true,
     initial_error_view: true,
 })

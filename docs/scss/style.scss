@@ -42,7 +42,13 @@ form {
         }
     }
 
-    label:has(input[type="checkbox"].has-error) {
+    label:has(input[type="checkbox"].has-error),
+    label:has(input[type="radio"].has-error) {
         color: #a94442;
+    }
+
+    label:has(input[type="checkbox"].is-valid),
+    label:has(input[type="radio"].is-valid) {
+        color: #3c763d;
     }
 }

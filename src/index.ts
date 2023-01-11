@@ -72,6 +72,7 @@ export default (formEl: FormElement, params: InitialParam) => {
     const arrangedParams: Param = {
         ...{
             error_class: 'has-error',
+            error_message_class: 'inputfollow-error',
             valid_class: 'is-valid',
             initial_error_view: false,
         },
