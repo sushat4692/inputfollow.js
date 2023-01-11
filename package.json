@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "description": "Input Validate, Input Limit etc.",
+  "homepage": "https://github.com/sushat4692/inputfollow.js",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "module": "dist/index.es.js",

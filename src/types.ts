@@ -1,5 +1,4 @@
 import z from 'zod'
-export type PartiallyPartial<T, K extends keyof T> = Omit<T, K> & Partial<T>
 
 export const ValidationTypeValidator = z.enum([
     'required',
@@ -44,6 +43,7 @@ export const ParamValidator = z.object({
     rules: RuleValidator,
     error_class: z.string(),
     error_message_class: z.string(),
+    empty_error_message_class: z.string(),
     valid_class: z.string(),
     initial_error_view: z.boolean(),
     submit_button: z
@@ -66,6 +66,7 @@ export type Param = z.infer<typeof ParamValidator>
 export const InitialParamValidator = ParamValidator.partial({
     error_class: true,
     error_message_class: true,
+    empty_error_message_class: true,
     valid_class: true,
     initial_error_view: true,
 })

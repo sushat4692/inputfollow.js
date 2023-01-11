@@ -117,6 +117,7 @@ export const createElement = (
                         messageField.appendChild(messageElement)
                     }
                 })
+                messageField.classList.remove(params.empty_error_message_class)
             }
         } else {
             addValidClass(elements)
@@ -124,6 +125,7 @@ export const createElement = (
             addValidClass(ifElements)
 
             messageField.innerHTML = ''
+            messageField.classList.add(params.empty_error_message_class)
         }
     }
 

@@ -73,6 +73,7 @@ export default (formEl: FormElement, params: InitialParam) => {
         ...{
             error_class: 'has-error',
             error_message_class: 'inputfollow-error',
+            empty_error_message_class: 'is-empty',
             valid_class: 'is-valid',
             initial_error_view: false,
         },
@@ -87,7 +88,7 @@ export default (formEl: FormElement, params: InitialParam) => {
         {
             set: (target, p, value, receiver) => {
                 const set = Reflect.set(target, p, value, receiver)
-                if (set && submitButton) {
+                if (set) {
                     let flag = true
 
                     Object.keys(errors).map((key) => {
@@ -96,13 +97,17 @@ export default (formEl: FormElement, params: InitialParam) => {
                     })
 
                     if (flag) {
-                        submitButton.removeAttribute('disabled')
+                        if (submitButton) {
+                            submitButton.removeAttribute('disabled')
+                        }
 
                         if (typeof arrangedParams.on_success === 'function') {
                             arrangedParams.on_success()
                         }
                     } else {
-                        submitButton.setAttribute('disabled', 'disabled')
+                        if (submitButton) {
+                            submitButton.setAttribute('disabled', 'disabled')
+                        }
 
                         if (typeof arrangedParams.on_error === 'function') {
                             arrangedParams.on_error(errors)
