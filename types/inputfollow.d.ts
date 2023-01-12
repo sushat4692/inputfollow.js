@@ -1,5 +1,5 @@
 import { InitialParam, FormElement, ValidatedError } from './types';
-declare const _default: (formEl: FormElement, params: InitialParam) => {
+export declare const InputFollow: (formEl: FormElement, params: InitialParam) => {
     formEl: HTMLFormElement;
     elements: {
         formEl: HTMLFormElement;
@@ -21,4 +21,3 @@ declare const _default: (formEl: FormElement, params: InitialParam) => {
     }[];
     validate: (init?: boolean) => void;
 };
-export default _default;

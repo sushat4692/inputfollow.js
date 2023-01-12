@@ -75,53 +75,53 @@ export default [
         ],
     },
     // ESモジュール用設定
-    // {
-    //   input: `src/${pkg.name.replace(/^@.*\//, '')}.ts`,
-    //   output: [
-    //     {
-    //       file: pkg.module,
-    //       format: 'es',
-    //       sourcemap: 'inline',
-    //       banner,
-    //       exports: 'named',
-    //     },
-    //   ],
-    //   // 他モジュールは含めない
-    //   external: [
-    //     ...Object.keys(pkg.dependencies || {}),
-    //     ...Object.keys(pkg.devDependencies || {}),
-    //   ],
-    //   plugins: [
-    //     pluginTypescript(),
-    //     pluginBabel({
-    //       babelHelpers: 'bundled',
-    //       configFile: path.resolve(__dirname, '.babelrc.js'),
-    //     }),
-    //   ],
-    // },
+    {
+        input: `src/${pkg.name.replace(/^@.*\//, '')}.ts`,
+        output: [
+            {
+                file: pkg.module,
+                format: 'es',
+                sourcemap: 'inline',
+                banner,
+                exports: 'named',
+            },
+        ],
+        // 他モジュールは含めない
+        external: [
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.devDependencies || {}),
+        ],
+        plugins: [
+            pluginTypescript(),
+            pluginBabel({
+                babelHelpers: 'bundled',
+                configFile: path.resolve(__dirname, '.babelrc.js'),
+            }),
+        ],
+    },
     // CommonJS用設定
-    // {
-    //   input: 'src/index.ts',
-    //   output: [
-    //     {
-    //       file: pkg.main,
-    //       format: 'cjs',
-    //       sourcemap: 'inline',
-    //       banner,
-    //       exports: 'default',
-    //     },
-    //   ],
-    //   // 他モジュールは含めない
-    //   external: [
-    //     ...Object.keys(pkg.dependencies || {}),
-    //     ...Object.keys(pkg.devDependencies || {}),
-    //   ],
-    //   plugins: [
-    //     pluginTypescript(),
-    //     pluginBabel({
-    //       babelHelpers: 'bundled',
-    //       configFile: path.resolve(__dirname, '.babelrc.js'),
-    //     }),
-    //   ],
-    // },
+    {
+        input: 'src/index.ts',
+        output: [
+            {
+                file: pkg.main,
+                format: 'cjs',
+                sourcemap: 'inline',
+                banner,
+                exports: 'default',
+            },
+        ],
+        // 他モジュールは含めない
+        external: [
+            ...Object.keys(pkg.dependencies || {}),
+            ...Object.keys(pkg.devDependencies || {}),
+        ],
+        plugins: [
+            pluginTypescript(),
+            pluginBabel({
+                babelHelpers: 'bundled',
+                configFile: path.resolve(__dirname, '.babelrc.js'),
+            }),
+        ],
+    },
 ]
