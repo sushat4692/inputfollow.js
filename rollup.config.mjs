@@ -76,7 +76,7 @@ export default [
     },
     // ESモジュール用設定
     {
-        input: `src/${pkg.name.replace(/^@.*\//, '')}.ts`,
+        input: `src/index.ts`,
         output: [
             {
                 file: pkg.module,
