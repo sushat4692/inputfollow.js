@@ -23,7 +23,7 @@
   "scripts": {
     "prebuild": "rimraf dist && rimraf types",
     "build": "rollup -c",
-    "postbuild": "cp -R ./dist/types ./types",
+    "postbuild": "mv ./dist/types ./types",
     "doc": "http-server ./docs",
     "prepare": "npm run build && run-p prepare:**",
     "prepare:doc:js": "cp -f ./dist/inputfollow.js ./docs/js/inputfollow.js",
