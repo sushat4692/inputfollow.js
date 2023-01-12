@@ -1,5 +1,5 @@
 /*!
-  inputfollow.js v0.0.1
+  inputfollow.js v0.0.2
   https://github.com/sushat4692/inputfollow.js#readme
   Released under the MIT License.
 */
