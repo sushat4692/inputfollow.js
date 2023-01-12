@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Scopeを除去する
-const moduleName = upperFirst(camelCase(pkg.name.replace(/^@.*\//, '')))
+const moduleName = upperFirst(camelCase(pkg.name.split('.').at(0).replace(/^@.*\//, '')))
 
 // ライブラリに埋め込むcopyright
 const banner = `/*!
