@@ -7,6 +7,7 @@ This repository is standalone version of [jquery.inputfollow.js](https://github.
 - [x] Required
 - [x] E-mail
 - [x] Number
+- [ ] Number
 
 ## Limit (Not yet implemented)
 
