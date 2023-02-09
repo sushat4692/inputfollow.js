@@ -1,6 +1,9 @@
+import { z } from 'zod';
+export declare const rule: z.ZodNumber;
 /**
  * Check numeric of target field element's value
- * @param el
- * @returns boolean
+ * @param {string[]} values
+ * @returns {boolean}
  */
 export declare const check: (values: string[]) => boolean;
+//# sourceMappingURL=Number.d.ts.map

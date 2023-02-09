@@ -1,13 +1,15 @@
 import { z } from 'zod'
 
+export const rule = z.coerce.number()
+
 /**
  * Check numeric of target field element's value
- * @param el
- * @returns boolean
+ * @param {string[]} values
+ * @returns {boolean}
  */
 export const check = (values: string[]) => {
     return values.reduce(
-        (prev, current) => prev && z.coerce.number().safeParse(current).success,
+        (prev, current) => prev && rule.safeParse(current).success,
         true
     )
 }

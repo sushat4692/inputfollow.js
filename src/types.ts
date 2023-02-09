@@ -6,15 +6,18 @@ export const ValidationTypeValidator = z.enum([
     'number',
     'code',
 ])
-export type ValidationType = z.infer<typeof ValidationTypeValidator>
+export type ValidationType = 'required' | 'email' | 'number' | 'code'
 
 export const WithOptionValidator = z.record(ValidationTypeValidator)
-export type WithOption = z.infer<typeof WithOptionValidator>
+export type WithOption = Record<string, ValidationType>
 
 export const ModeOptionValidator = z.enum(['or', 'and'])
-export type ModeOption = z.infer<typeof ModeOptionValidator>
+export type ModeOption = 'or' | 'and'
 
-export const RuleOptionValidator = z.object({
+export const LimitationOptionValidator = z.nullable(z.enum(['number', 'code']))
+export type LimitationOption = 'number' | 'code' | null
+
+export const ValidationOptionValidator = z.object({
     type: ValidationTypeValidator,
     mode: ModeOptionValidator.optional(),
     with: WithOptionValidator.optional(),
@@ -26,12 +29,32 @@ export const RuleOptionValidator = z.object({
         .optional(),
     message: z.string().optional(),
 })
-export type RuleOption = z.infer<typeof RuleOptionValidator>
+export type ValidationOption = {
+    type: ValidationType
+    mode?: ModeOption
+    with?: WithOption
+    if?: {
+        mode?: ModeOption
+        target: Record<string, string>
+    }
+    message?: string
+}
 
-export const RuleValidator = z.record(
-    z.union([RuleOptionValidator, z.array(RuleOptionValidator)])
+export const RuleValidator = z.array(
+    z.object({
+        name: z.string(),
+        limit: LimitationOptionValidator.optional(),
+        validation: z.union([
+            ValidationOptionValidator,
+            z.array(ValidationOptionValidator),
+        ]),
+    })
 )
-export type Rule = z.infer<typeof RuleValidator>
+export type Rule = {
+    name: string
+    limit?: LimitationOption
+    validation: ValidationOption | ValidationOption[]
+}[]
 
 export const ValidatedErrorValidator = z.object({
     type: z.string(),
@@ -61,7 +84,18 @@ export const ParamValidator = z.object({
         .returns(z.void())
         .optional(),
 })
-export type Param = z.infer<typeof ParamValidator>
+export type Param = {
+    rules: Rule
+    error_class: string
+    error_message_class: string
+    empty_error_message_class: string
+    valid_class: string
+    initial_error_view: boolean
+    submit_button?: string | HTMLInputElement | HTMLButtonElement
+    on_validate?: () => void
+    on_success?: () => void
+    on_error?: (errors: Record<string, ValidatedError[]>) => void
+}
 
 export const InitialParamValidator = ParamValidator.partial({
     error_class: true,
@@ -70,25 +104,30 @@ export const InitialParamValidator = ParamValidator.partial({
     valid_class: true,
     initial_error_view: true,
 })
-export type InitialParam = z.infer<typeof InitialParamValidator>
+export type InitialParam = Partial<Param> & { rules: Rule }
 
 export const RootEventValidator = z.object({
     validate: z.function().returns(z.void()),
 })
-export type RootEvent = z.infer<typeof RootEventValidator>
+export type RootEvent = {
+    validate: () => void
+}
 
 export const TargetValidator = z.record(z.instanceof(HTMLElement))
-export type Target = z.infer<typeof TargetValidator>
+export type Target = Record<string, HTMLElement>
 
 export const FormElementValidator = z.union([
     z.string(),
     z.instanceof(HTMLFormElement),
 ])
-export type FormElement = z.infer<typeof FormElementValidator>
+export type FormElement = string | HTMLFormElement
 
 export const FieldElementValidator = z.union([
     z.instanceof(HTMLInputElement),
     z.instanceof(HTMLSelectElement),
     z.instanceof(HTMLTextAreaElement),
 ])
-export type FieldElement = z.infer<typeof FieldElementValidator>
+export type FieldElement =
+    | HTMLInputElement
+    | HTMLSelectElement
+    | HTMLTextAreaElement

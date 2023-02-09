@@ -13,11 +13,12 @@ jobs:
     steps:
       # リポジトリのsecrets.NODE_AUTH_TOKENに、npmで発行したTokenを登録しておく。
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js And Setup .npmrc
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: 16
+          cache: npm
           registry-url: 'https://registry.npmjs.org'
           # ↓ package.json の name に含めたスコープを指定しておく
           scope       : '@sushat4692'
