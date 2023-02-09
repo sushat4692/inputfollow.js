@@ -29,7 +29,7 @@ if (formEl) {
         rules: [
             {
                 name: 'name',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Name is required',
@@ -38,7 +38,7 @@ if (formEl) {
             },
             {
                 name: 'name2',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Name2 is required',
@@ -47,7 +47,7 @@ if (formEl) {
             },
             {
                 name: 'email',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'E-mail is required',
@@ -61,7 +61,7 @@ if (formEl) {
             {
                 name: 'number',
                 limit: 'number',
-                rule: [
+                validation: [
                     {
                         type: 'number',
                         message: 'Number must be numeric',
@@ -71,7 +71,7 @@ if (formEl) {
             {
                 name: 'code',
                 limit: 'code',
-                rule: [
+                validation: [
                     {
                         type: 'code',
                         message: 'Code must be numeric or "-" or "+"',
@@ -80,7 +80,7 @@ if (formEl) {
             },
             {
                 name: 'textarea',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Textarea is required',
@@ -89,7 +89,7 @@ if (formEl) {
             },
             {
                 name: 'orreq01',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Input "or required" 01 is required',
@@ -100,7 +100,7 @@ if (formEl) {
             },
             {
                 name: 'andreq01',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Input "and required" 01 is required',
@@ -111,7 +111,7 @@ if (formEl) {
             },
             {
                 name: 'checkbox',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message: 'Check boxes is required',
@@ -120,7 +120,7 @@ if (formEl) {
             },
             {
                 name: 'if_target',
-                rule: [
+                validation: [
                     {
                         type: 'required',
                         message:
