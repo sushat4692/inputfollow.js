@@ -7,7 +7,7 @@ export declare const createElement: (formEl: HTMLFormElement, name: string, limi
     name: string;
     limit: LimitationOption;
     validations: ValidationOption[] | null;
-    validate: (init?: boolean) => void;
+    validate: (init?: boolean, ignored?: boolean) => void;
     hasError: () => boolean;
     getErrors: () => ValidatedError[];
 };

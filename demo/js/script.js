@@ -105,6 +105,15 @@ if (formEl) {
                 ],
             },
             {
+                name: 'radio',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'Radio buttons is required',
+                    },
+                ],
+            },
+            {
                 name: 'if_target',
                 validation: [
                     {

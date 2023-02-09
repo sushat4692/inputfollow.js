@@ -75,25 +75,32 @@ export const createElement = (
             `[data-inputfollow-error="${name}"]`
         )
         if (existField) {
+            existField.classList.add(
+                params.error_message_class,
+                params.empty_error_message_class
+            )
             return existField
         }
 
         const additionalField = document.createElement('ul')
-        additionalField.className = params.error_message_class
+        additionalField.classList.add(
+            params.error_message_class,
+            params.empty_error_message_class
+        )
         additionalField.setAttribute('data-inputfollow-error', name)
         elements[0].insertAdjacentElement('afterend', additionalField)
 
         return additionalField
     })()
 
-    const addInvalidClass = (_elements: FieldElement[], init: boolean) => {
+    const addInvalidClass = (_elements: FieldElement[], render: boolean) => {
         if (params.valid_class) {
             _elements.forEach((el) => {
                 el.classList.remove(params.valid_class)
             })
         }
 
-        if (init !== true || params.initial_error_view) {
+        if (render) {
             if (params.error_class) {
                 _elements.forEach((el) => {
                     el.classList.add(params.error_class)
@@ -115,15 +122,18 @@ export const createElement = (
         }
     }
 
-    const validate = (init: boolean = false) => {
+    const validate = (init: boolean = false, ignored: boolean = false) => {
         if (!name) {
             return
         }
 
+        const renderError =
+            !ignored && (init !== true || params.initial_error_view)
+
         errors[name] = execValidate(
             formEl,
             elements,
-            init ? null : limit,
+            renderError ? limit : null,
             validations
         )
 
@@ -132,11 +142,11 @@ export const createElement = (
         }
 
         if (hasError()) {
-            addInvalidClass(elements, init)
-            addInvalidClass(withElements, init)
-            addInvalidClass(ifElements, init)
+            addInvalidClass(elements, renderError)
+            addInvalidClass(withElements, renderError)
+            addInvalidClass(ifElements, renderError)
 
-            if (init !== true || params.initial_error_view) {
+            if (renderError) {
                 messageField.innerHTML = ''
                 errors[name].map((error) => {
                     if (error.message) {
@@ -190,7 +200,7 @@ export const createElement = (
                 el.addEventListener(
                     'input',
                     () => {
-                        validate(true)
+                        validate(false, true)
                     },
                     useCapture
                 )

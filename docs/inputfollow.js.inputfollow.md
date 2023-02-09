@@ -17,7 +17,7 @@ InputFollow: (formEl: FormElement, params: InitialParam) => {
         name: string;
         limit: import("./types").LimitationOption;
         validations: import("./types").ValidationOption[] | null;
-        validate: (init?: boolean) => void;
+        validate: (init?: boolean, ignored?: boolean) => void;
         hasError: () => boolean;
         getErrors: () => ValidatedError[];
     }[];
