@@ -65,6 +65,15 @@ if (formEl) {
                 ],
             },
             {
+                name: 'select',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'Select is required',
+                    },
+                ],
+            },
+            {
                 name: 'orreq01',
                 validation: [
                     {

@@ -13,7 +13,7 @@ export const createElement = (
     formEl: HTMLFormElement,
     name: string,
     limit: LimitationOption,
-    validations: ValidationOption[],
+    validations: ValidationOption[] | null,
     params: Param,
     errors: { [key: string]: ValidatedError[] }
 ) => {
@@ -21,6 +21,10 @@ export const createElement = (
 
     const withElements = (() => {
         const results: FieldElement[] = []
+
+        if (!validations) {
+            return results
+        }
 
         validations.map((validation) => {
             if (!validation.with) {
@@ -38,6 +42,10 @@ export const createElement = (
 
     const ifElements = (() => {
         const results: FieldElement[] = []
+
+        if (!validations) {
+            return results
+        }
 
         validations.map((validation) => {
             if (!validation.if) {
@@ -59,6 +67,10 @@ export const createElement = (
 
     // Prepare or Find error message field
     const messageField = (() => {
+        if (!validations || !validations.length) {
+            return
+        }
+
         const existField = document.querySelector(
             `[data-inputfollow-error="${name}"]`
         )
@@ -104,7 +116,7 @@ export const createElement = (
     }
 
     const validate = (init: boolean = false) => {
-        if (!validations || !name) {
+        if (!name) {
             return
         }
 
@@ -114,6 +126,10 @@ export const createElement = (
             init ? null : limit,
             validations
         )
+
+        if (!validations || !validations.length || !messageField) {
+            return
+        }
 
         if (hasError()) {
             addInvalidClass(elements, init)
@@ -157,25 +173,40 @@ export const createElement = (
         return errors[name]
     }
 
-    const addEvents = (_elements: FieldElement[]) => {
+    const addEvents = (
+        _elements: FieldElement[],
+        useCapture: boolean = false
+    ) => {
         _elements.forEach((el) => {
             if (isCheckField(el)) {
-                el.addEventListener('input', () => {
-                    validate()
-                })
+                el.addEventListener(
+                    'input',
+                    () => {
+                        validate()
+                    },
+                    useCapture
+                )
             } else {
-                el.addEventListener('input', () => {
-                    validate(true)
-                })
-                el.addEventListener('blur', () => {
-                    validate()
-                })
+                el.addEventListener(
+                    'input',
+                    () => {
+                        validate(true)
+                    },
+                    useCapture
+                )
+                el.addEventListener(
+                    'blur',
+                    () => {
+                        validate()
+                    },
+                    useCapture
+                )
             }
         })
     }
-    addEvents(elements)
-    addEvents(withElements)
-    addEvents(ifElements)
+    addEvents(elements, true)
+    addEvents(withElements, false)
+    addEvents(ifElements, false)
 
     return {
         formEl,

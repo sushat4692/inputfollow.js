@@ -19,7 +19,7 @@ export const getElement = (formEl: HTMLFormElement, name: string) => {
 
     const fields = formEl[name]
 
-    if (fields[Symbol.iterator]) {
+    if (fields['entries']) {
         return [...fields] as FieldElement[]
     } else {
         return [fields] as FieldElement[]
@@ -28,7 +28,7 @@ export const getElement = (formEl: HTMLFormElement, name: string) => {
 
 export const getValues = (
     elements: FieldElement[],
-    limit: LimitationOption
+    limit: LimitationOption = null
 ) => {
     const values: string[] = []
 

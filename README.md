@@ -189,11 +189,11 @@ if (formEl) {
 
 ### Rule param
 
-| Parameter | Type               | Default | Description       |
-| --------- | ------------------ | ------- | ----------------- |
-| name      | `string`           |         | Target field name |
-| limit?    | "number" or "code" |         | Limitation rule   |
-| validation | [ValidationOption](./docs/inputfollow.js.validationoption.md) or `ValidationOption[]` | Validation rule settings |
+| Parameter   | Type                                                                                  | Default | Description              |
+| ----------- | ------------------------------------------------------------------------------------- | ------- | ------------------------ |
+| name        | `string`                                                                              |         | Target field name        |
+| limit?      | "number" or "code"                                                                    |         | Limitation rule          |
+| validation? | [ValidationOption](./docs/inputfollow.js.validationoption.md) or `ValidationOption[]` |         | Validation rule settings |
 
 ### Validation option param
 

@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="js/inputfollow.min.js" defer></script>
+    <script src="js/inputfollow.js" defer></script>
     <script src="js/script.js" defer></script>
 </head>
 <body>
@@ -29,21 +29,38 @@
                     <dd><input type="text" name="code" class="full" placeholder="Enter Code ( Limit Number )"></dd>
                 <dt>Textarea Required <span class="caution">*</span></dt>
                     <dd><textarea name="textarea" rows="3" class="full"></textarea></dd>
+                <dt>Select Required <span class="caution">*</span></dt>
+                    <dd>
+                        <select name="select">
+                            <option value="">Please select</option>
+                            <option value="foo">foo</option>
+                            <option value="bar">bar</option>
+                            <option value="baz">baz</option>
+                        </select>
+                    </dd>
                 <dt>Other Input</dt>
                     <dd><input type="text" name="other" class="full" placeholder=""></dd>
                 <dt>Input "or required" 01 <span class="caution">*</span></dt>
-                    <dd><input type="text" name="orreq01" class="full" placeholder=""></dd>
-                <dt>Input "or required" 02 <span class="caution">*</span></dt>
-                    <dd><input type="text" name="orreq02" class="full" placeholder=""></dd>
+                    <dd>
+                        <div class="grid">
+                            <input type="text" name="orreq01" class="full" placeholder="">
+                            <input type="text" name="orreq02" class="full" placeholder="">
+                        </div>
+                        <ul class="inputfollow-error" data-inputfollow-error="orreq01"></ul>
+                    </dd>
                 <dt>Input "and required" 01 <span class="caution">*</span></dt>
-                    <dd><input type="text" name="andreq01" class="full" placeholder=""></dd>
-                <dt>Input "and required" 02 <span class="caution">*</span></dt>
-                    <dd><input type="text" name="andreq02" class="full" placeholder=""></dd>
+                    <dd>
+                        <div class="grid">
+                            <input type="text" name="andreq01" class="full" placeholder="">
+                            <input type="text" name="andreq02" class="full" placeholder="">
+                        </div>
+                        <ul class="inputfollow-error" data-inputfollow-error="andreq01"></ul>
+                    </dd>
                 <dt>Check boxes <span class="caution">*</span></dt>
                     <dd>
-                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
-                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
-                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
+                        <label><input type="checkbox" name="checkbox[]" value="Checkbox01"> Checkbox01</label>
+                        <label><input type="checkbox" name="checkbox[]" value="Checkbox02"> Checkbox02</label>
+                        <label><input type="checkbox" name="checkbox[]" value="Checkbox03"> Checkbox03</label>
                         <ul class="inputfollow-error" data-inputfollow-error="checkbox"></ul>
                     </dd>
                 <dt>If condition</dt>

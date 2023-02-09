@@ -15,7 +15,7 @@ export declare const InputFollow: (formEl: FormElement, params: InitialParam) =>
         elements: import("./types").FieldElement[];
         name: string;
         limit: import("./types").LimitationOption;
-        validations: import("./types").ValidationOption[];
+        validations: import("./types").ValidationOption[] | null;
         validate: (init?: boolean) => void;
         hasError: () => boolean;
         getErrors: () => ValidatedError[];

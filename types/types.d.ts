@@ -54,7 +54,7 @@ export type ValidationOption = {
 export declare const RuleValidator: z.ZodArray<z.ZodObject<{
     name: z.ZodString;
     limit: z.ZodOptional<z.ZodNullable<z.ZodEnum<["number", "code"]>>>;
-    validation: z.ZodUnion<[z.ZodObject<{
+    validation: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
         type: z.ZodEnum<["required", "email", "number", "code"]>;
         mode: z.ZodOptional<z.ZodEnum<["or", "and"]>>;
         with: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodEnum<["required", "email", "number", "code"]>>>;
@@ -120,10 +120,9 @@ export declare const RuleValidator: z.ZodArray<z.ZodObject<{
             target: Record<string, string>;
         } | undefined;
         type: "number" | "required" | "email" | "code";
-    }>, "many">]>;
+    }>, "many">]>>;
 }, "strip", z.ZodTypeAny, {
-    limit?: "number" | "code" | null | undefined;
-    validation: {
+    validation?: {
         message?: string | undefined;
         mode?: "or" | "and" | undefined;
         with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -141,11 +140,11 @@ export declare const RuleValidator: z.ZodArray<z.ZodObject<{
             target: Record<string, string>;
         } | undefined;
         type: "number" | "required" | "email" | "code";
-    }[];
+    }[] | undefined;
+    limit?: "number" | "code" | null | undefined;
     name: string;
 }, {
-    limit?: "number" | "code" | null | undefined;
-    validation: {
+    validation?: {
         message?: string | undefined;
         mode?: "or" | "and" | undefined;
         with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -163,13 +162,14 @@ export declare const RuleValidator: z.ZodArray<z.ZodObject<{
             target: Record<string, string>;
         } | undefined;
         type: "number" | "required" | "email" | "code";
-    }[];
+    }[] | undefined;
+    limit?: "number" | "code" | null | undefined;
     name: string;
 }>, "many">;
 export type Rule = {
     name: string;
     limit?: LimitationOption;
-    validation: ValidationOption | ValidationOption[];
+    validation?: ValidationOption | ValidationOption[];
 }[];
 export declare const ValidatedErrorValidator: z.ZodObject<{
     type: z.ZodString;
@@ -189,7 +189,7 @@ export declare const ParamValidator: z.ZodObject<{
     rules: z.ZodArray<z.ZodObject<{
         name: z.ZodString;
         limit: z.ZodOptional<z.ZodNullable<z.ZodEnum<["number", "code"]>>>;
-        validation: z.ZodUnion<[z.ZodObject<{
+        validation: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
             type: z.ZodEnum<["required", "email", "number", "code"]>;
             mode: z.ZodOptional<z.ZodEnum<["or", "and"]>>;
             with: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodEnum<["required", "email", "number", "code"]>>>;
@@ -255,10 +255,9 @@ export declare const ParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }>, "many">]>;
+        }>, "many">]>>;
     }, "strip", z.ZodTypeAny, {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -276,11 +275,11 @@ export declare const ParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }, {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -298,7 +297,8 @@ export declare const ParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }>, "many">;
     error_class: z.ZodString;
@@ -328,8 +328,7 @@ export declare const ParamValidator: z.ZodObject<{
         type: string;
     }[]>, ...args_1: unknown[]) => void) | undefined;
     rules: {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -347,7 +346,8 @@ export declare const ParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }[];
     error_class: string;
@@ -364,8 +364,7 @@ export declare const ParamValidator: z.ZodObject<{
         type: string;
     }[]>, ...args_1: unknown[]) => void) | undefined;
     rules: {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -383,7 +382,8 @@ export declare const ParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }[];
     error_class: string;
@@ -408,7 +408,7 @@ export declare const InitialParamValidator: z.ZodObject<{
     rules: z.ZodArray<z.ZodObject<{
         name: z.ZodString;
         limit: z.ZodOptional<z.ZodNullable<z.ZodEnum<["number", "code"]>>>;
-        validation: z.ZodUnion<[z.ZodObject<{
+        validation: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
             type: z.ZodEnum<["required", "email", "number", "code"]>;
             mode: z.ZodOptional<z.ZodEnum<["or", "and"]>>;
             with: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodEnum<["required", "email", "number", "code"]>>>;
@@ -474,10 +474,9 @@ export declare const InitialParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }>, "many">]>;
+        }>, "many">]>>;
     }, "strip", z.ZodTypeAny, {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -495,11 +494,11 @@ export declare const InitialParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }, {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -517,7 +516,8 @@ export declare const InitialParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }>, "many">;
     error_class: z.ZodOptional<z.ZodString>;
@@ -552,8 +552,7 @@ export declare const InitialParamValidator: z.ZodObject<{
         type: string;
     }[]>, ...args_1: unknown[]) => void) | undefined;
     rules: {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -571,7 +570,8 @@ export declare const InitialParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }[];
 }, {
@@ -588,8 +588,7 @@ export declare const InitialParamValidator: z.ZodObject<{
         type: string;
     }[]>, ...args_1: unknown[]) => void) | undefined;
     rules: {
-        limit?: "number" | "code" | null | undefined;
-        validation: {
+        validation?: {
             message?: string | undefined;
             mode?: "or" | "and" | undefined;
             with?: Record<string, "number" | "required" | "email" | "code"> | undefined;
@@ -607,7 +606,8 @@ export declare const InitialParamValidator: z.ZodObject<{
                 target: Record<string, string>;
             } | undefined;
             type: "number" | "required" | "email" | "code";
-        }[];
+        }[] | undefined;
+        limit?: "number" | "code" | null | undefined;
         name: string;
     }[];
 }>;

@@ -149,15 +149,16 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
     const elements: ReturnType<typeof createElement>[] = []
     arrangedParams.rules.map(({ name, limit, validation }) => {
         const validations = (() => {
+            if (!validation) {
+                return null
+            }
+
             if (Array.isArray(validation)) {
                 return validation
             }
 
             return [validation]
         })()
-        if (!validations || !validations.length) {
-            return
-        }
 
         const Element = createElement(
             targetFormElement,

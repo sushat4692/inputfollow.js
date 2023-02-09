@@ -10,7 +10,7 @@
 export type Rule = {
     name: string;
     limit?: LimitationOption;
-    validation: ValidationOption | ValidationOption[];
+    validation?: ValidationOption | ValidationOption[];
 }[];
 ```
 **References:** [LimitationOption](./inputfollow.js.limitationoption.md)<!-- -->, [ValidationOption](./inputfollow.js.validationoption.md)

@@ -44,16 +44,18 @@ export const RuleValidator = z.array(
     z.object({
         name: z.string(),
         limit: LimitationOptionValidator.optional(),
-        validation: z.union([
-            ValidationOptionValidator,
-            z.array(ValidationOptionValidator),
-        ]),
+        validation: z
+            .union([
+                ValidationOptionValidator,
+                z.array(ValidationOptionValidator),
+            ])
+            .optional(),
     })
 )
 export type Rule = {
     name: string
     limit?: LimitationOption
-    validation: ValidationOption | ValidationOption[]
+    validation?: ValidationOption | ValidationOption[]
 }[]
 
 export const ValidatedErrorValidator = z.object({

@@ -16,36 +16,28 @@ export const validate = (
     formEl: HTMLFormElement,
     elements: FieldElement[],
     limit: LimitationOption,
-    validations: ValidationOption[]
+    validations: ValidationOption[] | null
 ) => {
     const errors: ValidatedError[] = []
     const values = getValues(elements, limit)
 
+    if (!validations) {
+        return errors
+    }
+
     validations.map((validation) => {
-        if (!checkIf(formEl, limit, validation)) {
+        if (!checkIf(formEl, validation)) {
             return
         }
 
         if (validation.with) {
             switch (validation.mode) {
                 case 'or':
-                    validateMultipleOr(
-                        formEl,
-                        limit,
-                        validation,
-                        errors,
-                        values
-                    )
+                    validateMultipleOr(formEl, validation, errors, values)
                     break
                 case 'and':
                 default:
-                    validateMultipleAnd(
-                        formEl,
-                        limit,
-                        validation,
-                        errors,
-                        values
-                    )
+                    validateMultipleAnd(formEl, validation, errors, values)
                     break
             }
         } else {
@@ -56,11 +48,7 @@ export const validate = (
     return errors
 }
 
-const checkIf = (
-    formEl: HTMLFormElement,
-    limit: LimitationOption,
-    validation: ValidationOption
-) => {
+const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
     let result = true
 
     if (!validation.if) {
@@ -74,7 +62,7 @@ const checkIf = (
 
         const ifTarget = validation.if.target[name]
         const ifElement = getElement(formEl, name)
-        const ifValue = getValues(ifElement, limit)
+        const ifValue = getValues(ifElement)
 
         if (validation.if.mode === 'or') {
             result = result || ifValue.includes(ifTarget)
@@ -116,7 +104,6 @@ const validateSingle = (
 
 const validateMultipleOr = (
     formEl: HTMLFormElement,
-    limit: LimitationOption,
     validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
@@ -131,7 +118,7 @@ const validateMultipleOr = (
 
             const withType = validation.with[name]
             const withElements = getElement(formEl, name)
-            const withValues = getValues(withElements, limit)
+            const withValues = getValues(withElements)
 
             result = result || checkValidate(withType, withValues)
         })
@@ -149,7 +136,6 @@ const validateMultipleOr = (
 
 const validateMultipleAnd = (
     formEl: HTMLFormElement,
-    limit: LimitationOption,
     validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
@@ -164,7 +150,7 @@ const validateMultipleAnd = (
 
             const withType = validation.with[name]
             const withElements = getElement(formEl, name)
-            const withValues = getValues(withElements, limit)
+            const withValues = getValues(withElements)
 
             result = result && checkValidate(withType, withValues)
         })
