@@ -7,24 +7,11 @@ import pluginTerser from '@rollup/plugin-terser'
 
 import path from 'path'
 
-import camelCase from 'lodash.camelcase'
-import upperFirst from 'lodash.upperfirst'
-
 import pkg from './package.json' assert { type: 'json' }
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Scopeを除去する
-const moduleName = upperFirst(
-    camelCase(
-        pkg.name
-            .split('.')
-            .at(0)
-            .replace(/^@.*\//, '')
-    )
-)
 
 // ライブラリに埋め込むcopyright
 const banner = `/*!
@@ -42,7 +29,7 @@ export default [
             // minifyせずに出力する
             {
                 // exportされたモジュールを格納する変数
-                name: moduleName,
+                name: 'InputFollow',
                 // 出力先ファイル
                 file: pkg.browser,
                 // ブラウザ用フォーマット
@@ -54,7 +41,7 @@ export default [
             },
             // minifyして出力する
             {
-                name: moduleName,
+                name: 'InputFollow',
                 // minifyするので.minを付与する
                 file: pkg.browser.replace('.js', '.min.js'),
                 format: 'iife',
@@ -108,14 +95,14 @@ export default [
     },
     // CommonJS用設定
     {
-        input: 'src/index.ts',
+        input: 'src/InputFollow.ts',
         output: [
             {
                 file: pkg.main,
                 format: 'cjs',
                 sourcemap: 'inline',
                 banner,
-                exports: 'default',
+                exports: 'named',
             },
         ],
         // 他モジュールは含めない

@@ -20,11 +20,35 @@ This repository is standalone version of [jquery.inputfollow.js](https://github.
 
 ## Usage
 
+### Using from npm
+
+```bash
+$ npm install inputfollow.js
+```
+
+```js
+import { InputFollow } from 'inputfollow.js'
+
+InputFollow(...);
+```
+
+### Using from script
+
+```html
+<script src="path/to/inputfollow.js"></script>
+<script>
+    InputFollow(...);
+</script>
+```
+
+
+### Option example
+
 ```js
 const formEl = document.querySelector('#form')
 
 if (formEl) {
-    Inputfollow(formEl, {
+    InputFollow(formEl, {
         submit_button: '#submit',
         rules: [
             {

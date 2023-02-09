@@ -1,9 +1,9 @@
 /*!
-  inputfollow.js v0.0.4
+  inputfollow.js v0.0.5
   https://github.com/sushat4692/inputfollow.js#readme
   Released under the MIT License.
 */
-var Inputfollow = (function () {
+var InputFollow = (function () {
   'use strict';
 
   function _iterableToArrayLimit(arr, i) {
