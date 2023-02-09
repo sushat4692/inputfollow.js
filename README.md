@@ -41,6 +41,7 @@ InputFollow(...);
 </script>
 ```
 
+You can get from source code from [here](https://github.com/sushat4692/inputfollow.js/tree/master/demo/js).
 
 ### Option example
 
