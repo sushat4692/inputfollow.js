@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>inputfollow.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/inputfollow.js" defer></script>
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>inputfollow.js</h1>
+
+        <form id="form" role="form" action="" method="get">
+            <dl>
+                <dt>Name <span class="caution">*</span></dt>
+                    <dd><input type="text" name="name" class="full" placeholder="Enter Name"></dd>
+                <dt>Name2 <span class="caution">*</span></dt>
+                    <dd><input type="text" name="name2" class="full" placeholder="Enter Name2"></dd>
+                <dt>E-mail <span class="caution">*</span></dt>
+                    <dd><input type="email" name="email" class="full" placeholder="Enter E-mail"></dd>
+                <dt>Input Number</dt>
+                    <dd><input type="text" name="number" class="full" placeholder="Enter Number ( Limit Number )"></dd>
+                <dt>Input Code (Number or "-" or "+" or "*")</dt>
+                    <dd><input type="text" name="code" class="full" placeholder="Enter Code ( Limit Number )"></dd>
+                <dt>Textarea Required <span class="caution">*</span></dt>
+                    <dd><textarea name="textarea" rows="3" class="full"></textarea></dd>
+                <dt>Other Input</dt>
+                    <dd><input type="text" name="other" class="full" placeholder=""></dd>
+                <dt>Input "or required" 01 <span class="caution">*</span></dt>
+                    <dd><input type="text" name="orreq01" class="full" placeholder=""></dd>
+                <dt>Input "or required" 02 <span class="caution">*</span></dt>
+                    <dd><input type="text" name="orreq02" class="full" placeholder=""></dd>
+                <dt>Input "and required" 01 <span class="caution">*</span></dt>
+                    <dd><input type="text" name="andreq01" class="full" placeholder=""></dd>
+                <dt>Input "and required" 02 <span class="caution">*</span></dt>
+                    <dd><input type="text" name="andreq02" class="full" placeholder=""></dd>
+                <dt>Check boxes <span class="caution">*</span></dt>
+                    <dd>
+                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
+                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
+                        <label><input type="checkbox" name="checkbox[]"> Checkbox01</label>
+                        <ul class="inputfollow-error" data-inputfollow-error="checkbox"></ul>
+                    </dd>
+                <dt>If condition</dt>
+                    <dd>
+                        <label><input type="checkbox" name="if_from" value="checked"> If check this the following field is required</label>
+                        <input type="text" name="if_target" class="full" placeholder="This input area will be required">
+                    </dd>
+            </dl>
+
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+        </form>
+
+    </div>
+
+</body>
+</html>

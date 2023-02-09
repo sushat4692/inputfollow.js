@@ -1,0 +1,61 @@
+body {
+    font: 16px/1.6 sans-serif;
+}
+
+.caution,
+.inputfollow-error {
+    color: #a94442;
+}
+
+.inputfollow-error {
+    margin: 0.5em 0;
+    padding-left: 1.6em;
+
+    &.is-empty {
+        display: none;
+    }
+}
+
+.container {
+    max-width: 730px;
+    width: 100%;
+    margin:0 auto;
+    padding: 40px 15px;
+}
+
+dl {
+    dd {
+        margin: 0 0 10px 0;
+    }
+}
+
+form {
+    input,
+    textarea {
+        box-sizing: border-box;
+        padding: 10px;
+        outline: none;
+        font-size: 1rem;
+        font-family: inherit;
+        border: 2px solid #999;
+        &.full {
+            width: 100%;
+        }
+        &.has-error {
+            border-color: #a94442;
+        }
+        &.is-valid {
+            border-color: #3c763d;
+        }
+    }
+
+    label:has(input[type="checkbox"].has-error),
+    label:has(input[type="radio"].has-error) {
+        color: #a94442;
+    }
+
+    label:has(input[type="checkbox"].is-valid),
+    label:has(input[type="radio"].is-valid) {
+        color: #3c763d;
+    }
+}

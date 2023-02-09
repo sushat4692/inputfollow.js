@@ -1,0 +1,59 @@
+body {
+  font: 16px/1.6 sans-serif;
+}
+
+.caution,
+.inputfollow-error {
+  color: #a94442;
+}
+
+.inputfollow-error {
+  margin: 0.5em 0;
+  padding-left: 1.6em;
+}
+.inputfollow-error.is-empty {
+  display: none;
+}
+
+.container {
+  max-width: 730px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 15px;
+}
+
+dl dd {
+  margin: 0 0 10px 0;
+}
+
+form input,
+form textarea {
+  box-sizing: border-box;
+  padding: 10px;
+  outline: none;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 2px solid #999;
+}
+form input.full,
+form textarea.full {
+  width: 100%;
+}
+form input.has-error,
+form textarea.has-error {
+  border-color: #a94442;
+}
+form input.is-valid,
+form textarea.is-valid {
+  border-color: #3c763d;
+}
+form label:has(input[type=checkbox].has-error),
+form label:has(input[type=radio].has-error) {
+  color: #a94442;
+}
+form label:has(input[type=checkbox].is-valid),
+form label:has(input[type=radio].is-valid) {
+  color: #3c763d;
+}
+
+/*# sourceMappingURL=style.css.map */
