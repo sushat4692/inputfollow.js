@@ -1,7 +1,7 @@
 const formEl = document.querySelector('#form')
 
 if (formEl) {
-    Inputfollow(formEl, {
+    InputFollow(formEl, {
         submit_button: '#submit',
         rules: [
             {
