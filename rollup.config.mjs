@@ -24,7 +24,7 @@ export default [
     // ブラウザ用設定
     {
         // エントリポイント
-        input: 'src/index.ts',
+        input: 'src/InputFollow.ts',
         output: [
             // minifyせずに出力する
             {
@@ -70,7 +70,7 @@ export default [
     },
     // ESモジュール用設定
     {
-        input: `src/InputFollow.ts`,
+        input: `src/index.ts`,
         output: [
             {
                 file: pkg.module,
@@ -95,7 +95,7 @@ export default [
     },
     // CommonJS用設定
     {
-        input: 'src/InputFollow.ts',
+        input: 'src/index.ts',
         output: [
             {
                 file: pkg.main,
