@@ -1,12 +1,19 @@
 import { validate as execValidate } from '../validate'
 
-import { Param, FieldElement, ValidatedError, RuleOption } from '../types'
+import {
+    Param,
+    FieldElement,
+    ValidatedError,
+    ValidationOption,
+    LimitationOption,
+} from '../types'
 import { getElement, isCheckField } from '../utils/Tag'
 
 export const createElement = (
     formEl: HTMLFormElement,
     name: string,
-    rules: RuleOption[],
+    limit: LimitationOption,
+    validations: ValidationOption[],
     params: Param,
     errors: { [key: string]: ValidatedError[] }
 ) => {
@@ -15,12 +22,12 @@ export const createElement = (
     const withElements = (() => {
         const results: FieldElement[] = []
 
-        rules.map((rule) => {
-            if (!rule.with) {
+        validations.map((validation) => {
+            if (!validation.with) {
                 return
             }
 
-            Object.keys(rule.with).map((name) => {
+            Object.keys(validation.with).map((name) => {
                 const fields = getElement(formEl, name)
                 results.push(...fields)
             })
@@ -32,12 +39,12 @@ export const createElement = (
     const ifElements = (() => {
         const results: FieldElement[] = []
 
-        rules.map((rule) => {
-            if (!rule.if) {
+        validations.map((validation) => {
+            if (!validation.if) {
                 return
             }
 
-            Object.keys(rule.if.target).map((name) => {
+            Object.keys(validation.if.target).map((name) => {
                 const fields = getElement(formEl, name)
                 results.push(...fields)
             })
@@ -97,11 +104,16 @@ export const createElement = (
     }
 
     const validate = (init: boolean = false) => {
-        if (!rules || !name) {
+        if (!validations || !name) {
             return
         }
 
-        errors[name] = execValidate(formEl, elements, rules)
+        errors[name] = execValidate(
+            formEl,
+            elements,
+            init ? null : limit,
+            validations
+        )
 
         if (hasError()) {
             addInvalidClass(elements, init)
@@ -165,5 +177,14 @@ export const createElement = (
     addEvents(withElements)
     addEvents(ifElements)
 
-    return { formEl, elements, name, rules, validate, hasError, getErrors }
+    return {
+        formEl,
+        elements,
+        name,
+        limit,
+        validations,
+        validate,
+        hasError,
+        getErrors,
+    }
 }

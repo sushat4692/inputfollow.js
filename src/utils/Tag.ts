@@ -1,4 +1,6 @@
-import { FieldElement } from '../types'
+import { convert as numberConvert } from '../convert/Number'
+import { convert as codeConvert } from '../convert/Code'
+import { LimitationOption, FieldElement } from '../types'
 
 export const isCheckField = (el: FieldElement) => {
     const tag = el.tagName.toLowerCase()
@@ -24,7 +26,10 @@ export const getElement = (formEl: HTMLFormElement, name: string) => {
     }
 }
 
-export const getValues = (elements: FieldElement[]) => {
+export const getValues = (
+    elements: FieldElement[],
+    limit: LimitationOption
+) => {
     const values: string[] = []
 
     elements.map((el) => {
@@ -33,6 +38,15 @@ export const getValues = (elements: FieldElement[]) => {
                 values.push(el.value)
             }
         } else {
+            switch (limit) {
+                case 'number':
+                    el.value = numberConvert(el.value)
+                    break
+                case 'code':
+                    el.value = codeConvert(el.value)
+                    break
+            }
+
             values.push(el.value)
         }
     })

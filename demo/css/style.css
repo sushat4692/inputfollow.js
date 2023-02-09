@@ -32,6 +32,7 @@ form textarea {
   padding: 10px;
   outline: none;
   font-size: 1rem;
+  font-family: inherit;
   border: 2px solid #999;
 }
 form input.full,

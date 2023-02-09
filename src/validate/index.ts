@@ -1,6 +1,7 @@
 import {
+    LimitationOption,
     FieldElement,
-    RuleOption,
+    ValidationOption,
     ValidatedError,
     ValidationType,
 } from '../types'
@@ -8,56 +9,74 @@ import {
 import { check as checkRequired } from './Required'
 import { check as checkEmail } from './Email'
 import { check as checkNumber } from './Number'
+import { check as checkCode } from './Code'
 import { getElement, getValues } from '../utils/Tag'
 
 export const validate = (
     formEl: HTMLFormElement,
     elements: FieldElement[],
-    rule: RuleOption[]
+    limit: LimitationOption,
+    validations: ValidationOption[]
 ) => {
     const errors: ValidatedError[] = []
-    const values = getValues(elements)
+    const values = getValues(elements, limit)
 
-    rule.map((r) => {
-        if (!checkIf(formEl, r)) {
+    validations.map((validation) => {
+        if (!checkIf(formEl, limit, validation)) {
             return
         }
 
-        if (r.with) {
-            switch (r.mode) {
+        if (validation.with) {
+            switch (validation.mode) {
                 case 'or':
-                    validateMultipleOr(formEl, r, errors, values)
+                    validateMultipleOr(
+                        formEl,
+                        limit,
+                        validation,
+                        errors,
+                        values
+                    )
                     break
                 case 'and':
                 default:
-                    validateMultipleAnd(formEl, r, errors, values)
+                    validateMultipleAnd(
+                        formEl,
+                        limit,
+                        validation,
+                        errors,
+                        values
+                    )
                     break
             }
         } else {
-            validateSingle(r, errors, values)
+            validateSingle(validation, errors, values)
         }
     })
 
     return errors
 }
 
-const checkIf = (formEl: HTMLFormElement, r: RuleOption) => {
+const checkIf = (
+    formEl: HTMLFormElement,
+    limit: LimitationOption,
+    validation: ValidationOption
+) => {
     let result = true
 
-    if (!r.if) {
+    if (!validation.if) {
         return result
     }
 
-    Object.keys(r.if.target).map((name) => {
-        if (!r.if) {
+    Object.keys(validation.if.target).map((name) => {
+        if (!validation.if) {
             return
         }
 
-        const ifTarget = r.if.target[name]
+        const ifTarget = validation.if.target[name]
         const ifElement = getElement(formEl, name)
-        const ifValue = getValues(ifElement)
+        const ifValue = getValues(ifElement, limit)
 
-        if (r.if.mode === 'or') {
+        if (validation.if.mode === 'or') {
             result = result || ifValue.includes(ifTarget)
         } else {
             result = result && ifValue.includes(ifTarget)
@@ -75,18 +94,20 @@ const checkValidate = (ruleType: ValidationType, values: string[]) => {
             return checkEmail(values)
         case 'number':
             return checkNumber(values)
+        case 'code':
+            return checkCode(values)
     }
 }
 
 const validateSingle = (
-    r: RuleOption,
+    validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
 ) => {
-    if (!checkValidate(r.type, values)) {
+    if (!checkValidate(validation.type, values)) {
         errors.push({
-            type: r.type,
-            message: r.message,
+            type: validation.type,
+            message: validation.message,
         })
     }
 
@@ -95,21 +116,22 @@ const validateSingle = (
 
 const validateMultipleOr = (
     formEl: HTMLFormElement,
-    r: RuleOption,
+    limit: LimitationOption,
+    validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
 ) => {
-    let result = checkValidate(r.type, values)
+    let result = checkValidate(validation.type, values)
 
-    if (r.with) {
-        Object.keys(r.with).map((name) => {
-            if (!r.with) {
+    if (validation.with) {
+        Object.keys(validation.with).map((name) => {
+            if (!validation.with) {
                 return
             }
 
-            const withType = r.with[name]
+            const withType = validation.with[name]
             const withElements = getElement(formEl, name)
-            const withValues = getValues(withElements)
+            const withValues = getValues(withElements, limit)
 
             result = result || checkValidate(withType, withValues)
         })
@@ -117,8 +139,8 @@ const validateMultipleOr = (
 
     if (!result) {
         errors.push({
-            type: r.type,
-            message: r.message,
+            type: validation.type,
+            message: validation.message,
         })
     }
 
@@ -127,21 +149,22 @@ const validateMultipleOr = (
 
 const validateMultipleAnd = (
     formEl: HTMLFormElement,
-    r: RuleOption,
+    limit: LimitationOption,
+    validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
 ) => {
-    let result = checkValidate(r.type, values)
+    let result = checkValidate(validation.type, values)
 
-    if (r.with) {
-        Object.keys(r.with).map((name) => {
-            if (!r.with) {
+    if (validation.with) {
+        Object.keys(validation.with).map((name) => {
+            if (!validation.with) {
                 return
             }
 
-            const withType = r.with[name]
+            const withType = validation.with[name]
             const withElements = getElement(formEl, name)
-            const withValues = getValues(withElements)
+            const withValues = getValues(withElements, limit)
 
             result = result && checkValidate(withType, withValues)
         })
@@ -149,8 +172,8 @@ const validateMultipleAnd = (
 
     if (!result) {
         errors.push({
-            type: r.type,
-            message: r.message,
+            type: validation.type,
+            message: validation.message,
         })
     }
 

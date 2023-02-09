@@ -1,4 +1,5 @@
-import { FieldElement } from '../types';
+import { LimitationOption, FieldElement } from '../types';
 export declare const isCheckField: (el: FieldElement) => boolean;
-export declare const getElement: (formEl: HTMLFormElement, name: string) => (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[];
-export declare const getValues: (elements: FieldElement[]) => string[];
+export declare const getElement: (formEl: HTMLFormElement, name: string) => FieldElement[];
+export declare const getValues: (elements: FieldElement[], limit: LimitationOption) => string[];
+//# sourceMappingURL=Tag.d.ts.map
