@@ -6,4 +6,3 @@ export declare const rule: z.ZodCoercedNumber<unknown>;
  * @returns {boolean}
  */
 export declare const check: (values: string[]) => boolean;
-//# sourceMappingURL=Number.d.ts.map

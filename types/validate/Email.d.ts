@@ -6,4 +6,3 @@ export declare const rule: z.ZodEmail;
  * @returns {boolean}
  */
 export declare const check: (values: string[]) => boolean;
-//# sourceMappingURL=Email.d.ts.map

@@ -11,4 +11,3 @@ export declare const createElement: (formEl: HTMLFormElement, name: string, limi
     hasError: () => boolean;
     getErrors: () => ValidatedError[];
 };
-//# sourceMappingURL=Element.d.ts.map

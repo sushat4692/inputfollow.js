@@ -22,4 +22,3 @@ export declare const InputFollow: (formEl: FormElement, params: InitialParam) =>
     }[];
     validate: (init?: boolean) => void;
 };
-//# sourceMappingURL=index.d.ts.map

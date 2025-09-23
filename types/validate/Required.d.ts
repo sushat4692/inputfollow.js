@@ -6,4 +6,3 @@ export declare const rule: z.ZodString;
  * @returns {boolean}
  */
 export declare const check: (values: string[]) => boolean;
-//# sourceMappingURL=Required.d.ts.map

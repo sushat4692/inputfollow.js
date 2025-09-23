@@ -19,6 +19,7 @@ export type Param = {
     on_success?: () => void;
     on_error?: (errors: Record<string, ValidatedError[]>) => void;
     on_submit?: () => void;
+    on_failed?: (errors: Record<string, ValidatedError[]>) => void;
 };
 ```
 **References:** [Rule](./inputfollow.js.rule.md)<!-- -->, [ValidatedError](./inputfollow.js.validatederror.md)

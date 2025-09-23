@@ -4,4 +4,3 @@
  * @returns {string}
  */
 export declare const convert: (value: string) => string;
-//# sourceMappingURL=Code.d.ts.map

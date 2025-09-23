@@ -142,6 +142,10 @@ export declare const ParamValidator: z.ZodObject<{
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$strip>>>], null>, z.ZodVoid>>;
     on_submit: z.ZodOptional<z.ZodFunction<z.core.$ZodFunctionArgs, z.ZodVoid>>;
+    on_failed: z.ZodOptional<z.ZodFunction<z.ZodTuple<readonly [z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
+        type: z.ZodString;
+        message: z.ZodOptional<z.ZodString>;
+    }, z.core.$strip>>>], null>, z.ZodVoid>>;
 }, z.core.$strip>;
 export type Param = {
     rules: Rule;
@@ -155,6 +159,7 @@ export type Param = {
     on_success?: () => void;
     on_error?: (errors: Record<string, ValidatedError[]>) => void;
     on_submit?: () => void;
+    on_failed?: (errors: Record<string, ValidatedError[]>) => void;
 };
 export declare const InitialParamValidator: z.ZodObject<{
     rules: z.ZodArray<z.ZodObject<{
@@ -208,6 +213,10 @@ export declare const InitialParamValidator: z.ZodObject<{
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$strip>>>], null>, z.ZodVoid>>;
     on_submit: z.ZodOptional<z.ZodFunction<z.core.$ZodFunctionArgs, z.ZodVoid>>;
+    on_failed: z.ZodOptional<z.ZodFunction<z.ZodTuple<readonly [z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
+        type: z.ZodString;
+        message: z.ZodOptional<z.ZodString>;
+    }, z.core.$strip>>>], null>, z.ZodVoid>>;
 }, z.core.$strip>;
 export type InitialParam = Partial<Param> & {
     rules: Rule;
@@ -224,4 +233,3 @@ export declare const FormElementValidator: z.ZodUnion<readonly [z.ZodString, z.Z
 export type FormElement = string | HTMLFormElement;
 export declare const FieldElementValidator: z.ZodUnion<readonly [z.ZodCustom<HTMLInputElement, HTMLInputElement>, z.ZodCustom<HTMLSelectElement, HTMLSelectElement>, z.ZodCustom<HTMLTextAreaElement, HTMLTextAreaElement>]>;
 export type FieldElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-//# sourceMappingURL=types.d.ts.map
