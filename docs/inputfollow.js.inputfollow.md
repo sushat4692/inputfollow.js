@@ -2,7 +2,7 @@
 
 [Home](./index.md) &gt; [inputfollow.js](./inputfollow.js.md) &gt; [InputFollow](./inputfollow.js.inputfollow.md)
 
-## InputFollow variable
+## InputFollow() function
 
 InputFollow class
 
@@ -24,6 +24,58 @@ InputFollow: (formEl: FormElement, params: InitialParam) => {
     validate: (init?: boolean) => void;
 }
 ```
+
+## Parameters
+
+<table><thead><tr><th>
+
+Parameter
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+formEl
+
+
+</td><td>
+
+[FormElement](./inputfollow.js.formelement.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+params
+
+
+</td><td>
+
+[InitialParam](./inputfollow.js.initialparam.md)
+
+
+</td><td>
+
+
+</td></tr>
+</tbody></table>
+
+**Returns:**
+
+{ formEl: HTMLFormElement; elements: { formEl: HTMLFormElement; elements: import("./types").[FieldElement](./inputfollow.js.fieldelement.md)<!-- -->\[\]; name: string; limit: import("./types").[LimitationOption](./inputfollow.js.limitationoption.md)<!-- -->; validations: import("./types").[ValidationOption](./inputfollow.js.validationoption.md)<!-- -->\[\] \| null; validate: (init?: boolean, ignored?: boolean) =&gt; void; hasError: () =&gt; boolean; getErrors: () =&gt; [ValidatedError](./inputfollow.js.validatederror.md)<!-- -->\[\]; }\[\]; validate: (init?: boolean) =&gt; void; }
 
 ## Remarks
 

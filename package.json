@@ -1,7 +1,7 @@
 {
   "name": "inputfollow.js",
   "type": "module",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Input Validate, Input Limit etc.",
   "homepage": "https://github.com/sushat4692/inputfollow.js#readme",
   "main": "dist/index.js",
@@ -35,29 +35,29 @@
   "author": "SUSH <sush@sus-happy.net>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
-    "@microsoft/api-documenter": "^7.21.4",
-    "@microsoft/api-extractor": "^7.34.3",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@microsoft/api-documenter": "^7.26.34",
+    "@microsoft/api-extractor": "^7.52.13",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "http-server": "^14.1.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.4",
-    "rollup": "^3.14.0",
-    "sass": "^1.58.0",
-    "typescript": "^4.9.5"
+    "prettier": "^3.6.2",
+    "rollup": "^4.52.0",
+    "sass": "^1.93.1",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "zod": "^3.20.5"
+    "zod": "^4.1.11"
   },
   "directories": {
     "doc": "docs"

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { rule as ruleRequired } from './Required'
 
-export const rule = z.string().email()
+export const rule = z.email()
 
 /**
  * Check Email format of target field element's value

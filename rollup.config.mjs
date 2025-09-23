@@ -54,7 +54,7 @@ export default [
             pluginTypescript({
                 declaration: true,
                 rootDir: 'src',
-                declarationDir: 'types',
+                declarationDir: 'dist/types',
             }),
             pluginCommonjs({
                 extensions: ['.js', '.ts'],

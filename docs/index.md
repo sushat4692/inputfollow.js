@@ -6,7 +6,25 @@
 
 ## Packages
 
-|  Package | Description |
-|  --- | --- |
-|  [inputfollow.js](./inputfollow.js.md) |  |
+<table><thead><tr><th>
+
+Package
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[inputfollow.js](./inputfollow.js.md)
+
+
+</td><td>
+
+
+</td></tr>
+</tbody></table>
 
