@@ -7,7 +7,7 @@ import pluginTerser from '@rollup/plugin-terser'
 
 import path from 'path'
 
-import pkg from './package.json' assert { type: 'json' }
+import pkg from './package.json' with { type: 'json' }
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
@@ -51,11 +51,7 @@ export default [
             },
         ],
         plugins: [
-            pluginTypescript({
-                declaration: true,
-                rootDir: 'src',
-                declarationDir: 'dist/types',
-            }),
+            pluginTypescript(),
             pluginCommonjs({
                 extensions: ['.js', '.ts'],
             }),

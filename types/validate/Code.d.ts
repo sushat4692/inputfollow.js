@@ -4,4 +4,3 @@
  * @returns {boolean}
  */
 export declare const check: (values: string[]) => boolean;
-//# sourceMappingURL=Code.d.ts.map

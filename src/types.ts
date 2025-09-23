@@ -105,6 +105,12 @@ export const ParamValidator = z.object({
             output: z.void(),
         })
         .optional(),
+    on_failed: z
+        .function({
+            input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
+            output: z.void(),
+        })
+        .optional(),
 })
 export type Param = {
     rules: Rule
@@ -118,6 +124,7 @@ export type Param = {
     on_success?: () => void
     on_error?: (errors: Record<string, ValidatedError[]>) => void
     on_submit?: () => void
+    on_failed?: (errors: Record<string, ValidatedError[]>) => void
 }
 
 export const InitialParamValidator = ParamValidator.partial({

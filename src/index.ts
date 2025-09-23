@@ -69,6 +69,9 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
 
         if (!flag) {
             e.preventDefault()
+            if (typeof arrangedParams.on_failed === 'function') {
+                arrangedParams.on_failed(errors)
+            }
             return false
         }
 
