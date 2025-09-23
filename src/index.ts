@@ -72,6 +72,13 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
             return false
         }
 
+        // Call on_submit callback if it's specified, and prevent default submission
+        if (typeof arrangedParams.on_submit === 'function') {
+            e.preventDefault()
+            arrangedParams.on_submit()
+            return false
+        }
+
         return true
     })
 

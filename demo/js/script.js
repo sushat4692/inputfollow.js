@@ -3,6 +3,9 @@ const formEl = document.querySelector('#form')
 if (formEl) {
     InputFollow(formEl, {
         submit_button: '#submit',
+        on_submit: function () {
+            alert('Form is valid and ready to submit!')
+        },
         rules: [
             {
                 name: 'name',
@@ -124,6 +127,15 @@ if (formEl) {
                             mode: 'and',
                             target: { if_from: 'checked' },
                         },
+                    },
+                ],
+            },
+            {
+                name: 'equal_target',
+                validation: [
+                    {
+                        type: ['equal', 'equal_from'],
+                        message: 'The values must be the same',
                     },
                 ],
             },

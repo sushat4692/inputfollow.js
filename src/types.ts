@@ -1,14 +1,20 @@
 import z from 'zod'
 
-export const ValidationTypeValidator = z.enum([
-    'required',
-    'email',
-    'number',
-    'code',
+export const ValidationTypeValidator = z.union([
+    z.literal('required'),
+    z.literal('email'),
+    z.literal('number'),
+    z.literal('code'),
+    z.tuple([z.literal('equal'), z.string().min(1)]),
 ])
-export type ValidationType = 'required' | 'email' | 'number' | 'code'
+export type ValidationType =
+    | 'required'
+    | 'email'
+    | 'number'
+    | 'code'
+    | ['equal', string]
 
-export const WithOptionValidator = z.record(ValidationTypeValidator)
+export const WithOptionValidator = z.record(z.string(), ValidationTypeValidator)
 export type WithOption = Record<string, ValidationType>
 
 export const ModeOptionValidator = z.enum(['or', 'and'])
@@ -24,7 +30,7 @@ export const ValidationOptionValidator = z.object({
     if: z
         .object({
             mode: ModeOptionValidator.optional(),
-            target: z.record(z.string()),
+            target: z.record(z.string(), z.string()),
         })
         .optional(),
     message: z.string().optional(),
@@ -78,12 +84,26 @@ export const ParamValidator = z.object({
             z.instanceof(HTMLButtonElement),
         ])
         .optional(),
-    on_validate: z.function().returns(z.void()).optional(),
-    on_success: z.function().returns(z.void()).optional(),
+    on_validate: z
+        .function({
+            output: z.void(),
+        })
+        .optional(),
+    on_success: z
+        .function({
+            output: z.void(),
+        })
+        .optional(),
     on_error: z
-        .function()
-        .args(z.record(z.array(ValidatedErrorValidator)))
-        .returns(z.void())
+        .function({
+            input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
+            output: z.void(),
+        })
+        .optional(),
+    on_submit: z
+        .function({
+            output: z.void(),
+        })
         .optional(),
 })
 export type Param = {
@@ -97,6 +117,7 @@ export type Param = {
     on_validate?: () => void
     on_success?: () => void
     on_error?: (errors: Record<string, ValidatedError[]>) => void
+    on_submit?: () => void
 }
 
 export const InitialParamValidator = ParamValidator.partial({
@@ -109,13 +130,15 @@ export const InitialParamValidator = ParamValidator.partial({
 export type InitialParam = Partial<Param> & { rules: Rule }
 
 export const RootEventValidator = z.object({
-    validate: z.function().returns(z.void()),
+    validate: z.function({
+        output: z.void(),
+    }),
 })
 export type RootEvent = {
     validate: () => void
 }
 
-export const TargetValidator = z.record(z.instanceof(HTMLElement))
+export const TargetValidator = z.record(z.string(), z.instanceof(HTMLElement))
 export type Target = Record<string, HTMLElement>
 
 export const FormElementValidator = z.union([

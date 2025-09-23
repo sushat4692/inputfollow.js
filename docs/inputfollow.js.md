@@ -4,27 +4,161 @@
 
 ## inputfollow.js package
 
-## Variables
+## Functions
 
-|  Variable | Description |
-|  --- | --- |
-|  [InputFollow](./inputfollow.js.inputfollow.md) | InputFollow class |
+<table><thead><tr><th>
+
+Function
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[InputFollow(formEl, params)](./inputfollow.js.inputfollow.md)
+
+
+</td><td>
+
+InputFollow class
+
+
+</td></tr>
+</tbody></table>
 
 ## Type Aliases
 
-|  Type Alias | Description |
-|  --- | --- |
-|  [FieldElement](./inputfollow.js.fieldelement.md) |  |
-|  [FormElement](./inputfollow.js.formelement.md) |  |
-|  [InitialParam](./inputfollow.js.initialparam.md) |  |
-|  [LimitationOption](./inputfollow.js.limitationoption.md) |  |
-|  [ModeOption](./inputfollow.js.modeoption.md) |  |
-|  [Param](./inputfollow.js.param.md) |  |
-|  [RootEvent](./inputfollow.js.rootevent.md) |  |
-|  [Rule](./inputfollow.js.rule.md) |  |
-|  [Target](./inputfollow.js.target.md) |  |
-|  [ValidatedError](./inputfollow.js.validatederror.md) |  |
-|  [ValidationOption](./inputfollow.js.validationoption.md) |  |
-|  [ValidationType](./inputfollow.js.validationtype.md) |  |
-|  [WithOption](./inputfollow.js.withoption.md) |  |
+<table><thead><tr><th>
+
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[FieldElement](./inputfollow.js.fieldelement.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[FormElement](./inputfollow.js.formelement.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[InitialParam](./inputfollow.js.initialparam.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[LimitationOption](./inputfollow.js.limitationoption.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[ModeOption](./inputfollow.js.modeoption.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[Param](./inputfollow.js.param.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[RootEvent](./inputfollow.js.rootevent.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[Rule](./inputfollow.js.rule.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[Target](./inputfollow.js.target.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[ValidatedError](./inputfollow.js.validatederror.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[ValidationOption](./inputfollow.js.validationoption.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[ValidationType](./inputfollow.js.validationtype.md)
+
+
+</td><td>
+
+
+</td></tr>
+<tr><td>
+
+[WithOption](./inputfollow.js.withoption.md)
+
+
+</td><td>
+
+
+</td></tr>
+</tbody></table>
 
