@@ -1,12 +1,18 @@
 import z from 'zod'
 
-export const ValidationTypeValidator = z.enum([
-    'required',
-    'email',
-    'number',
-    'code',
+export const ValidationTypeValidator = z.union([
+    z.literal('required'),
+    z.literal('email'),
+    z.literal('number'),
+    z.literal('code'),
+    z.tuple([z.literal('equal'), z.string().min(1)]),
 ])
-export type ValidationType = 'required' | 'email' | 'number' | 'code'
+export type ValidationType =
+    | 'required'
+    | 'email'
+    | 'number'
+    | 'code'
+    | ['equal', string]
 
 export const WithOptionValidator = z.record(ValidationTypeValidator)
 export type WithOption = Record<string, ValidationType>
@@ -85,6 +91,7 @@ export const ParamValidator = z.object({
         .args(z.record(z.array(ValidatedErrorValidator)))
         .returns(z.void())
         .optional(),
+    on_submit: z.function().returns(z.void()).optional(),
 })
 export type Param = {
     rules: Rule
@@ -97,6 +104,7 @@ export type Param = {
     on_validate?: () => void
     on_success?: () => void
     on_error?: (errors: Record<string, ValidatedError[]>) => void
+    on_submit?: () => void
 }
 
 export const InitialParamValidator = ParamValidator.partial({

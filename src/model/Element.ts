@@ -61,6 +61,32 @@ export const createElement = (
         return results
     })()
 
+    const equalElements = (() => {
+        const results: FieldElement[] = []
+
+        if (!validations) {
+            return results
+        }
+
+        validations.map((validation) => {
+            if (
+                !Array.isArray(validation.type) ||
+                validation.type[0] !== 'equal'
+            ) {
+                return
+            }
+
+            if (!validation.type[1]) {
+                return
+            }
+
+            const fields = getElement(formEl, validation.type[1])
+            results.push(...fields)
+        })
+
+        return results
+    })()
+
     if (!elements.length) {
         throw Error(`Not found target field element: ${name}`)
     }
@@ -217,6 +243,7 @@ export const createElement = (
     addEvents(elements, true)
     addEvents(withElements, false)
     addEvents(ifElements, false)
+    addEvents(equalElements, false)
 
     return {
         formEl,

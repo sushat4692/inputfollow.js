@@ -4,15 +4,16 @@ This repository is standalone version of [jquery.inputfollow.js](https://github.
 
 ## Validate
 
-- [x] Required
-- [x] E-mail
-- [x] Number
-- [x] Code (Number or "-" or "+" or "*")
+-   [x] Required
+-   [x] E-mail
+-   [x] Number
+-   [x] Code (Number or "-" or "+" or "\*")
+-   [x] Equal
 
 ## Limit
 
-- [x] Number
-- [x] Code
+-   [x] Number
+-   [x] Code
 
 ## Demo
 
@@ -161,7 +162,6 @@ if (formEl) {
     })
 }
 ```
-
 
 ## Parameters
 

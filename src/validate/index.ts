@@ -10,6 +10,7 @@ import { check as checkRequired } from './Required'
 import { check as checkEmail } from './Email'
 import { check as checkNumber } from './Number'
 import { check as checkCode } from './Code'
+import { check as checkEqual } from './Equal'
 import { getElement, getValues } from '../utils/Tag'
 
 export const validate = (
@@ -41,7 +42,7 @@ export const validate = (
                     break
             }
         } else {
-            validateSingle(validation, errors, values)
+            validateSingle(formEl, validation, errors, values)
         }
     })
 
@@ -74,7 +75,11 @@ const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
     return result
 }
 
-const checkValidate = (ruleType: ValidationType, values: string[]) => {
+const checkValidate = (
+    formEl: HTMLFormElement,
+    ruleType: ValidationType,
+    values: string[]
+) => {
     switch (ruleType) {
         case 'required':
             return checkRequired(values)
@@ -84,17 +89,24 @@ const checkValidate = (ruleType: ValidationType, values: string[]) => {
             return checkNumber(values)
         case 'code':
             return checkCode(values)
+        default:
+            if (Array.isArray(ruleType) && ruleType[0] === 'equal') {
+                return checkEqual(formEl, values, ruleType[1])
+            }
     }
 }
 
 const validateSingle = (
+    formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
     values: string[]
 ) => {
-    if (!checkValidate(validation.type, values)) {
+    if (!checkValidate(formEl, validation.type, values)) {
         errors.push({
-            type: validation.type,
+            type: Array.isArray(validation.type)
+                ? validation.type[0]
+                : validation.type,
             message: validation.message,
         })
     }
@@ -108,7 +120,7 @@ const validateMultipleOr = (
     errors: ValidatedError[],
     values: string[]
 ) => {
-    let result = checkValidate(validation.type, values)
+    let result = checkValidate(formEl, validation.type, values)
 
     if (validation.with) {
         Object.keys(validation.with).map((name) => {
@@ -120,13 +132,15 @@ const validateMultipleOr = (
             const withElements = getElement(formEl, name)
             const withValues = getValues(withElements)
 
-            result = result || checkValidate(withType, withValues)
+            result = result || checkValidate(formEl, withType, withValues)
         })
     }
 
     if (!result) {
         errors.push({
-            type: validation.type,
+            type: Array.isArray(validation.type)
+                ? validation.type[0]
+                : validation.type,
             message: validation.message,
         })
     }
@@ -140,7 +154,7 @@ const validateMultipleAnd = (
     errors: ValidatedError[],
     values: string[]
 ) => {
-    let result = checkValidate(validation.type, values)
+    let result = checkValidate(formEl, validation.type, values)
 
     if (validation.with) {
         Object.keys(validation.with).map((name) => {
@@ -152,13 +166,15 @@ const validateMultipleAnd = (
             const withElements = getElement(formEl, name)
             const withValues = getValues(withElements)
 
-            result = result && checkValidate(withType, withValues)
+            result = result && checkValidate(formEl, withType, withValues)
         })
     }
 
     if (!result) {
         errors.push({
-            type: validation.type,
+            type: Array.isArray(validation.type)
+                ? validation.type[0]
+                : validation.type,
             message: validation.message,
         })
     }

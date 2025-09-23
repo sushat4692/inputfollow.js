@@ -127,6 +127,15 @@ if (formEl) {
                     },
                 ],
             },
+            {
+                name: 'equal_target',
+                validation: [
+                    {
+                        type: ['equal', 'equal_from'],
+                        message: 'The values must be the same',
+                    },
+                ],
+            },
         ],
     })
 }

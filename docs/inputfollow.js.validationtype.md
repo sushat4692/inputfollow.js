@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-export type ValidationType = 'required' | 'email' | 'number' | 'code';
+export type ValidationType = 'required' | 'email' | 'number' | 'code' | ['equal', string];
 ```
