@@ -35,7 +35,7 @@ export default [
                 // ブラウザ用フォーマット
                 format: 'iife',
                 // ソースマップをインラインで出力
-                sourcemap: 'inline',
+                sourcemap: true,
                 // copyright
                 banner,
             },

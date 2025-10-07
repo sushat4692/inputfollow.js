@@ -1,6 +1,6 @@
-import { z } from 'zod'
+import * as z from 'zod/mini'
 
-export const rule = z.string().trim().min(1)
+export const rule = z.string().check(z.trim(), z.minLength(1))
 
 /**
  * Check required of target field element's value

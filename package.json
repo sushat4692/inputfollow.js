@@ -1,7 +1,7 @@
 {
   "name": "inputfollow.js",
   "type": "module",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Input Validate, Input Limit etc.",
   "homepage": "https://github.com/sushat4692/inputfollow.js#readme",
   "main": "dist/index.js",
@@ -28,7 +28,7 @@
     "make": "npm run build && npm run make:demo:build && npm run make:doc",
     "make:demo": "npm run build && npm run make:demo:build",
     "make:demo:build": "npm run make:demo:js && npm run make:demo:css",
-    "make:demo:js": "cp -f ./dist/inputfollow.js ./demo/js/inputfollow.js && cp -f ./dist/inputfollow.min.js ./demo/js/inputfollow.min.js",
+    "make:demo:js": "cp -f ./dist/inputfollow.js ./demo/js/inputfollow.js && cp -f ./dist/inputfollow.js.map ./demo/js/inputfollow.js.map && cp -f ./dist/inputfollow.min.js ./demo/js/inputfollow.min.js",
     "make:demo:css": "sass demo/scss/style.scss demo/css/style.css --source-map",
     "make:doc": "api-extractor run --local --verbose && api-documenter markdown -i ./temp -o ./docs",
     "test": "echo \"Error: no test specified\" && exit 1"
