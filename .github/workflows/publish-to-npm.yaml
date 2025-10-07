@@ -17,7 +17,7 @@ jobs:
       - name: Use Node.js And Setup .npmrc
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
           registry-url: 'https://registry.npmjs.org'
           # ↓ package.json の name に含めたスコープを指定しておく
