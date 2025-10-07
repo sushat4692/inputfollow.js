@@ -1,7 +1,7 @@
 {
   "name": "inputfollow.js",
   "type": "module",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Input Validate, Input Limit etc.",
   "homepage": "https://github.com/sushat4692/inputfollow.js#readme",
   "main": "dist/index.js",
