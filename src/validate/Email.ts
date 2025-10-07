@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod/mini'
 import { rule as ruleRequired } from './Required'
 
 export const rule = z.email()

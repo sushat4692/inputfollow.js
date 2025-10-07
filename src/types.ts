@@ -1,11 +1,11 @@
-import z from 'zod'
+import * as z from 'zod/mini'
 
 export const ValidationTypeValidator = z.union([
     z.literal('required'),
     z.literal('email'),
     z.literal('number'),
     z.literal('code'),
-    z.tuple([z.literal('equal'), z.string().min(1)]),
+    z.tuple([z.literal('equal'), z.string().check(z.minLength(1))]),
 ])
 export type ValidationType =
     | 'required'
@@ -25,15 +25,15 @@ export type LimitationOption = 'number' | 'code' | null
 
 export const ValidationOptionValidator = z.object({
     type: ValidationTypeValidator,
-    mode: ModeOptionValidator.optional(),
-    with: WithOptionValidator.optional(),
-    if: z
-        .object({
-            mode: ModeOptionValidator.optional(),
+    mode: z.optional(ModeOptionValidator),
+    with: z.optional(WithOptionValidator),
+    if: z.optional(
+        z.object({
+            mode: z.optional(ModeOptionValidator),
             target: z.record(z.string(), z.string()),
-        })
-        .optional(),
-    message: z.string().optional(),
+        }),
+    ),
+    message: z.optional(z.string()),
 })
 export type ValidationOption = {
     type: ValidationType
@@ -49,13 +49,13 @@ export type ValidationOption = {
 export const RuleValidator = z.array(
     z.object({
         name: z.string(),
-        limit: LimitationOptionValidator.optional(),
-        validation: z
-            .union([
+        limit: z.optional(LimitationOptionValidator),
+        validation: z.optional(
+            z.union([
                 ValidationOptionValidator,
                 z.array(ValidationOptionValidator),
-            ])
-            .optional(),
+            ]),
+        ),
     }),
 )
 export type Rule = {
@@ -66,7 +66,7 @@ export type Rule = {
 
 export const ValidatedErrorValidator = z.object({
     type: z.string(),
-    message: z.string().optional(),
+    message: z.optional(z.string()),
 })
 export type ValidatedError = { type: string; message?: string }
 
@@ -77,44 +77,44 @@ export const ParamValidator = z.object({
     empty_error_message_class: z.string(),
     valid_class: z.string(),
     initial_error_view: z.boolean(),
-    submit_button: z
-        .union([
+    submit_button: z.optional(
+        z.union([
             z.string(),
             z.instanceof(HTMLInputElement),
             z.instanceof(HTMLButtonElement),
-        ])
-        .optional(),
-    on_validate: z
-        .function({
+        ]),
+    ),
+    on_validate: z.optional(
+        z.function({
             output: z.void(),
-        })
-        .optional(),
-    on_success: z
-        .function({
+        }),
+    ),
+    on_success: z.optional(
+        z.function({
             output: z.void(),
-        })
-        .optional(),
-    on_error: z
-        .function({
+        }),
+    ),
+    on_error: z.optional(
+        z.function({
             input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
             output: z.void(),
-        })
-        .optional(),
-    on_submit: z
-        .function({
+        }),
+    ),
+    on_submit: z.optional(
+        z.function({
             output: z.void(),
-        })
-        .optional(),
-    on_failed: z
-        .function({
+        }),
+    ),
+    on_failed: z.optional(
+        z.function({
             input: [
                 z.record(z.string(), z.array(ValidatedErrorValidator)),
                 z.array(z.string()),
             ],
             output: z.void(),
-        })
-        .optional(),
-    focus_invalid_field: z.boolean().optional(),
+        }),
+    ),
+    focus_invalid_field: z.optional(z.boolean()),
 })
 export type Param = {
     rules: Rule
@@ -135,7 +135,7 @@ export type Param = {
     focus_invalid_field?: boolean
 }
 
-export const InitialParamValidator = ParamValidator.partial({
+export const InitialParamValidator = z.partial(ParamValidator, {
     error_class: true,
     error_message_class: true,
     empty_error_message_class: true,

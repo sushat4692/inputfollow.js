@@ -1,5 +1,5 @@
-import { z } from 'zod';
-export declare const rule: z.ZodString;
+import * as z from 'zod/mini';
+export declare const rule: z.ZodMiniString<string>;
 /**
  * Check required of target field element's value
  * @param {string[]} values
