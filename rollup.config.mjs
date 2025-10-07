@@ -51,7 +51,13 @@ export default [
             },
         ],
         plugins: [
-            pluginTypescript(),
+            pluginTypescript({
+                compilerOptions: {
+                    declaration: true,
+                    declarationMap: false,
+                    declarationDir: 'dist/types',
+                },
+            }),
             pluginCommonjs({
                 extensions: ['.js', '.ts'],
             }),

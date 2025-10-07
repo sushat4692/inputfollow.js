@@ -28,7 +28,7 @@ export const getElement = (formEl: HTMLFormElement, name: string) => {
 
 export const getValues = (
     elements: FieldElement[],
-    limit: LimitationOption = null
+    limit: LimitationOption = null,
 ) => {
     const values: string[] = []
 

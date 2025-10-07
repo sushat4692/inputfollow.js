@@ -21,4 +21,14 @@ export declare const InputFollow: (formEl: FormElement, params: InitialParam) =>
         getErrors: () => ValidatedError[];
     }[];
     validate: (init?: boolean) => void;
+    getElements: (name: string) => {
+        formEl: HTMLFormElement;
+        elements: import("./types").FieldElement[];
+        name: string;
+        limit: import("./types").LimitationOption;
+        validations: import("./types").ValidationOption[] | null;
+        validate: (init?: boolean, ignored?: boolean) => void;
+        hasError: () => boolean;
+        getErrors: () => ValidatedError[];
+    }[];
 };

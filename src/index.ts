@@ -62,16 +62,28 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
 
         validate()
 
+        const errorFields: string[] = []
         Object.keys(errors).map((key) => {
             const error = errors[key]
-            flag = flag && error.length <= 0
+
+            if (error.length > 0) {
+                errorFields.push(key)
+                flag = false
+            }
         })
 
         if (!flag) {
             e.preventDefault()
             if (typeof arrangedParams.on_failed === 'function') {
-                arrangedParams.on_failed(errors)
+                arrangedParams.on_failed(errors, errorFields)
             }
+
+            if (arrangedParams.focus_invalid_field) {
+                const firstErrorField = errorFields[0]
+                const errorElements = getElements(firstErrorField)
+                errorElements[0]?.elements[0]?.focus()
+            }
+
             return false
         }
 
@@ -150,7 +162,7 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
                 }
                 return set
             },
-        }
+        },
     )
 
     /**
@@ -176,7 +188,7 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
             limit ?? null,
             validations,
             arrangedParams,
-            errors
+            errors,
         )
 
         if (!Element) {
@@ -198,8 +210,15 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
         }
     }
 
+    /**
+     * Get target elements
+     */
+    const getElements = (name: string) => {
+        return elements.filter((el) => el.name === name)
+    }
+
     // Initial validate
     validate(true)
 
-    return { formEl: targetFormElement, elements, validate }
+    return { formEl: targetFormElement, elements, validate, getElements }
 }

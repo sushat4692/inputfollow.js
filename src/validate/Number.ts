@@ -10,6 +10,6 @@ export const rule = z.coerce.number()
 export const check = (values: string[]) => {
     return values.reduce(
         (prev, current) => prev && rule.safeParse(current).success,
-        true
+        true,
     )
 }
