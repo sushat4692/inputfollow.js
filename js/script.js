@@ -6,6 +6,7 @@ if (formEl) {
         on_submit: function () {
             alert('Form is valid and ready to submit!')
         },
+        focus_invalid_field: true,
         rules: [
             {
                 name: 'name',
