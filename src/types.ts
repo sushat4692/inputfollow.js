@@ -56,7 +56,7 @@ export const RuleValidator = z.array(
                 z.array(ValidationOptionValidator),
             ])
             .optional(),
-    })
+    }),
 )
 export type Rule = {
     name: string
@@ -107,10 +107,14 @@ export const ParamValidator = z.object({
         .optional(),
     on_failed: z
         .function({
-            input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
+            input: [
+                z.record(z.string(), z.array(ValidatedErrorValidator)),
+                z.array(z.string()),
+            ],
             output: z.void(),
         })
         .optional(),
+    focus_invalid_field: z.boolean().optional(),
 })
 export type Param = {
     rules: Rule
@@ -124,7 +128,11 @@ export type Param = {
     on_success?: () => void
     on_error?: (errors: Record<string, ValidatedError[]>) => void
     on_submit?: () => void
-    on_failed?: (errors: Record<string, ValidatedError[]>) => void
+    on_failed?: (
+        errors: Record<string, ValidatedError[]>,
+        errorFields: string[],
+    ) => void
+    focus_invalid_field?: boolean
 }
 
 export const InitialParamValidator = ParamValidator.partial({

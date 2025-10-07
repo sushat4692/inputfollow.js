@@ -145,7 +145,8 @@ export declare const ParamValidator: z.ZodObject<{
     on_failed: z.ZodOptional<z.ZodFunction<z.ZodTuple<readonly [z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
-    }, z.core.$strip>>>], null>, z.ZodVoid>>;
+    }, z.core.$strip>>>, z.ZodArray<z.ZodString>], null>, z.ZodVoid>>;
+    focus_invalid_field: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 export type Param = {
     rules: Rule;
@@ -159,7 +160,8 @@ export type Param = {
     on_success?: () => void;
     on_error?: (errors: Record<string, ValidatedError[]>) => void;
     on_submit?: () => void;
-    on_failed?: (errors: Record<string, ValidatedError[]>) => void;
+    on_failed?: (errors: Record<string, ValidatedError[]>, errorFields: string[]) => void;
+    focus_invalid_field?: boolean;
 };
 export declare const InitialParamValidator: z.ZodObject<{
     rules: z.ZodArray<z.ZodObject<{
@@ -216,7 +218,8 @@ export declare const InitialParamValidator: z.ZodObject<{
     on_failed: z.ZodOptional<z.ZodFunction<z.ZodTuple<readonly [z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
-    }, z.core.$strip>>>], null>, z.ZodVoid>>;
+    }, z.core.$strip>>>, z.ZodArray<z.ZodString>], null>, z.ZodVoid>>;
+    focus_invalid_field: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 export type InitialParam = Partial<Param> & {
     rules: Rule;

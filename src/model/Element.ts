@@ -15,7 +15,7 @@ export const createElement = (
     limit: LimitationOption,
     validations: ValidationOption[] | null,
     params: Param,
-    errors: { [key: string]: ValidatedError[] }
+    errors: { [key: string]: ValidatedError[] },
 ) => {
     const elements = getElement(formEl, name)
 
@@ -98,12 +98,12 @@ export const createElement = (
         }
 
         const existField = document.querySelector(
-            `[data-inputfollow-error="${name}"]`
+            `[data-inputfollow-error="${name}"]`,
         )
         if (existField) {
             existField.classList.add(
                 params.error_message_class,
-                params.empty_error_message_class
+                params.empty_error_message_class,
             )
             return existField
         }
@@ -111,7 +111,7 @@ export const createElement = (
         const additionalField = document.createElement('ul')
         additionalField.classList.add(
             params.error_message_class,
-            params.empty_error_message_class
+            params.empty_error_message_class,
         )
         additionalField.setAttribute('data-inputfollow-error', name)
         elements[0].insertAdjacentElement('afterend', additionalField)
@@ -160,7 +160,7 @@ export const createElement = (
             formEl,
             elements,
             renderError ? limit : null,
-            validations
+            validations,
         )
 
         if (!validations || !validations.length || !messageField) {
@@ -211,7 +211,7 @@ export const createElement = (
 
     const addEvents = (
         _elements: FieldElement[],
-        useCapture: boolean = false
+        useCapture: boolean = false,
     ) => {
         _elements.forEach((el) => {
             if (isCheckField(el)) {
@@ -220,7 +220,7 @@ export const createElement = (
                     () => {
                         validate()
                     },
-                    useCapture
+                    useCapture,
                 )
             } else {
                 el.addEventListener(
@@ -228,14 +228,14 @@ export const createElement = (
                     () => {
                         validate(false, true)
                     },
-                    useCapture
+                    useCapture,
                 )
                 el.addEventListener(
                     'blur',
                     () => {
                         validate()
                     },
-                    useCapture
+                    useCapture,
                 )
             }
         })

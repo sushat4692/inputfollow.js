@@ -17,7 +17,7 @@ export const validate = (
     formEl: HTMLFormElement,
     elements: FieldElement[],
     limit: LimitationOption,
-    validations: ValidationOption[] | null
+    validations: ValidationOption[] | null,
 ) => {
     const errors: ValidatedError[] = []
     const values = getValues(elements, limit)
@@ -78,7 +78,7 @@ const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
 const checkValidate = (
     formEl: HTMLFormElement,
     ruleType: ValidationType,
-    values: string[]
+    values: string[],
 ) => {
     switch (ruleType) {
         case 'required':
@@ -100,7 +100,7 @@ const validateSingle = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[]
+    values: string[],
 ) => {
     if (!checkValidate(formEl, validation.type, values)) {
         errors.push({
@@ -118,7 +118,7 @@ const validateMultipleOr = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[]
+    values: string[],
 ) => {
     let result = checkValidate(formEl, validation.type, values)
 
@@ -152,7 +152,7 @@ const validateMultipleAnd = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[]
+    values: string[],
 ) => {
     let result = checkValidate(formEl, validation.type, values)
 

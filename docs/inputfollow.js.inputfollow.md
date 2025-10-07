@@ -22,6 +22,16 @@ InputFollow: (formEl: FormElement, params: InitialParam) => {
         getErrors: () => ValidatedError[];
     }[];
     validate: (init?: boolean) => void;
+    getElements: (name: string) => {
+        formEl: HTMLFormElement;
+        elements: import("./types").FieldElement[];
+        name: string;
+        limit: import("./types").LimitationOption;
+        validations: import("./types").ValidationOption[] | null;
+        validate: (init?: boolean, ignored?: boolean) => void;
+        hasError: () => boolean;
+        getErrors: () => ValidatedError[];
+    }[];
 }
 ```
 
@@ -75,7 +85,7 @@ params
 
 **Returns:**
 
-{ formEl: HTMLFormElement; elements: { formEl: HTMLFormElement; elements: import("./types").[FieldElement](./inputfollow.js.fieldelement.md)<!-- -->\[\]; name: string; limit: import("./types").[LimitationOption](./inputfollow.js.limitationoption.md)<!-- -->; validations: import("./types").[ValidationOption](./inputfollow.js.validationoption.md)<!-- -->\[\] \| null; validate: (init?: boolean, ignored?: boolean) =&gt; void; hasError: () =&gt; boolean; getErrors: () =&gt; [ValidatedError](./inputfollow.js.validatederror.md)<!-- -->\[\]; }\[\]; validate: (init?: boolean) =&gt; void; }
+{ formEl: HTMLFormElement; elements: { formEl: HTMLFormElement; elements: import("./types").[FieldElement](./inputfollow.js.fieldelement.md)<!-- -->\[\]; name: string; limit: import("./types").[LimitationOption](./inputfollow.js.limitationoption.md)<!-- -->; validations: import("./types").[ValidationOption](./inputfollow.js.validationoption.md)<!-- -->\[\] \| null; validate: (init?: boolean, ignored?: boolean) =&gt; void; hasError: () =&gt; boolean; getErrors: () =&gt; [ValidatedError](./inputfollow.js.validatederror.md)<!-- -->\[\]; }\[\]; validate: (init?: boolean) =&gt; void; getElements: (name: string) =&gt; { formEl: HTMLFormElement; elements: import("./types").[FieldElement](./inputfollow.js.fieldelement.md)<!-- -->\[\]; name: string; limit: import("./types").[LimitationOption](./inputfollow.js.limitationoption.md)<!-- -->; validations: import("./types").[ValidationOption](./inputfollow.js.validationoption.md)<!-- -->\[\] \| null; validate: (init?: boolean, ignored?: boolean) =&gt; void; hasError: () =&gt; boolean; getErrors: () =&gt; [ValidatedError](./inputfollow.js.validatederror.md)<!-- -->\[\]; }\[\]; }
 
 ## Remarks
 
