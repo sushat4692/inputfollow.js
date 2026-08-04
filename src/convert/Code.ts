@@ -6,11 +6,11 @@
 export const convert = (value: string) => {
     // Full width to Half width characters
     value = value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-        String.fromCharCode(s.charCodeAt(0) - 0xfee0),
+        String.fromCharCode(s.charCodeAt(0) - 0xfee0)
     )
 
     // Convert dash
-    value = value.replace(/[−ーー―]/g, '-')
+    value = value.replace(/[−－ー―]/g, '-')
 
     // Convert Plus
     value = value.replace(/[＋]/g, '+')
