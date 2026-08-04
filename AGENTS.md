@@ -19,6 +19,8 @@ AIエージェント（opencode など）がこのリポジトリで作業する
 
 作業開始時は必ず最新の `develop` から新ブランチを切ること。`feature/*` ブランチから直接 `master` へマージしないこと。
 
+リリース作業（release/vX.Y.Z の作成〜npm 公開）は `.opencode/skills/release/SKILL.md` の手順に従うこと。**demo/js/inputfollow*.js はリリース時に必ず `npm run build && npm run make:demo:js` で再生成してコミットする**（version banner と最新コードを追従させるため）。
+
 ## ディレクトリ構成
 
 ```
@@ -46,7 +48,7 @@ dist/            … ビルド生成物（gitignore 済み）
 | コマンド | 内容 |
 | --- | --- |
 | `npm run build` | Rollup でビルド（dist/ と types/ を生成） |
-| `npm run demo` | デモサイトを http-server で起動 |
+| `npm run demo` | デモサイトを serve で起動 |
 | `npm run make` | build + demo ビルド + API ドキュメント生成 |
 | `npm run make:demo` | build + demo ビルド |
 | `npm run make:doc` | api-extractor + api-documenter で docs/ を生成 |

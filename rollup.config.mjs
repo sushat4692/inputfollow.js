@@ -2,16 +2,9 @@
 import pluginNodeResolve from '@rollup/plugin-node-resolve'
 import pluginCommonjs from '@rollup/plugin-commonjs'
 import pluginTypescript from '@rollup/plugin-typescript'
-import { babel as pluginBabel } from '@rollup/plugin-babel'
 import pluginTerser from '@rollup/plugin-terser'
 
-import path from 'path'
-
 import pkg from './package.json' with { type: 'json' }
-
-import { fileURLToPath } from 'url'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 // ライブラリに埋め込むcopyright
 const banner = `/*!
@@ -61,10 +54,6 @@ export default [
             pluginCommonjs({
                 extensions: ['.js', '.ts'],
             }),
-            pluginBabel({
-                babelHelpers: 'bundled',
-                configFile: path.resolve(__dirname, '.babelrc.js'),
-            }),
             pluginNodeResolve({
                 browser: true,
             }),
@@ -87,13 +76,7 @@ export default [
             ...Object.keys(pkg.dependencies || {}),
             ...Object.keys(pkg.devDependencies || {}),
         ],
-        plugins: [
-            pluginTypescript(),
-            pluginBabel({
-                babelHelpers: 'bundled',
-                configFile: path.resolve(__dirname, '.babelrc.js'),
-            }),
-        ],
+        plugins: [pluginTypescript()],
     },
     // CommonJS用設定
     {
@@ -112,12 +95,6 @@ export default [
             ...Object.keys(pkg.dependencies || {}),
             ...Object.keys(pkg.devDependencies || {}),
         ],
-        plugins: [
-            pluginTypescript(),
-            pluginBabel({
-                babelHelpers: 'bundled',
-                configFile: path.resolve(__dirname, '.babelrc.js'),
-            }),
-        ],
+        plugins: [pluginTypescript()],
     },
 ]
