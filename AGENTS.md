@@ -19,6 +19,8 @@ AIエージェント（opencode など）がこのリポジトリで作業する
 
 作業開始時は必ず最新の `develop` から新ブランチを切ること。`feature/*` ブランチから直接 `master` へマージしないこと。
 
+リリース作業（release/vX.Y.Z の作成〜npm 公開）は `.opencode/skills/release/SKILL.md` の手順に従うこと。**demo/js/inputfollow*.js はリリース時に必ず `npm run build && npm run make:demo:js` で再生成してコミットする**（version banner と最新コードを追従させるため）。
+
 ## ディレクトリ構成
 
 ```
