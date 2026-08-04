@@ -1,6 +1,9 @@
-import * as z from 'zod/mini'
-
-export const rule = z.string().check(z.trim(), z.minLength(1))
+/**
+ * Check required value
+ * @param {string} value
+ * @returns {boolean}
+ */
+export const rule = (value: string) => value.trim().length > 0
 
 /**
  * Check required of target field element's value
@@ -12,8 +15,5 @@ export const check = (values: string[]) => {
         return false
     }
 
-    return values.reduce(
-        (prev, current) => prev && rule.safeParse(current).success,
-        true
-    )
+    return values.reduce((prev, current) => prev && rule(current), true)
 }

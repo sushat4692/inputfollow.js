@@ -51,9 +51,6 @@
         "test:unit": "vitest run --project unit",
         "test:browser": "vitest run --project browser"
     },
-    "dependencies": {
-        "zod": "^4.1.11"
-    },
     "devDependencies": {
         "@babel/core": "^7.28.4",
         "@babel/preset-env": "^7.28.3",

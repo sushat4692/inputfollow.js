@@ -1,7 +1,6 @@
-import * as z from 'zod/mini'
 import { rule as ruleRequired } from './Required'
 
-const rule = z.string().check(z.regex(/^[Ａ-Ｚａ-ｚ０-９]+$/))
+const rule = (value: string) => /^[Ａ-Ｚａ-ｚ０-９]+$/.test(value)
 
 /**
  * Check full-width alphabet and numeric format of target field element's value
@@ -10,10 +9,10 @@ const rule = z.string().check(z.regex(/^[Ａ-Ｚａ-ｚ０-９]+$/))
  */
 export const check = (values: string[]) => {
     return values.reduce((prev, current) => {
-        if (!prev || !ruleRequired.safeParse(current).success) {
+        if (!prev || !ruleRequired(current)) {
             return prev
         }
 
-        return prev && rule.safeParse(current).success
+        return prev && rule(current)
     }, true)
 }
