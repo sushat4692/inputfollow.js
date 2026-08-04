@@ -184,3 +184,4 @@ dist
 .pnp.*
 
 
+types/tsdoc-metadata.json
