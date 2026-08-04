@@ -2,31 +2,30 @@ import * as z from 'zod/mini'
 
 const isHTMLInputElement = z.custom<HTMLInputElement>(
     (v: unknown): v is HTMLInputElement =>
-        typeof HTMLInputElement !== 'undefined' &&
-        v instanceof HTMLInputElement,
+        typeof HTMLInputElement !== 'undefined' && v instanceof HTMLInputElement
 )
 const isHTMLButtonElement = z.custom<HTMLButtonElement>(
     (v: unknown): v is HTMLButtonElement =>
         typeof HTMLButtonElement !== 'undefined' &&
-        v instanceof HTMLButtonElement,
+        v instanceof HTMLButtonElement
 )
 const isHTMLElement = z.custom<HTMLElement>(
     (v: unknown): v is HTMLElement =>
-        typeof HTMLElement !== 'undefined' && v instanceof HTMLElement,
+        typeof HTMLElement !== 'undefined' && v instanceof HTMLElement
 )
 const isHTMLFormElement = z.custom<HTMLFormElement>(
     (v: unknown): v is HTMLFormElement =>
-        typeof HTMLFormElement !== 'undefined' && v instanceof HTMLFormElement,
+        typeof HTMLFormElement !== 'undefined' && v instanceof HTMLFormElement
 )
 const isHTMLSelectElement = z.custom<HTMLSelectElement>(
     (v: unknown): v is HTMLSelectElement =>
         typeof HTMLSelectElement !== 'undefined' &&
-        v instanceof HTMLSelectElement,
+        v instanceof HTMLSelectElement
 )
 const isHTMLTextAreaElement = z.custom<HTMLTextAreaElement>(
     (v: unknown): v is HTMLTextAreaElement =>
         typeof HTMLTextAreaElement !== 'undefined' &&
-        v instanceof HTMLTextAreaElement,
+        v instanceof HTMLTextAreaElement
 )
 
 export const ValidationTypeValidator = z.union([
@@ -60,7 +59,7 @@ export const ValidationOptionValidator = z.object({
         z.object({
             mode: z.optional(ModeOptionValidator),
             target: z.record(z.string(), z.string()),
-        }),
+        })
     ),
     message: z.optional(z.string()),
 })
@@ -83,9 +82,9 @@ export const RuleValidator = z.array(
             z.union([
                 ValidationOptionValidator,
                 z.array(ValidationOptionValidator),
-            ]),
+            ])
         ),
-    }),
+    })
 )
 export type Rule = {
     name: string
@@ -107,28 +106,28 @@ export const ParamValidator = z.object({
     valid_class: z.string(),
     initial_error_view: z.boolean(),
     submit_button: z.optional(
-        z.union([z.string(), isHTMLInputElement, isHTMLButtonElement]),
+        z.union([z.string(), isHTMLInputElement, isHTMLButtonElement])
     ),
     on_validate: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_success: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_error: z.optional(
         z.function({
             input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
             output: z.void(),
-        }),
+        })
     ),
     on_submit: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_failed: z.optional(
         z.function({
@@ -137,7 +136,7 @@ export const ParamValidator = z.object({
                 z.array(z.string()),
             ],
             output: z.void(),
-        }),
+        })
     ),
     focus_invalid_field: z.optional(z.boolean()),
 })
@@ -155,7 +154,7 @@ export type Param = {
     on_submit?: () => void
     on_failed?: (
         errors: Record<string, ValidatedError[]>,
-        errorFields: string[],
+        errorFields: string[]
     ) => void
     focus_invalid_field?: boolean
 }

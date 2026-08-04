@@ -109,13 +109,11 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
      * Arranged params
      */
     const arrangedParams: Param = {
-        ...{
-            error_class: 'has-error',
-            error_message_class: 'inputfollow-error',
-            empty_error_message_class: 'is-empty',
-            valid_class: 'is-valid',
-            initial_error_view: false,
-        },
+        error_class: 'has-error',
+        error_message_class: 'inputfollow-error',
+        empty_error_message_class: 'is-empty',
+        valid_class: 'is-valid',
+        initial_error_view: false,
         ...params,
     }
 
@@ -161,7 +159,7 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
                 }
                 return set
             },
-        },
+        }
     )
 
     /**
@@ -187,7 +185,7 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
             limit ?? null,
             validations,
             arrangedParams,
-            errors,
+            errors
         )
 
         if (!Element) {

@@ -50,15 +50,19 @@ dist/            … ビルド生成物（gitignore 済み）
 | `npm run make` | build + demo ビルド + API ドキュメント生成 |
 | `npm run make:demo` | build + demo ビルド |
 | `npm run make:doc` | api-extractor + api-documenter で docs/ を生成 |
+| `npm run lint` | oxlint で lint |
+| `npm run format` | oxfmt で整形 |
+| `npm run format:check` | oxfmt で整形差分チェック（CI 用） |
 | `npm test` | テストは未実装（現在はエラー終了する） |
 
 - 型チェックは `tsc --noEmit`（tsconfig.json に project references 設定があるため `-b` 指定に注意）または `npm run build` で検証できる
-- lint: `npx eslint .`（prettier ルールを含む）
+- lint: `npm run lint`（oxlint、設定は `.oxlintrc.json`）
+- 整形: `npm run format`（oxfmt、設定は `.oxfmtrc.json`。`demo/**` は整形対象外）
 
 ## コーディング規約
 
-- TypeScript、Prettier 設定: `singleQuote: true` / `semi: false` / `printWidth: 80` / `tabWidth: 4`
-- 未使用変数は `_` プレフィックスで許容（ESLint 設定による）
+- TypeScript、oxfmt 設定: `singleQuote: true` / `semi: false` / `printWidth: 80` / `tabWidth: 4`（`.oxfmtrc.json` 参照）
+- 未使用変数は `_` プレフィックスで許容（`.oxlintrc.json` の no-unused-vars 設定による）
 - 公開 API には `@public` などの TSDoc コメントを付け、型の変更時は `npm run make:doc` で docs/ を更新する
 - エクスポートは `src/index.ts` から行う（`InputFollow` 関数と型）
 

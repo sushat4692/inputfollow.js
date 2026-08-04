@@ -1,0 +1,19 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "printWidth": 80,
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "ignorePatterns": [
+        "dist/**",
+        "types/**",
+        "docs/**",
+        "temp/**",
+        ".rollup.cache/**",
+        "demo/**",
+        "AGENTS.md",
+        ".vscode/**"
+    ]
+}

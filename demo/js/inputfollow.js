@@ -2396,8 +2396,7 @@ var InputFollow = (function () {
   }
 
   var isHTMLInputElement = custom(function (v) {
-      return typeof HTMLInputElement !== 'undefined' &&
-          v instanceof HTMLInputElement;
+      return typeof HTMLInputElement !== 'undefined' && v instanceof HTMLInputElement;
   });
   var isHTMLButtonElement = custom(function (v) {
       return typeof HTMLButtonElement !== 'undefined' &&
@@ -2670,7 +2669,7 @@ var InputFollow = (function () {
       if (!validation.if) {
           return true;
       }
-      var result = validation.if.mode === 'or' ? false : true;
+      var result = validation.if.mode !== 'or';
       Object.keys(validation.if.target).map(function (name) {
           if (!validation.if) {
               return;
@@ -2772,8 +2771,8 @@ var InputFollow = (function () {
               if (!validation.with) {
                   return;
               }
-              Object.keys(validation.with).map(function (name) {
-                  var fields = getElement(formEl, name);
+              Object.keys(validation.with).map(function (withName) {
+                  var fields = getElement(formEl, withName);
                   results.push.apply(results, fields);
               });
           });
@@ -2788,8 +2787,8 @@ var InputFollow = (function () {
               if (!validation.if) {
                   return;
               }
-              Object.keys(validation.if.target).map(function (name) {
-                  var fields = getElement(formEl, name);
+              Object.keys(validation.if.target).map(function (ifName) {
+                  var fields = getElement(formEl, ifName);
                   results.push.apply(results, fields);
               });
           });
@@ -3011,13 +3010,7 @@ var InputFollow = (function () {
       /**
        * Arranged params
        */
-      var arrangedParams = _assign({
-          error_class: 'has-error',
-          error_message_class: 'inputfollow-error',
-          empty_error_message_class: 'is-empty',
-          valid_class: 'is-valid',
-          initial_error_view: false,
-      }, params);
+      var arrangedParams = _assign({ error_class: 'has-error', error_message_class: 'inputfollow-error', empty_error_message_class: 'is-empty', valid_class: 'is-valid', initial_error_view: false }, params);
       var validating = false;
       var notify = function (currentErrors) {
           var flag = true;
