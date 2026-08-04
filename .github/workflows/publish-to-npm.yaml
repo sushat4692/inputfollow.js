@@ -22,7 +22,8 @@ jobs:
             - name: Use Node.js And Setup .npmrc
               uses: actions/setup-node@v3
               with:
-                  node-version: 20
+                  # npm 11+（OIDC publish対応）が必要なため Node 24 を使用
+                  node-version: 24
                   cache: npm
             # リリース可能か確認
             - name: Can Publish
