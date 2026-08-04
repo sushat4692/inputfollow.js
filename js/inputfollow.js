@@ -1,5 +1,5 @@
 /*!
-  inputfollow.js v0.0.11
+  inputfollow.js v0.1.0
   https://github.com/sushat4692/inputfollow.js#readme
   Released under the MIT License.
 */
@@ -393,15 +393,6 @@ var InputFollow = (function () {
     };
     return _assign.apply(this, arguments);
   };
-  function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-      if (ar || !(i in from)) {
-        if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-        ar[i] = from[i];
-      }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-  }
   typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
@@ -605,24 +596,7 @@ var InputFollow = (function () {
     return cl;
   }
   function normalizeParams(_params) {
-    var params = _params;
-    if (!params) return {};
-    if (typeof params === "string") return {
-      error: function error() {
-        return params;
-      }
-    };
-    if ((params === null || params === void 0 ? void 0 : params.message) !== undefined) {
-      if ((params === null || params === void 0 ? void 0 : params.error) !== undefined) throw new Error("Cannot specify both `message` and `error` params");
-      params.error = params.message;
-    }
-    delete params.message;
-    if (typeof params.error === "string") return _objectSpread2(_objectSpread2({}, params), {}, {
-      error: function error() {
-        return params.error;
-      }
-    });
-    return params;
+    return {};
   }
   function optionalKeys(shape) {
     return Object.keys(shape).filter(function (k) {
@@ -2093,13 +2067,13 @@ var InputFollow = (function () {
   function _string(Class, params) {
     return new Class(_objectSpread2({
       type: "string"
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _coercedString(Class, params) {
     return new Class(_objectSpread2({
       type: "string",
       coerce: true
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _email(Class, params) {
     return new Class(_objectSpread2({
@@ -2107,19 +2081,19 @@ var InputFollow = (function () {
       format: "email",
       check: "string_format",
       abort: false
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _coercedNumber(Class, params) {
     return new Class(_objectSpread2({
       type: "number",
       coerce: true,
       checks: []
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _boolean$1(Class, params) {
     return new Class(_objectSpread2({
       type: "boolean"
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _unknown(Class) {
     return new Class({
@@ -2129,12 +2103,12 @@ var InputFollow = (function () {
   function _void$1(Class, params) {
     return new Class(_objectSpread2({
       type: "void"
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   function _minLength(minimum, params) {
     return new $ZodCheckMinLength(_objectSpread2(_objectSpread2({
       check: "min_length"
-    }, normalizeParams(params)), {}, {
+    }, normalizeParams()), {}, {
       minimum: minimum
     }));
   }
@@ -2142,7 +2116,7 @@ var InputFollow = (function () {
     return new $ZodCheckRegex(_objectSpread2(_objectSpread2({
       check: "string_format",
       format: "regex"
-    }, normalizeParams(params)), {}, {
+    }, normalizeParams()), {}, {
       pattern: pattern
     }));
   }
@@ -2160,7 +2134,7 @@ var InputFollow = (function () {
   }
   function _custom(Class, fn, _params) {
     var _norm$abort;
-    var norm = normalizeParams(_params);
+    var norm = normalizeParams();
     (_norm$abort = norm.abort) !== null && _norm$abort !== void 0 ? _norm$abort : norm.abort = true; // default to abort:false
     var schema = new Class(_objectSpread2({
       type: "custom",
@@ -2247,7 +2221,7 @@ var InputFollow = (function () {
     ZodMiniType.init(inst, def);
   });
   function string$1(params) {
-    return _string(ZodMiniString, params);
+    return _string(ZodMiniString);
   }
   var ZodMiniStringFormat = /*@__PURE__*/$constructor("ZodMiniStringFormat", function (inst, def) {
     $ZodStringFormat.init(inst, def);
@@ -2258,7 +2232,7 @@ var InputFollow = (function () {
     ZodMiniStringFormat.init(inst, def);
   });
   function email(params) {
-    return _email(ZodMiniEmail, params);
+    return _email(ZodMiniEmail);
   }
   var ZodMiniNumber = /*@__PURE__*/$constructor("ZodMiniNumber", function (inst, def) {
     $ZodNumber.init(inst, def);
@@ -2269,7 +2243,7 @@ var InputFollow = (function () {
     ZodMiniType.init(inst, def);
   });
   function _boolean(params) {
-    return _boolean$1(ZodMiniBoolean, params);
+    return _boolean$1(ZodMiniBoolean);
   }
   var ZodMiniUnknown = /*@__PURE__*/$constructor("ZodMiniUnknown", function (inst, def) {
     $ZodUnknown.init(inst, def);
@@ -2283,7 +2257,7 @@ var InputFollow = (function () {
     ZodMiniType.init(inst, def);
   });
   function _void(params) {
-    return _void$1(ZodMiniVoid, params);
+    return _void$1(ZodMiniVoid);
   }
   var ZodMiniArray = /*@__PURE__*/$constructor("ZodMiniArray", function (inst, def) {
     $ZodArray.init(inst, def);
@@ -2293,7 +2267,7 @@ var InputFollow = (function () {
     return new ZodMiniArray(_objectSpread2({
       type: "array",
       element: element
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniObject = /*@__PURE__*/$constructor("ZodMiniObject", function (inst, def) {
     $ZodObject.init(inst, def);
@@ -2306,7 +2280,7 @@ var InputFollow = (function () {
     var def = _objectSpread2({
       type: "object",
       shape: shape !== null && shape !== void 0 ? shape : {}
-    }, normalizeParams(params));
+    }, normalizeParams());
     return new ZodMiniObject(def);
   }
   function partial(schema, mask) {
@@ -2320,7 +2294,7 @@ var InputFollow = (function () {
     return new ZodMiniUnion(_objectSpread2({
       type: "union",
       options: options
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniTuple = /*@__PURE__*/$constructor("ZodMiniTuple", function (inst, def) {
     $ZodTuple.init(inst, def);
@@ -2328,13 +2302,12 @@ var InputFollow = (function () {
   });
   function tuple(items, _paramsOrRest, _params) {
     var hasRest = _paramsOrRest instanceof $ZodType;
-    var params = hasRest ? _params : _paramsOrRest;
     var rest = hasRest ? _paramsOrRest : null;
     return new ZodMiniTuple(_objectSpread2({
       type: "tuple",
       items: items,
       rest: rest
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniRecord = /*@__PURE__*/$constructor("ZodMiniRecord", function (inst, def) {
     $ZodRecord.init(inst, def);
@@ -2345,7 +2318,7 @@ var InputFollow = (function () {
       type: "record",
       keyType: keyType,
       valueType: valueType
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniEnum = /*@__PURE__*/$constructor("ZodMiniEnum", function (inst, def) {
     $ZodEnum.init(inst, def);
@@ -2359,7 +2332,7 @@ var InputFollow = (function () {
     return new ZodMiniEnum(_objectSpread2({
       type: "enum",
       entries: entries
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniLiteral = /*@__PURE__*/$constructor("ZodMiniLiteral", function (inst, def) {
     $ZodLiteral.init(inst, def);
@@ -2369,7 +2342,7 @@ var InputFollow = (function () {
     return new ZodMiniLiteral(_objectSpread2({
       type: "literal",
       values: Array.isArray(value) ? value : [value]
-    }, normalizeParams(params)));
+    }, normalizeParams()));
   }
   var ZodMiniOptional = /*@__PURE__*/$constructor("ZodMiniOptional", function (inst, def) {
     $ZodOptional.init(inst, def);
@@ -2400,17 +2373,7 @@ var InputFollow = (function () {
   function custom(fn, _params) {
     return _custom(ZodMiniCustom, fn !== null && fn !== void 0 ? fn : function () {
       return true;
-    }, _params);
-  }
-  function _instanceof(cls) {
-    var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
-      error: "Input not instance of ".concat(cls.name)
-    };
-    var inst = custom(function (data) {
-      return data instanceof cls;
-    }, params);
-    inst._zod.bag.Class = cls;
-    return inst;
+    });
   }
   var ZodMiniFunction = /*@__PURE__*/$constructor("ZodMiniFunction", function (inst, def) {
     $ZodFunction.init(inst, def);
@@ -2426,17 +2389,46 @@ var InputFollow = (function () {
   }
 
   function string(params) {
-    return _coercedString(ZodMiniString, params);
+    return _coercedString(ZodMiniString);
   }
   function number(params) {
-    return _coercedNumber(ZodMiniNumber, params);
+    return _coercedNumber(ZodMiniNumber);
   }
 
+  var isHTMLInputElement = custom(function (v) {
+      return typeof HTMLInputElement !== 'undefined' && v instanceof HTMLInputElement;
+  });
+  var isHTMLButtonElement = custom(function (v) {
+      return typeof HTMLButtonElement !== 'undefined' &&
+          v instanceof HTMLButtonElement;
+  });
+  var isHTMLElement = custom(function (v) {
+      return typeof HTMLElement !== 'undefined' && v instanceof HTMLElement;
+  });
+  var isHTMLFormElement = custom(function (v) {
+      return typeof HTMLFormElement !== 'undefined' && v instanceof HTMLFormElement;
+  });
+  var isHTMLSelectElement = custom(function (v) {
+      return typeof HTMLSelectElement !== 'undefined' &&
+          v instanceof HTMLSelectElement;
+  });
+  var isHTMLTextAreaElement = custom(function (v) {
+      return typeof HTMLTextAreaElement !== 'undefined' &&
+          v instanceof HTMLTextAreaElement;
+  });
   var ValidationTypeValidator = union([
       literal('required'),
       literal('email'),
       literal('number'),
       literal('code'),
+      literal('hiragana'),
+      literal('katakana'),
+      literal('kana'),
+      literal('hankaku-kana'),
+      literal('alpha'),
+      literal('alphanumeric'),
+      literal('zen-alpha'),
+      literal('zen-alphanumeric'),
       tuple([literal('equal'), string$1().check(_minLength(1))]),
   ]);
   var WithOptionValidator = record(string$1(), ValidationTypeValidator);
@@ -2471,11 +2463,7 @@ var InputFollow = (function () {
       empty_error_message_class: string$1(),
       valid_class: string$1(),
       initial_error_view: _boolean(),
-      submit_button: optional(union([
-          string$1(),
-          _instanceof(HTMLInputElement),
-          _instanceof(HTMLButtonElement),
-      ])),
+      submit_button: optional(union([string$1(), isHTMLInputElement, isHTMLButtonElement])),
       on_validate: optional(_function({
           output: _void(),
       })),
@@ -2510,64 +2498,181 @@ var InputFollow = (function () {
           output: _void(),
       }),
   });
-  record(string$1(), _instanceof(HTMLElement));
-  var FormElementValidator = union([
-      string$1(),
-      _instanceof(HTMLFormElement),
-  ]);
+  record(string$1(), isHTMLElement);
+  var FormElementValidator = union([string$1(), isHTMLFormElement]);
   union([
-      _instanceof(HTMLInputElement),
-      _instanceof(HTMLSelectElement),
-      _instanceof(HTMLTextAreaElement),
+      isHTMLInputElement,
+      isHTMLSelectElement,
+      isHTMLTextAreaElement,
   ]);
 
-  var rule$3 = string$1().check(_trim(), _minLength(1));
+  var rule$b = string$1().check(_trim(), _minLength(1));
   /**
    * Check required of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
-  var check$4 = function (values) {
+  var check$c = function (values) {
       if (!values.length) {
           return false;
       }
-      return values.reduce(function (prev, current) { return prev && rule$3.safeParse(current).success; }, true);
+      return values.reduce(function (prev, current) { return prev && rule$b.safeParse(current).success; }, true);
   };
 
-  var rule$2 = email();
+  var rule$a = email();
   /**
    * Check Email format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
+  var check$b = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$a.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$9 = number();
+  /**
+   * Check numeric of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$a = function (values) {
+      return values.reduce(function (prev, current) { return prev && rule$9.safeParse(current).success; }, true);
+  };
+
+  var rule$8 = string().check(_regex(/^[0-9-+*]*$/));
+  /**
+   * Check code format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$9 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$8.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$7 = string$1().check(_regex(/^[ぁ-ゖー]+$/));
+  /**
+   * Check hiragana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$8 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$7.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$6 = string$1().check(_regex(/^[ァ-ヶー]+$/));
+  /**
+   * Check katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$7 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$6.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$5 = string$1().check(_regex(/^[ぁ-ゖァ-ヶー]+$/));
+  /**
+   * Check hiragana or katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$6 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$5.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$4 = string$1().check(_regex(/^[ｦ-ﾟ]+$/));
+  /**
+   * Check half-width katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$5 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$4.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$3 = string$1().check(_regex(/^[a-zA-Z]+$/));
+  /**
+   * Check alphabet format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$4 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$3.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$2 = string$1().check(_regex(/^[a-zA-Z0-9]+$/));
+  /**
+   * Check alphabet and numeric format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
   var check$3 = function (values) {
       return values.reduce(function (prev, current) {
-          if (!prev || !rule$3.safeParse(current).success) {
+          if (!prev || !rule$b.safeParse(current).success) {
               return prev;
           }
           return prev && rule$2.safeParse(current).success;
       }, true);
   };
 
-  var rule$1 = number();
+  var rule$1 = string$1().check(_regex(/^[Ａ-Ｚａ-ｚ]+$/));
   /**
-   * Check numeric of target field element's value
+   * Check full-width alphabet format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
   var check$2 = function (values) {
-      return values.reduce(function (prev, current) { return prev && rule$1.safeParse(current).success; }, true);
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$1.safeParse(current).success;
+      }, true);
   };
 
-  var rule = string().check(_regex(/^[0-9-+*]*$/));
+  var rule = string$1().check(_regex(/^[Ａ-Ｚａ-ｚ０-９]+$/));
   /**
-   * Check code format of target field element's value
+   * Check full-width alphabet and numeric format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
   var check$1 = function (values) {
       return values.reduce(function (prev, current) {
-          if (!prev || !rule$3.safeParse(current).success) {
+          if (!prev || !rule$b.safeParse(current).success) {
               return prev;
           }
           return prev && rule.safeParse(current).success;
@@ -2600,7 +2705,7 @@ var InputFollow = (function () {
           return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
       });
       // Convert dash
-      value = value.replace(/[−ーー―]/g, '-');
+      value = value.replace(/[−－ー―]/g, '-');
       // Convert Plus
       value = value.replace(/[＋]/g, '+');
       // Convert asterisk
@@ -2616,19 +2721,17 @@ var InputFollow = (function () {
       return tag === 'input' && (type === 'radio' || type === 'checkbox');
   };
   var getElement = function (formEl, name) {
-      if (!Object.hasOwn(formEl, name)) {
-          if (!Object.hasOwn(formEl, "".concat(name, "[]"))) {
+      var named = formEl.elements.namedItem(name);
+      if (!named) {
+          named = formEl.elements.namedItem("".concat(name, "[]"));
+          if (!named) {
               return [];
           }
-          name = "".concat(name, "[]");
       }
-      var fields = formEl[name];
-      if (fields['entries']) {
-          return __spreadArray([], fields, true);
+      if (named instanceof RadioNodeList) {
+          return Array.from(named);
       }
-      else {
-          return [fields];
-      }
+      return [named];
   };
   var getValues = function (elements, limit) {
       if (limit === void 0) { limit = null; }
@@ -2657,6 +2760,9 @@ var InputFollow = (function () {
   var check = function (formEl, values, target) {
       var targetElement = getElement(formEl, target);
       var targetValues = getValues(targetElement);
+      if (values.length === 0) {
+          return targetValues.length === 0;
+      }
       return values.every(function (value) { return targetValues.includes(value); });
   };
 
@@ -2688,10 +2794,10 @@ var InputFollow = (function () {
       return errors;
   };
   var checkIf = function (formEl, validation) {
-      var result = true;
       if (!validation.if) {
-          return result;
+          return true;
       }
+      var result = validation.if.mode !== 'or';
       Object.keys(validation.if.target).map(function (name) {
           if (!validation.if) {
               return;
@@ -2711,12 +2817,28 @@ var InputFollow = (function () {
   var checkValidate = function (formEl, ruleType, values) {
       switch (ruleType) {
           case 'required':
-              return check$4(values);
+              return check$c(values);
           case 'email':
-              return check$3(values);
+              return check$b(values);
           case 'number':
-              return check$2(values);
+              return check$a(values);
           case 'code':
+              return check$9(values);
+          case 'hiragana':
+              return check$8(values);
+          case 'katakana':
+              return check$7(values);
+          case 'kana':
+              return check$6(values);
+          case 'hankaku-kana':
+              return check$5(values);
+          case 'alpha':
+              return check$4(values);
+          case 'alphanumeric':
+              return check$3(values);
+          case 'zen-alpha':
+              return check$2(values);
+          case 'zen-alphanumeric':
               return check$1(values);
           default:
               if (Array.isArray(ruleType) && ruleType[0] === 'equal') {
@@ -2793,8 +2915,8 @@ var InputFollow = (function () {
               if (!validation.with) {
                   return;
               }
-              Object.keys(validation.with).map(function (name) {
-                  var fields = getElement(formEl, name);
+              Object.keys(validation.with).map(function (withName) {
+                  var fields = getElement(formEl, withName);
                   results.push.apply(results, fields);
               });
           });
@@ -2809,8 +2931,8 @@ var InputFollow = (function () {
               if (!validation.if) {
                   return;
               }
-              Object.keys(validation.if.target).map(function (name) {
-                  var fields = getElement(formEl, name);
+              Object.keys(validation.if.target).map(function (ifName) {
+                  var fields = getElement(formEl, ifName);
                   results.push.apply(results, fields);
               });
           });
@@ -2839,10 +2961,11 @@ var InputFollow = (function () {
       }
       // Prepare or Find error message field
       var messageField = (function () {
+          var _a;
           if (!validations || !validations.length) {
               return;
           }
-          var existField = document.querySelector("[data-inputfollow-error=\"".concat(name, "\"]"));
+          var existField = (_a = formEl.querySelector("[data-inputfollow-error=\"".concat(name, "\"]"))) !== null && _a !== void 0 ? _a : document.querySelector("[data-inputfollow-error=\"".concat(name, "\"]"));
           if (existField) {
               existField.classList.add(params.error_message_class, params.empty_error_message_class);
               return existField;
@@ -3009,15 +3132,12 @@ var InputFollow = (function () {
                   var errorElements = getElements(firstErrorField);
                   (_b = (_a = errorElements[0]) === null || _a === void 0 ? void 0 : _a.elements[0]) === null || _b === void 0 ? void 0 : _b.focus();
               }
-              return false;
           }
-          // Call on_submit callback if it's specified, and prevent default submission
-          if (typeof arrangedParams.on_submit === 'function') {
+          else if (typeof arrangedParams.on_submit === 'function') {
+              // Call on_submit callback if it's specified, and prevent default submission
               e.preventDefault();
               arrangedParams.on_submit();
-              return false;
           }
-          return true;
       });
       /**
        * Find submit button if it's specified
@@ -3034,41 +3154,39 @@ var InputFollow = (function () {
       /**
        * Arranged params
        */
-      var arrangedParams = _assign({
-          error_class: 'has-error',
-          error_message_class: 'inputfollow-error',
-          empty_error_message_class: 'is-empty',
-          valid_class: 'is-valid',
-          initial_error_view: false,
-      }, params);
+      var arrangedParams = _assign({ error_class: 'has-error', error_message_class: 'inputfollow-error', empty_error_message_class: 'is-empty', valid_class: 'is-valid', initial_error_view: false }, params);
+      var validating = false;
+      var notify = function (currentErrors) {
+          var flag = true;
+          Object.keys(currentErrors).map(function (key) {
+              var error = currentErrors[key];
+              flag = flag && error.length <= 0;
+          });
+          if (flag) {
+              if (submitButton) {
+                  submitButton.removeAttribute('disabled');
+              }
+              if (typeof arrangedParams.on_success === 'function') {
+                  arrangedParams.on_success();
+              }
+          }
+          else {
+              if (submitButton) {
+                  submitButton.setAttribute('disabled', 'disabled');
+              }
+              if (typeof arrangedParams.on_error === 'function') {
+                  arrangedParams.on_error(currentErrors);
+              }
+          }
+      };
       /**
        * Prepare Proxy for observing errors values
        */
       var errors = new Proxy({}, {
           set: function (target, p, value, receiver) {
               var set = Reflect.set(target, p, value, receiver);
-              if (set) {
-                  var flag_1 = true;
-                  Object.keys(errors).map(function (key) {
-                      var error = errors[key];
-                      flag_1 = flag_1 && error.length <= 0;
-                  });
-                  if (flag_1) {
-                      if (submitButton) {
-                          submitButton.removeAttribute('disabled');
-                      }
-                      if (typeof arrangedParams.on_success === 'function') {
-                          arrangedParams.on_success();
-                      }
-                  }
-                  else {
-                      if (submitButton) {
-                          submitButton.setAttribute('disabled', 'disabled');
-                      }
-                      if (typeof arrangedParams.on_error === 'function') {
-                          arrangedParams.on_error(errors);
-                      }
-                  }
+              if (set && !validating) {
+                  notify(target);
               }
               return set;
           },
@@ -3099,9 +3217,12 @@ var InputFollow = (function () {
        */
       var validate = function (init) {
           if (init === void 0) { init = false; }
+          validating = true;
           elements.map(function (element) {
               element.validate(init);
           });
+          validating = false;
+          notify(errors);
           if (typeof arrangedParams.on_validate === 'function') {
               arrangedParams.on_validate();
           }
