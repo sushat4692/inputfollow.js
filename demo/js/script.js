@@ -60,6 +60,79 @@ if (formEl) {
                 ],
             },
             {
+                name: 'hiragana',
+                validation: [
+                    {
+                        type: 'hiragana',
+                        message: 'Hiragana must be hiragana',
+                    },
+                ],
+            },
+            {
+                name: 'katakana',
+                validation: [
+                    {
+                        type: 'katakana',
+                        message: 'Katakana must be katakana',
+                    },
+                ],
+            },
+            {
+                name: 'kana',
+                validation: [
+                    {
+                        type: 'kana',
+                        message: 'Kana must be hiragana or katakana',
+                    },
+                ],
+            },
+            {
+                name: 'hankakukana',
+                validation: [
+                    {
+                        type: 'hankaku-kana',
+                        message: 'Half-width Katakana must be half-width katakana',
+                    },
+                ],
+            },
+            {
+                name: 'alpha',
+                validation: [
+                    {
+                        type: 'alpha',
+                        message: 'Alpha must be alphabet',
+                    },
+                ],
+            },
+            {
+                name: 'alphanumeric',
+                validation: [
+                    {
+                        type: 'alphanumeric',
+                        message: 'Alphanumeric must be alphabet and number',
+                    },
+                ],
+            },
+            {
+                name: 'zenalpha',
+                validation: [
+                    {
+                        type: 'zen-alpha',
+                        message: 'Full-width Alpha must be full-width alphabet',
+                    },
+                ],
+            },
+            {
+                name: 'zenalphanumeric',
+                validation: [
+                    {
+                        type: 'zen-alphanumeric',
+                        message:
+                            'Full-width Alphanumeric must be full-width alphabet and number',
+                    },
+                ],
+            },
+            {
                 name: 'textarea',
                 validation: [
                     {

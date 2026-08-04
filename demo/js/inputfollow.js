@@ -2421,6 +2421,14 @@ var InputFollow = (function () {
       literal('email'),
       literal('number'),
       literal('code'),
+      literal('hiragana'),
+      literal('katakana'),
+      literal('kana'),
+      literal('hankaku-kana'),
+      literal('alpha'),
+      literal('alphanumeric'),
+      literal('zen-alpha'),
+      literal('zen-alphanumeric'),
       tuple([literal('equal'), string$1().check(_minLength(1))]),
   ]);
   var WithOptionValidator = record(string$1(), ValidationTypeValidator);
@@ -2498,53 +2506,173 @@ var InputFollow = (function () {
       isHTMLTextAreaElement,
   ]);
 
-  var rule$3 = string$1().check(_trim(), _minLength(1));
+  var rule$b = string$1().check(_trim(), _minLength(1));
   /**
    * Check required of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
-  var check$4 = function (values) {
+  var check$c = function (values) {
       if (!values.length) {
           return false;
       }
-      return values.reduce(function (prev, current) { return prev && rule$3.safeParse(current).success; }, true);
+      return values.reduce(function (prev, current) { return prev && rule$b.safeParse(current).success; }, true);
   };
 
-  var rule$2 = email();
+  var rule$a = email();
   /**
    * Check Email format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
+  var check$b = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$a.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$9 = number();
+  /**
+   * Check numeric of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$a = function (values) {
+      return values.reduce(function (prev, current) { return prev && rule$9.safeParse(current).success; }, true);
+  };
+
+  var rule$8 = string().check(_regex(/^[0-9-+*]*$/));
+  /**
+   * Check code format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$9 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$8.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$7 = string$1().check(_regex(/^[ぁ-ゖー]+$/));
+  /**
+   * Check hiragana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$8 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$7.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$6 = string$1().check(_regex(/^[ァ-ヶー]+$/));
+  /**
+   * Check katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$7 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$6.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$5 = string$1().check(_regex(/^[ぁ-ゖァ-ヶー]+$/));
+  /**
+   * Check hiragana or katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$6 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$5.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$4 = string$1().check(_regex(/^[ｦ-ﾟ]+$/));
+  /**
+   * Check half-width katakana format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$5 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$4.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$3 = string$1().check(_regex(/^[a-zA-Z]+$/));
+  /**
+   * Check alphabet format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
+  var check$4 = function (values) {
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$3.safeParse(current).success;
+      }, true);
+  };
+
+  var rule$2 = string$1().check(_regex(/^[a-zA-Z0-9]+$/));
+  /**
+   * Check alphabet and numeric format of target field element's value
+   * @param {string[]} values
+   * @returns {boolean}
+   */
   var check$3 = function (values) {
       return values.reduce(function (prev, current) {
-          if (!prev || !rule$3.safeParse(current).success) {
+          if (!prev || !rule$b.safeParse(current).success) {
               return prev;
           }
           return prev && rule$2.safeParse(current).success;
       }, true);
   };
 
-  var rule$1 = number();
+  var rule$1 = string$1().check(_regex(/^[Ａ-Ｚａ-ｚ]+$/));
   /**
-   * Check numeric of target field element's value
+   * Check full-width alphabet format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
   var check$2 = function (values) {
-      return values.reduce(function (prev, current) { return prev && rule$1.safeParse(current).success; }, true);
+      return values.reduce(function (prev, current) {
+          if (!prev || !rule$b.safeParse(current).success) {
+              return prev;
+          }
+          return prev && rule$1.safeParse(current).success;
+      }, true);
   };
 
-  var rule = string().check(_regex(/^[0-9-+*]*$/));
+  var rule = string$1().check(_regex(/^[Ａ-Ｚａ-ｚ０-９]+$/));
   /**
-   * Check code format of target field element's value
+   * Check full-width alphabet and numeric format of target field element's value
    * @param {string[]} values
    * @returns {boolean}
    */
   var check$1 = function (values) {
       return values.reduce(function (prev, current) {
-          if (!prev || !rule$3.safeParse(current).success) {
+          if (!prev || !rule$b.safeParse(current).success) {
               return prev;
           }
           return prev && rule.safeParse(current).success;
@@ -2689,12 +2817,28 @@ var InputFollow = (function () {
   var checkValidate = function (formEl, ruleType, values) {
       switch (ruleType) {
           case 'required':
-              return check$4(values);
+              return check$c(values);
           case 'email':
-              return check$3(values);
+              return check$b(values);
           case 'number':
-              return check$2(values);
+              return check$a(values);
           case 'code':
+              return check$9(values);
+          case 'hiragana':
+              return check$8(values);
+          case 'katakana':
+              return check$7(values);
+          case 'kana':
+              return check$6(values);
+          case 'hankaku-kana':
+              return check$5(values);
+          case 'alpha':
+              return check$4(values);
+          case 'alphanumeric':
+              return check$3(values);
+          case 'zen-alpha':
+              return check$2(values);
+          case 'zen-alphanumeric':
               return check$1(values);
           default:
               if (Array.isArray(ruleType) && ruleType[0] === 'equal') {

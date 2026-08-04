@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-export type ValidationType = 'required' | 'email' | 'number' | 'code' | ['equal', string];
+export type ValidationType = 'required' | 'email' | 'number' | 'code' | 'hiragana' | 'katakana' | 'kana' | 'hankaku-kana' | 'alpha' | 'alphanumeric' | 'zen-alpha' | 'zen-alphanumeric' | ['equal', string];
 ```

@@ -10,6 +10,14 @@ import { check as checkRequired } from './Required'
 import { check as checkEmail } from './Email'
 import { check as checkNumber } from './Number'
 import { check as checkCode } from './Code'
+import { check as checkHiragana } from './Hiragana'
+import { check as checkKatakana } from './Katakana'
+import { check as checkKana } from './Kana'
+import { check as checkHankakuKana } from './HankakuKana'
+import { check as checkAlpha } from './Alpha'
+import { check as checkAlphanumeric } from './Alphanumeric'
+import { check as checkZenAlpha } from './ZenAlpha'
+import { check as checkZenAlphanumeric } from './ZenAlphanumeric'
 import { check as checkEqual } from './Equal'
 import { getElement, getValues } from '../utils/Tag'
 
@@ -89,6 +97,22 @@ const checkValidate = (
             return checkNumber(values)
         case 'code':
             return checkCode(values)
+        case 'hiragana':
+            return checkHiragana(values)
+        case 'katakana':
+            return checkKatakana(values)
+        case 'kana':
+            return checkKana(values)
+        case 'hankaku-kana':
+            return checkHankakuKana(values)
+        case 'alpha':
+            return checkAlpha(values)
+        case 'alphanumeric':
+            return checkAlphanumeric(values)
+        case 'zen-alpha':
+            return checkZenAlpha(values)
+        case 'zen-alphanumeric':
+            return checkZenAlphanumeric(values)
         default:
             if (Array.isArray(ruleType) && ruleType[0] === 'equal') {
                 return checkEqual(formEl, values, ruleType[1])

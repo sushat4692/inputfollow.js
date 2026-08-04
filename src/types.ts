@@ -33,6 +33,14 @@ export const ValidationTypeValidator = z.union([
     z.literal('email'),
     z.literal('number'),
     z.literal('code'),
+    z.literal('hiragana'),
+    z.literal('katakana'),
+    z.literal('kana'),
+    z.literal('hankaku-kana'),
+    z.literal('alpha'),
+    z.literal('alphanumeric'),
+    z.literal('zen-alpha'),
+    z.literal('zen-alphanumeric'),
     z.tuple([z.literal('equal'), z.string().check(z.minLength(1))]),
 ])
 export type ValidationType =
@@ -40,6 +48,14 @@ export type ValidationType =
     | 'email'
     | 'number'
     | 'code'
+    | 'hiragana'
+    | 'katakana'
+    | 'kana'
+    | 'hankaku-kana'
+    | 'alpha'
+    | 'alphanumeric'
+    | 'zen-alpha'
+    | 'zen-alphanumeric'
     | ['equal', string]
 
 export const WithOptionValidator = z.record(z.string(), ValidationTypeValidator)

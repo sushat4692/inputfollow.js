@@ -8,6 +8,14 @@ This repository is standalone version of [jquery.inputfollow.js](https://github.
 - [x] E-mail
 - [x] Number
 - [x] Code (Number or "-" or "+" or "\*")
+- [x] Hiragana
+- [x] Katakana
+- [x] Kana (Hiragana or Katakana)
+- [x] Half-width Katakana
+- [x] Alpha
+- [x] Alphanumeric
+- [x] Full-width Alpha
+- [x] Full-width Alphanumeric
 - [x] Equal
 
 ## Limit
@@ -210,10 +218,10 @@ if (formEl) {
 
 ### Validation option param
 
-| Parameter | Type                                                                     | Default | Description                                                                                                                                           |
-| --------- | ------------------------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type      | "number", "required", "email", "code", or ["equal", "target field name"] |         | Validation type                                                                                                                                       |
-| mode?     | "or" or "and"                                                            | "and"   | Multiple fileds checking mode, "or" is will check one of fields, "and" is will check all the fields                                                   |
-| with?     | `Record<string, "number" or "required" or "email" or "code">`            |         | Multiple fields target, e.g. `with: { field_name: 'required' }`                                                                                       |
-| if?       | `{ mode: "or" or "and", target: Record<string, string> }`                |         | Relating other fields condition setting, e.g. `if: { mode: 'and', target: { field_name: 'value' } }` will validate when `field_name` value is "value" |
-| message?  | string                                                                   |         | Error message                                                                                                                                         |
+| Parameter | Type                                                                                                                                                                               | Default | Description                                                                                                                                           |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type      | "number", "required", "email", "code", "hiragana", "katakana", "kana", "hankaku-kana", "alpha", "alphanumeric", "zen-alpha", "zen-alphanumeric", or ["equal", "target field name"] |         | Validation type                                                                                                                                       |
+| mode?     | "or" or "and"                                                                                                                                                                      | "and"   | Multiple fileds checking mode, "or" is will check one of fields, "and" is will check all the fields                                                   |
+| with?     | `Record<string, ValidationType>`                                                                                                                                                   |         | Multiple fields target, e.g. `with: { field_name: 'required' }`                                                                                       |
+| if?       | `{ mode: "or" or "and", target: Record<string, string> }`                                                                                                                          |         | Relating other fields condition setting, e.g. `if: { mode: 'and', target: { field_name: 'value' } }` will validate when `field_name` value is "value" |
+| message?  | string                                                                                                                                                                             |         | Error message                                                                                                                                         |
