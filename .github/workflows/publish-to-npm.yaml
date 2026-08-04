@@ -1,11 +1,14 @@
 name: Publish To npm
-# masterブランチにPushされた場合に実行する
+# バージョン更新時（package.json 変更時）にのみ master ブランチで実行する
 on:
     push:
         branches:
             - master
         tags:
             - '!*'
+        paths:
+            - package.json
+            - package-lock.json
     workflow_dispatch:
 jobs:
     publish-to-npm:
