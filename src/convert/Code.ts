@@ -10,7 +10,7 @@ export const convert = (value: string) => {
     )
 
     // Convert dash
-    value = value.replace(/[−ーー―]/g, '-')
+    value = value.replace(/[−－ー―]/g, '-')
 
     // Convert Plus
     value = value.replace(/[＋]/g, '+')

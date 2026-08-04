@@ -132,6 +132,23 @@ if (formEl) {
                 ],
             },
             {
+                name: 'if_or_target',
+                validation: [
+                    {
+                        type: 'required',
+                        message:
+                            "If condition (or)'s text field is required if one of the check boxes is checked",
+                        if: {
+                            mode: 'or',
+                            target: {
+                                if_or_from01: 'checked',
+                                if_or_from02: 'checked',
+                            },
+                        },
+                    },
+                ],
+            },
+            {
                 name: 'equal_target',
                 validation: [
                     {

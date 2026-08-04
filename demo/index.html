@@ -75,6 +75,13 @@
                         <label><input type="checkbox" name="if_from" value="checked"> If check this the following field is required</label>
                         <input type="text" name="if_target" class="full" placeholder="This input area will be required">
                     </dd>
+                <dt>If condition (or)</dt>
+                    <dd>
+                        <label><input type="checkbox" name="if_or_from01" value="checked"> If check one of these, the following field is required</label>
+                        <label><input type="checkbox" name="if_or_from02" value="checked"> Or check this</label>
+                        <input type="text" name="if_or_target" class="full" placeholder="This input area will be required">
+                        <ul class="inputfollow-error" data-inputfollow-error="if_or_target"></ul>
+                    </dd>
                 <dt>Equal condition</dt>
                     <dd>
                         <input type="text" name="equal_from" class="full" placeholder="Enter Same Value">

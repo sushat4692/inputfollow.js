@@ -1,5 +1,34 @@
 import * as z from 'zod/mini'
 
+const isHTMLInputElement = z.custom<HTMLInputElement>(
+    (v: unknown): v is HTMLInputElement =>
+        typeof HTMLInputElement !== 'undefined' &&
+        v instanceof HTMLInputElement,
+)
+const isHTMLButtonElement = z.custom<HTMLButtonElement>(
+    (v: unknown): v is HTMLButtonElement =>
+        typeof HTMLButtonElement !== 'undefined' &&
+        v instanceof HTMLButtonElement,
+)
+const isHTMLElement = z.custom<HTMLElement>(
+    (v: unknown): v is HTMLElement =>
+        typeof HTMLElement !== 'undefined' && v instanceof HTMLElement,
+)
+const isHTMLFormElement = z.custom<HTMLFormElement>(
+    (v: unknown): v is HTMLFormElement =>
+        typeof HTMLFormElement !== 'undefined' && v instanceof HTMLFormElement,
+)
+const isHTMLSelectElement = z.custom<HTMLSelectElement>(
+    (v: unknown): v is HTMLSelectElement =>
+        typeof HTMLSelectElement !== 'undefined' &&
+        v instanceof HTMLSelectElement,
+)
+const isHTMLTextAreaElement = z.custom<HTMLTextAreaElement>(
+    (v: unknown): v is HTMLTextAreaElement =>
+        typeof HTMLTextAreaElement !== 'undefined' &&
+        v instanceof HTMLTextAreaElement,
+)
+
 export const ValidationTypeValidator = z.union([
     z.literal('required'),
     z.literal('email'),
@@ -78,11 +107,7 @@ export const ParamValidator = z.object({
     valid_class: z.string(),
     initial_error_view: z.boolean(),
     submit_button: z.optional(
-        z.union([
-            z.string(),
-            z.instanceof(HTMLInputElement),
-            z.instanceof(HTMLButtonElement),
-        ]),
+        z.union([z.string(), isHTMLInputElement, isHTMLButtonElement]),
     ),
     on_validate: z.optional(
         z.function({
@@ -153,19 +178,16 @@ export type RootEvent = {
     validate: () => void
 }
 
-export const TargetValidator = z.record(z.string(), z.instanceof(HTMLElement))
+export const TargetValidator = z.record(z.string(), isHTMLElement)
 export type Target = Record<string, HTMLElement>
 
-export const FormElementValidator = z.union([
-    z.string(),
-    z.instanceof(HTMLFormElement),
-])
+export const FormElementValidator = z.union([z.string(), isHTMLFormElement])
 export type FormElement = string | HTMLFormElement
 
 export const FieldElementValidator = z.union([
-    z.instanceof(HTMLInputElement),
-    z.instanceof(HTMLSelectElement),
-    z.instanceof(HTMLTextAreaElement),
+    isHTMLInputElement,
+    isHTMLSelectElement,
+    isHTMLTextAreaElement,
 ])
 export type FieldElement =
     | HTMLInputElement

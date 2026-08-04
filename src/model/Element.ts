@@ -97,9 +97,9 @@ export const createElement = (
             return
         }
 
-        const existField = document.querySelector(
-            `[data-inputfollow-error="${name}"]`,
-        )
+        const existField =
+            formEl.querySelector(`[data-inputfollow-error="${name}"]`) ??
+            document.querySelector(`[data-inputfollow-error="${name}"]`)
         if (existField) {
             existField.classList.add(
                 params.error_message_class,

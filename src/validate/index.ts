@@ -50,11 +50,11 @@ export const validate = (
 }
 
 const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
-    let result = true
-
     if (!validation.if) {
-        return result
+        return true
     }
+
+    let result = validation.if.mode === 'or' ? false : true
 
     Object.keys(validation.if.target).map((name) => {
         if (!validation.if) {
