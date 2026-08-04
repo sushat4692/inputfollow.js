@@ -10,6 +10,14 @@ import { check as checkRequired } from './Required'
 import { check as checkEmail } from './Email'
 import { check as checkNumber } from './Number'
 import { check as checkCode } from './Code'
+import { check as checkHiragana } from './Hiragana'
+import { check as checkKatakana } from './Katakana'
+import { check as checkKana } from './Kana'
+import { check as checkHankakuKana } from './HankakuKana'
+import { check as checkAlpha } from './Alpha'
+import { check as checkAlphanumeric } from './Alphanumeric'
+import { check as checkZenAlpha } from './ZenAlpha'
+import { check as checkZenAlphanumeric } from './ZenAlphanumeric'
 import { check as checkEqual } from './Equal'
 import { getElement, getValues } from '../utils/Tag'
 
@@ -17,7 +25,7 @@ export const validate = (
     formEl: HTMLFormElement,
     elements: FieldElement[],
     limit: LimitationOption,
-    validations: ValidationOption[] | null,
+    validations: ValidationOption[] | null
 ) => {
     const errors: ValidatedError[] = []
     const values = getValues(elements, limit)
@@ -50,11 +58,11 @@ export const validate = (
 }
 
 const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
-    let result = true
-
     if (!validation.if) {
-        return result
+        return true
     }
+
+    let result = validation.if.mode !== 'or'
 
     Object.keys(validation.if.target).map((name) => {
         if (!validation.if) {
@@ -78,7 +86,7 @@ const checkIf = (formEl: HTMLFormElement, validation: ValidationOption) => {
 const checkValidate = (
     formEl: HTMLFormElement,
     ruleType: ValidationType,
-    values: string[],
+    values: string[]
 ) => {
     switch (ruleType) {
         case 'required':
@@ -89,6 +97,22 @@ const checkValidate = (
             return checkNumber(values)
         case 'code':
             return checkCode(values)
+        case 'hiragana':
+            return checkHiragana(values)
+        case 'katakana':
+            return checkKatakana(values)
+        case 'kana':
+            return checkKana(values)
+        case 'hankaku-kana':
+            return checkHankakuKana(values)
+        case 'alpha':
+            return checkAlpha(values)
+        case 'alphanumeric':
+            return checkAlphanumeric(values)
+        case 'zen-alpha':
+            return checkZenAlpha(values)
+        case 'zen-alphanumeric':
+            return checkZenAlphanumeric(values)
         default:
             if (Array.isArray(ruleType) && ruleType[0] === 'equal') {
                 return checkEqual(formEl, values, ruleType[1])
@@ -100,7 +124,7 @@ const validateSingle = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[],
+    values: string[]
 ) => {
     if (!checkValidate(formEl, validation.type, values)) {
         errors.push({
@@ -118,7 +142,7 @@ const validateMultipleOr = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[],
+    values: string[]
 ) => {
     let result = checkValidate(formEl, validation.type, values)
 
@@ -152,7 +176,7 @@ const validateMultipleAnd = (
     formEl: HTMLFormElement,
     validation: ValidationOption,
     errors: ValidatedError[],
-    values: string[],
+    values: string[]
 ) => {
     let result = checkValidate(formEl, validation.type, values)
 

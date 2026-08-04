@@ -1,7 +1,7 @@
 import * as z from 'zod/mini';
-export declare const ValidationTypeValidator: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
-export type ValidationType = 'required' | 'email' | 'number' | 'code' | ['equal', string];
-export declare const WithOptionValidator: z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>;
+export declare const ValidationTypeValidator: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+export type ValidationType = 'required' | 'email' | 'number' | 'code' | 'hiragana' | 'katakana' | 'kana' | 'hankaku-kana' | 'alpha' | 'alphanumeric' | 'zen-alpha' | 'zen-alphanumeric' | ['equal', string];
+export declare const WithOptionValidator: z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>;
 export type WithOption = Record<string, ValidationType>;
 export declare const ModeOptionValidator: z.ZodMiniEnum<{
     or: "or";
@@ -14,12 +14,12 @@ export declare const LimitationOptionValidator: z.ZodMiniNullable<z.ZodMiniEnum<
 }>>;
 export type LimitationOption = 'number' | 'code' | null;
 export declare const ValidationOptionValidator: z.ZodMiniObject<{
-    type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+    type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
     mode: z.ZodMiniOptional<z.ZodMiniEnum<{
         or: "or";
         and: "and";
     }>>;
-    with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+    with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
     if: z.ZodMiniOptional<z.ZodMiniObject<{
         mode: z.ZodMiniOptional<z.ZodMiniEnum<{
             or: "or";
@@ -46,12 +46,12 @@ export declare const RuleValidator: z.ZodMiniArray<z.ZodMiniObject<{
         code: "code";
     }>>>;
     validation: z.ZodMiniOptional<z.ZodMiniUnion<readonly [z.ZodMiniObject<{
-        type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+        type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
         mode: z.ZodMiniOptional<z.ZodMiniEnum<{
             or: "or";
             and: "and";
         }>>;
-        with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+        with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
         if: z.ZodMiniOptional<z.ZodMiniObject<{
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
@@ -61,12 +61,12 @@ export declare const RuleValidator: z.ZodMiniArray<z.ZodMiniObject<{
         }, z.core.$strip>>;
         message: z.ZodMiniOptional<z.ZodMiniString<string>>;
     }, z.core.$strip>, z.ZodMiniArray<z.ZodMiniObject<{
-        type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+        type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
         mode: z.ZodMiniOptional<z.ZodMiniEnum<{
             or: "or";
             and: "and";
         }>>;
-        with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+        with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
         if: z.ZodMiniOptional<z.ZodMiniObject<{
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
@@ -98,12 +98,12 @@ export declare const ParamValidator: z.ZodMiniObject<{
             code: "code";
         }>>>;
         validation: z.ZodMiniOptional<z.ZodMiniUnion<readonly [z.ZodMiniObject<{
-            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
                 and: "and";
             }>>;
-            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
             if: z.ZodMiniOptional<z.ZodMiniObject<{
                 mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                     or: "or";
@@ -113,12 +113,12 @@ export declare const ParamValidator: z.ZodMiniObject<{
             }, z.core.$strip>>;
             message: z.ZodMiniOptional<z.ZodMiniString<string>>;
         }, z.core.$strip>, z.ZodMiniArray<z.ZodMiniObject<{
-            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
                 and: "and";
             }>>;
-            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
             if: z.ZodMiniOptional<z.ZodMiniObject<{
                 mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                     or: "or";
@@ -171,12 +171,12 @@ export declare const InitialParamValidator: z.ZodMiniObject<{
             code: "code";
         }>>>;
         validation: z.ZodMiniOptional<z.ZodMiniUnion<readonly [z.ZodMiniObject<{
-            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
                 and: "and";
             }>>;
-            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
             if: z.ZodMiniOptional<z.ZodMiniObject<{
                 mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                     or: "or";
@@ -186,12 +186,12 @@ export declare const InitialParamValidator: z.ZodMiniObject<{
             }, z.core.$strip>>;
             message: z.ZodMiniOptional<z.ZodMiniString<string>>;
         }, z.core.$strip>, z.ZodMiniArray<z.ZodMiniObject<{
-            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
+            type: z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>;
             mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                 or: "or";
                 and: "and";
             }>>;
-            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
+            with: z.ZodMiniOptional<z.ZodMiniRecord<z.ZodMiniString<string>, z.ZodMiniUnion<readonly [z.ZodMiniLiteral<"required">, z.ZodMiniLiteral<"email">, z.ZodMiniLiteral<"number">, z.ZodMiniLiteral<"code">, z.ZodMiniLiteral<"hiragana">, z.ZodMiniLiteral<"katakana">, z.ZodMiniLiteral<"kana">, z.ZodMiniLiteral<"hankaku-kana">, z.ZodMiniLiteral<"alpha">, z.ZodMiniLiteral<"alphanumeric">, z.ZodMiniLiteral<"zen-alpha">, z.ZodMiniLiteral<"zen-alphanumeric">, z.ZodMiniTuple<readonly [z.ZodMiniLiteral<"equal">, z.ZodMiniString<string>], null>]>>>;
             if: z.ZodMiniOptional<z.ZodMiniObject<{
                 mode: z.ZodMiniOptional<z.ZodMiniEnum<{
                     or: "or";

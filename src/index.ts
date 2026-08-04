@@ -1,4 +1,4 @@
-export {
+export type {
     ValidationType,
     WithOption,
     ModeOption,
@@ -83,18 +83,11 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
                 const errorElements = getElements(firstErrorField)
                 errorElements[0]?.elements[0]?.focus()
             }
-
-            return false
-        }
-
-        // Call on_submit callback if it's specified, and prevent default submission
-        if (typeof arrangedParams.on_submit === 'function') {
+        } else if (typeof arrangedParams.on_submit === 'function') {
+            // Call on_submit callback if it's specified, and prevent default submission
             e.preventDefault()
             arrangedParams.on_submit()
-            return false
         }
-
-        return true
     })
 
     /**
@@ -116,14 +109,41 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
      * Arranged params
      */
     const arrangedParams: Param = {
-        ...{
-            error_class: 'has-error',
-            error_message_class: 'inputfollow-error',
-            empty_error_message_class: 'is-empty',
-            valid_class: 'is-valid',
-            initial_error_view: false,
-        },
+        error_class: 'has-error',
+        error_message_class: 'inputfollow-error',
+        empty_error_message_class: 'is-empty',
+        valid_class: 'is-valid',
+        initial_error_view: false,
         ...params,
+    }
+
+    let validating = false
+
+    const notify = (currentErrors: { [key: string]: ValidatedError[] }) => {
+        let flag = true
+
+        Object.keys(currentErrors).map((key) => {
+            const error = currentErrors[key]
+            flag = flag && error.length <= 0
+        })
+
+        if (flag) {
+            if (submitButton) {
+                submitButton.removeAttribute('disabled')
+            }
+
+            if (typeof arrangedParams.on_success === 'function') {
+                arrangedParams.on_success()
+            }
+        } else {
+            if (submitButton) {
+                submitButton.setAttribute('disabled', 'disabled')
+            }
+
+            if (typeof arrangedParams.on_error === 'function') {
+                arrangedParams.on_error(currentErrors)
+            }
+        }
     }
 
     /**
@@ -134,35 +154,12 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
         {
             set: (target, p, value, receiver) => {
                 const set = Reflect.set(target, p, value, receiver)
-                if (set) {
-                    let flag = true
-
-                    Object.keys(errors).map((key) => {
-                        const error = errors[key]
-                        flag = flag && error.length <= 0
-                    })
-
-                    if (flag) {
-                        if (submitButton) {
-                            submitButton.removeAttribute('disabled')
-                        }
-
-                        if (typeof arrangedParams.on_success === 'function') {
-                            arrangedParams.on_success()
-                        }
-                    } else {
-                        if (submitButton) {
-                            submitButton.setAttribute('disabled', 'disabled')
-                        }
-
-                        if (typeof arrangedParams.on_error === 'function') {
-                            arrangedParams.on_error(errors)
-                        }
-                    }
+                if (set && !validating) {
+                    notify(target)
                 }
                 return set
             },
-        },
+        }
     )
 
     /**
@@ -188,7 +185,7 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
             limit ?? null,
             validations,
             arrangedParams,
-            errors,
+            errors
         )
 
         if (!Element) {
@@ -201,9 +198,12 @@ export const InputFollow = (formEl: FormElement, params: InitialParam) => {
      * Start validating
      */
     const validate = (init: boolean = false) => {
+        validating = true
         elements.map((element) => {
             element.validate(init)
         })
+        validating = false
+        notify(errors)
 
         if (typeof arrangedParams.on_validate === 'function') {
             arrangedParams.on_validate()

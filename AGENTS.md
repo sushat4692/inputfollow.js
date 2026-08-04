@@ -50,15 +50,30 @@ dist/            … ビルド生成物（gitignore 済み）
 | `npm run make` | build + demo ビルド + API ドキュメント生成 |
 | `npm run make:demo` | build + demo ビルド |
 | `npm run make:doc` | api-extractor + api-documenter で docs/ を生成 |
-| `npm test` | テストは未実装（現在はエラー終了する） |
+| `npm run lint` | oxlint で lint |
+| `npm run format` | oxfmt で整形 |
+| `npm run format:check` | oxfmt で整形差分チェック（CI 用） |
+| `npm test` | Vitest で全テスト（unit + browser）を実行 |
+| `npm run test:unit` | jsdom ユニット/統合テストのみ実行 |
+| `npm run test:browser` | 実ブラウザ（chromium）のブラウザ統合テストのみ実行 |
+| `npm run test:watch` | テストを watch モードで実行 |
 
 - 型チェックは `tsc --noEmit`（tsconfig.json に project references 設定があるため `-b` 指定に注意）または `npm run build` で検証できる
-- lint: `npx eslint .`（prettier ルールを含む）
+- lint: `npm run lint`（oxlint、設定は `.oxlintrc.json`）
+- 整形: `npm run format`（oxfmt、設定は `.oxfmtrc.json`。`demo/**` は整形対象外）
+
+## テスト
+
+- `test/unit/`: jsdom 環境のユニット/統合テスト（バリデーション・変換・型・InputFollow 全体）
+- `test/browser/`: Vitest Browser Mode（playwright プロバイダ・chromium・headless）による実ブラウザ統合テスト
+- 新機能・バグ修正時は該当するユニットテストと、実ブラウザで確認すべき挙動はブラウザテストを追加する
+- ブラウザテストの初回実行には `npx playwright install chromium` が必要
+- 設定は `vitest.config.ts`（`projects` で unit / browser の2構成）
 
 ## コーディング規約
 
-- TypeScript、Prettier 設定: `singleQuote: true` / `semi: false` / `printWidth: 80` / `tabWidth: 4`
-- 未使用変数は `_` プレフィックスで許容（ESLint 設定による）
+- TypeScript、oxfmt 設定: `singleQuote: true` / `semi: false` / `printWidth: 80` / `tabWidth: 4`（`.oxfmtrc.json` 参照）
+- 未使用変数は `_` プレフィックスで許容（`.oxlintrc.json` の no-unused-vars 設定による）
 - 公開 API には `@public` などの TSDoc コメントを付け、型の変更時は `npm run make:doc` で docs/ を更新する
 - エクスポートは `src/index.ts` から行う（`InputFollow` 関数と型）
 

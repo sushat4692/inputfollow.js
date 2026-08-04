@@ -10,25 +10,25 @@ export const isCheckField = (el: FieldElement) => {
 }
 
 export const getElement = (formEl: HTMLFormElement, name: string) => {
-    if (!Object.hasOwn(formEl, name)) {
-        if (!Object.hasOwn(formEl, `${name}[]`)) {
+    let named = formEl.elements.namedItem(name)
+
+    if (!named) {
+        named = formEl.elements.namedItem(`${name}[]`)
+        if (!named) {
             return []
         }
-        name = `${name}[]`
     }
 
-    const fields = formEl[name]
-
-    if (fields['entries']) {
-        return [...fields] as FieldElement[]
-    } else {
-        return [fields] as FieldElement[]
+    if (named instanceof RadioNodeList) {
+        return Array.from(named) as FieldElement[]
     }
+
+    return [named] as FieldElement[]
 }
 
 export const getValues = (
     elements: FieldElement[],
-    limit: LimitationOption = null,
+    limit: LimitationOption = null
 ) => {
     const values: string[] = []
 

@@ -1,4 +1,4 @@
-export { ValidationType, WithOption, ModeOption, LimitationOption, ValidationOption, Rule, ValidatedError, Param, InitialParam, RootEvent, Target, FormElement, FieldElement, } from './types';
+export type { ValidationType, WithOption, ModeOption, LimitationOption, ValidationOption, Rule, ValidatedError, Param, InitialParam, RootEvent, Target, FormElement, FieldElement, } from './types';
 import { InitialParam, FormElement, ValidatedError } from './types';
 /**
  * InputFollow class

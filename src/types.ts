@@ -1,10 +1,46 @@
 import * as z from 'zod/mini'
 
+const isHTMLInputElement = z.custom<HTMLInputElement>(
+    (v: unknown): v is HTMLInputElement =>
+        typeof HTMLInputElement !== 'undefined' && v instanceof HTMLInputElement
+)
+const isHTMLButtonElement = z.custom<HTMLButtonElement>(
+    (v: unknown): v is HTMLButtonElement =>
+        typeof HTMLButtonElement !== 'undefined' &&
+        v instanceof HTMLButtonElement
+)
+const isHTMLElement = z.custom<HTMLElement>(
+    (v: unknown): v is HTMLElement =>
+        typeof HTMLElement !== 'undefined' && v instanceof HTMLElement
+)
+const isHTMLFormElement = z.custom<HTMLFormElement>(
+    (v: unknown): v is HTMLFormElement =>
+        typeof HTMLFormElement !== 'undefined' && v instanceof HTMLFormElement
+)
+const isHTMLSelectElement = z.custom<HTMLSelectElement>(
+    (v: unknown): v is HTMLSelectElement =>
+        typeof HTMLSelectElement !== 'undefined' &&
+        v instanceof HTMLSelectElement
+)
+const isHTMLTextAreaElement = z.custom<HTMLTextAreaElement>(
+    (v: unknown): v is HTMLTextAreaElement =>
+        typeof HTMLTextAreaElement !== 'undefined' &&
+        v instanceof HTMLTextAreaElement
+)
+
 export const ValidationTypeValidator = z.union([
     z.literal('required'),
     z.literal('email'),
     z.literal('number'),
     z.literal('code'),
+    z.literal('hiragana'),
+    z.literal('katakana'),
+    z.literal('kana'),
+    z.literal('hankaku-kana'),
+    z.literal('alpha'),
+    z.literal('alphanumeric'),
+    z.literal('zen-alpha'),
+    z.literal('zen-alphanumeric'),
     z.tuple([z.literal('equal'), z.string().check(z.minLength(1))]),
 ])
 export type ValidationType =
@@ -12,6 +48,14 @@ export type ValidationType =
     | 'email'
     | 'number'
     | 'code'
+    | 'hiragana'
+    | 'katakana'
+    | 'kana'
+    | 'hankaku-kana'
+    | 'alpha'
+    | 'alphanumeric'
+    | 'zen-alpha'
+    | 'zen-alphanumeric'
     | ['equal', string]
 
 export const WithOptionValidator = z.record(z.string(), ValidationTypeValidator)
@@ -31,7 +75,7 @@ export const ValidationOptionValidator = z.object({
         z.object({
             mode: z.optional(ModeOptionValidator),
             target: z.record(z.string(), z.string()),
-        }),
+        })
     ),
     message: z.optional(z.string()),
 })
@@ -54,9 +98,9 @@ export const RuleValidator = z.array(
             z.union([
                 ValidationOptionValidator,
                 z.array(ValidationOptionValidator),
-            ]),
+            ])
         ),
-    }),
+    })
 )
 export type Rule = {
     name: string
@@ -78,32 +122,28 @@ export const ParamValidator = z.object({
     valid_class: z.string(),
     initial_error_view: z.boolean(),
     submit_button: z.optional(
-        z.union([
-            z.string(),
-            z.instanceof(HTMLInputElement),
-            z.instanceof(HTMLButtonElement),
-        ]),
+        z.union([z.string(), isHTMLInputElement, isHTMLButtonElement])
     ),
     on_validate: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_success: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_error: z.optional(
         z.function({
             input: [z.record(z.string(), z.array(ValidatedErrorValidator))],
             output: z.void(),
-        }),
+        })
     ),
     on_submit: z.optional(
         z.function({
             output: z.void(),
-        }),
+        })
     ),
     on_failed: z.optional(
         z.function({
@@ -112,7 +152,7 @@ export const ParamValidator = z.object({
                 z.array(z.string()),
             ],
             output: z.void(),
-        }),
+        })
     ),
     focus_invalid_field: z.optional(z.boolean()),
 })
@@ -130,7 +170,7 @@ export type Param = {
     on_submit?: () => void
     on_failed?: (
         errors: Record<string, ValidatedError[]>,
-        errorFields: string[],
+        errorFields: string[]
     ) => void
     focus_invalid_field?: boolean
 }
@@ -153,19 +193,16 @@ export type RootEvent = {
     validate: () => void
 }
 
-export const TargetValidator = z.record(z.string(), z.instanceof(HTMLElement))
+export const TargetValidator = z.record(z.string(), isHTMLElement)
 export type Target = Record<string, HTMLElement>
 
-export const FormElementValidator = z.union([
-    z.string(),
-    z.instanceof(HTMLFormElement),
-])
+export const FormElementValidator = z.union([z.string(), isHTMLFormElement])
 export type FormElement = string | HTMLFormElement
 
 export const FieldElementValidator = z.union([
-    z.instanceof(HTMLInputElement),
-    z.instanceof(HTMLSelectElement),
-    z.instanceof(HTMLTextAreaElement),
+    isHTMLInputElement,
+    isHTMLSelectElement,
+    isHTMLTextAreaElement,
 ])
 export type FieldElement =
     | HTMLInputElement
