@@ -46,7 +46,7 @@ dist/            … ビルド生成物（gitignore 済み）
 | コマンド | 内容 |
 | --- | --- |
 | `npm run build` | Rollup でビルド（dist/ と types/ を生成） |
-| `npm run demo` | デモサイトを http-server で起動 |
+| `npm run demo` | デモサイトを serve で起動 |
 | `npm run make` | build + demo ビルド + API ドキュメント生成 |
 | `npm run make:demo` | build + demo ビルド |
 | `npm run make:doc` | api-extractor + api-documenter で docs/ を生成 |

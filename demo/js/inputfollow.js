@@ -1,51 +1,30 @@
 /*!
-  inputfollow.js v0.1.0
+  inputfollow.js v0.2.0
   https://github.com/sushat4692/inputfollow.js#readme
   Released under the MIT License.
 */
 var InputFollow = (function () {
     'use strict';
 
-    var _assign = function __assign() {
-      _assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-          s = arguments[i];
-          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-      };
-      return _assign.apply(this, arguments);
-    };
-    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-      var e = new Error(message);
-      return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-    };
-
     /**
      * Create a validator object with parse / safeParse interface
      * @param check check function
      * @returns validator
      */
-    var createValidator = function (check) { return ({
-        parse: function (value) {
+    const createValidator = (check) => ({
+        parse: (value) => {
             if (!check(value)) {
                 throw new Error('Invalid input');
             }
             return value;
         },
-        safeParse: function (value) { return ({ success: check(value) }); },
-    }); };
-    var isRecord = function (value) {
-        return typeof value === 'object' && value !== null && !Array.isArray(value);
-    };
-    var isString = function (value) { return typeof value === 'string'; };
-    var isFunction = function (value) {
-        return typeof value === 'function';
-    };
-    var isModeOption = function (value) {
-        return value === 'or' || value === 'and';
-    };
-    var VALIDATION_TYPES = [
+        safeParse: (value) => ({ success: check(value) }),
+    });
+    const isRecord = (value) => typeof value === 'object' && value !== null && !Array.isArray(value);
+    const isString = (value) => typeof value === 'string';
+    const isFunction = (value) => typeof value === 'function';
+    const isModeOption = (value) => value === 'or' || value === 'and';
+    const VALIDATION_TYPES = [
         'required',
         'email',
         'number',
@@ -59,7 +38,7 @@ var InputFollow = (function () {
         'zen-alpha',
         'zen-alphanumeric',
     ];
-    var isValidationType = function (value) {
+    const isValidationType = (value) => {
         if (isString(value)) {
             return VALIDATION_TYPES.includes(value);
         }
@@ -69,13 +48,9 @@ var InputFollow = (function () {
             isString(value[1]) &&
             value[1].length > 0);
     };
-    var isWithOption = function (value) {
-        return isRecord(value) && Object.values(value).every(isValidationType);
-    };
-    var isLimitationOption = function (value) {
-        return value === 'number' || value === 'code' || value === null;
-    };
-    var isValidationOption = function (value) {
+    const isWithOption = (value) => isRecord(value) && Object.values(value).every(isValidationType);
+    const isLimitationOption = (value) => value === 'number' || value === 'code' || value === null;
+    const isValidationOption = (value) => {
         if (!isRecord(value) || !isValidationType(value.type)) {
             return false;
         }
@@ -86,7 +61,7 @@ var InputFollow = (function () {
             return false;
         }
         if (value.if !== undefined) {
-            var condition = value.if;
+            const condition = value.if;
             if (!isRecord(condition) ||
                 (condition.mode !== undefined && !isModeOption(condition.mode)) ||
                 !isRecord(condition.target) ||
@@ -99,7 +74,7 @@ var InputFollow = (function () {
         }
         return true;
     };
-    var isRule = function (value) {
+    const isRule = (value) => {
         if (!isRecord(value) || !isString(value.name)) {
             return false;
         }
@@ -107,7 +82,7 @@ var InputFollow = (function () {
             return false;
         }
         if (value.validation !== undefined) {
-            var validation = value.validation;
+            const validation = value.validation;
             if (!isValidationOption(validation) &&
                 !(Array.isArray(validation) && validation.every(isValidationOption))) {
                 return false;
@@ -115,20 +90,14 @@ var InputFollow = (function () {
         }
         return true;
     };
-    var isRules = function (value) {
-        return Array.isArray(value) && value.every(isRule);
-    };
-    var isSubmitButton = function (value) {
-        return (typeof HTMLInputElement !== 'undefined' &&
-            value instanceof HTMLInputElement) ||
-            (typeof HTMLButtonElement !== 'undefined' &&
-                value instanceof HTMLButtonElement);
-    };
-    var isFormElement = function (value) {
-        return isString(value) ||
-            (typeof HTMLFormElement !== 'undefined' && value instanceof HTMLFormElement);
-    };
-    var isInitialParam = function (value) {
+    const isRules = (value) => Array.isArray(value) && value.every(isRule);
+    const isSubmitButton = (value) => (typeof HTMLInputElement !== 'undefined' &&
+        value instanceof HTMLInputElement) ||
+        (typeof HTMLButtonElement !== 'undefined' &&
+            value instanceof HTMLButtonElement);
+    const isFormElement = (value) => isString(value) ||
+        (typeof HTMLFormElement !== 'undefined' && value instanceof HTMLFormElement);
+    const isInitialParam = (value) => {
         if (!isRecord(value) || !isRules(value.rules)) {
             return false;
         }
@@ -160,38 +129,37 @@ var InputFollow = (function () {
         }
         return true;
     };
-    var InitialParamValidator = createValidator(isInitialParam);
-    var FormElementValidator = createValidator(isFormElement);
+    const InitialParamValidator = createValidator(isInitialParam);
+    const FormElementValidator = createValidator(isFormElement);
 
     /**
      * Check required value
      * @param {string} value
      * @returns {boolean}
      */
-    var rule$b = function (value) { return value.trim().length > 0; };
+    const rule$b = (value) => value.trim().length > 0;
     /**
      * Check required of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$c = function (values) {
+    const check$c = (values) => {
         if (!values.length) {
             return false;
         }
-        return values.reduce(function (prev, current) { return prev && rule$b(current); }, true);
+        return values.reduce((prev, current) => prev && rule$b(current), true);
     };
 
-    // Practical email validation (same as zod v4's regexes.email)
-    var rule$a = function (value) {
-        return /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/.test(value);
-    };
+    // "Practical email validation" regex, taken from zod v4's regexes.email
+    // https://github.com/colinhacks/zod (MIT License, Copyright (c) 2025 Colin McDonnell)
+    const rule$a = (value) => /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/.test(value);
     /**
      * Check Email format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$b = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$b = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -199,24 +167,24 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$9 = function (value) { return !Number.isNaN(Number(value)); };
+    const rule$9 = (value) => !Number.isNaN(Number(value));
     /**
      * Check numeric of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$a = function (values) {
-        return values.reduce(function (prev, current) { return prev && rule$9(current); }, true);
+    const check$a = (values) => {
+        return values.reduce((prev, current) => prev && rule$9(current), true);
     };
 
-    var rule$8 = function (value) { return /^[0-9-+*]*$/.test(value); };
+    const rule$8 = (value) => /^[0-9-+*]*$/.test(value);
     /**
      * Check code format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$9 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$9 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -224,14 +192,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$7 = function (value) { return /^[ぁ-ゖー]+$/.test(value); };
+    const rule$7 = (value) => /^[ぁ-ゖー]+$/.test(value);
     /**
      * Check hiragana format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$8 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$8 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -239,14 +207,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$6 = function (value) { return /^[ァ-ヶー]+$/.test(value); };
+    const rule$6 = (value) => /^[ァ-ヶー]+$/.test(value);
     /**
      * Check katakana format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$7 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$7 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -254,14 +222,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$5 = function (value) { return /^[ぁ-ゖァ-ヶー]+$/.test(value); };
+    const rule$5 = (value) => /^[ぁ-ゖァ-ヶー]+$/.test(value);
     /**
      * Check hiragana or katakana format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$6 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$6 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -269,14 +237,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$4 = function (value) { return /^[ｦ-ﾟ]+$/.test(value); };
+    const rule$4 = (value) => /^[ｦ-ﾟ]+$/.test(value);
     /**
      * Check half-width katakana format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$5 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$5 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -284,14 +252,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$3 = function (value) { return /^[a-zA-Z]+$/.test(value); };
+    const rule$3 = (value) => /^[a-zA-Z]+$/.test(value);
     /**
      * Check alphabet format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$4 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$4 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -299,14 +267,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$2 = function (value) { return /^[a-zA-Z0-9]+$/.test(value); };
+    const rule$2 = (value) => /^[a-zA-Z0-9]+$/.test(value);
     /**
      * Check alphabet and numeric format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$3 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$3 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -314,14 +282,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule$1 = function (value) { return /^[Ａ-Ｚａ-ｚ]+$/.test(value); };
+    const rule$1 = (value) => /^[Ａ-Ｚａ-ｚ]+$/.test(value);
     /**
      * Check full-width alphabet format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$2 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$2 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -329,14 +297,14 @@ var InputFollow = (function () {
         }, true);
     };
 
-    var rule = function (value) { return /^[Ａ-Ｚａ-ｚ０-９]+$/.test(value); };
+    const rule = (value) => /^[Ａ-Ｚａ-ｚ０-９]+$/.test(value);
     /**
      * Check full-width alphabet and numeric format of target field element's value
      * @param {string[]} values
      * @returns {boolean}
      */
-    var check$1 = function (values) {
-        return values.reduce(function (prev, current) {
+    const check$1 = (values) => {
+        return values.reduce((prev, current) => {
             if (!prev || !rule$b(current)) {
                 return prev;
             }
@@ -349,11 +317,9 @@ var InputFollow = (function () {
      * @param {string} value
      * @returns {string}
      */
-    var convert$1 = function (value) {
+    const convert$1 = (value) => {
         // Full width to Half width characters
-        value = value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
-            return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
-        });
+        value = value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
         // Remove text except for numbers
         value = value.replace(/[^0-9]/g, '');
         return value;
@@ -364,11 +330,9 @@ var InputFollow = (function () {
      * @param {string} value
      * @returns {string}
      */
-    var convert = function (value) {
+    const convert = (value) => {
         // Full width to Half width characters
-        value = value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
-            return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
-        });
+        value = value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
         // Convert dash
         value = value.replace(/[−－ー―]/g, '-');
         // Convert Plus
@@ -380,15 +344,15 @@ var InputFollow = (function () {
         return value;
     };
 
-    var isCheckField = function (el) {
-        var tag = el.tagName.toLowerCase();
-        var type = el.getAttribute('type');
+    const isCheckField = (el) => {
+        const tag = el.tagName.toLowerCase();
+        const type = el.getAttribute('type');
         return tag === 'input' && (type === 'radio' || type === 'checkbox');
     };
-    var getElement = function (formEl, name) {
-        var named = formEl.elements.namedItem(name);
+    const getElement = (formEl, name) => {
+        let named = formEl.elements.namedItem(name);
         if (!named) {
-            named = formEl.elements.namedItem("".concat(name, "[]"));
+            named = formEl.elements.namedItem(`${name}[]`);
             if (!named) {
                 return [];
             }
@@ -398,10 +362,9 @@ var InputFollow = (function () {
         }
         return [named];
     };
-    var getValues = function (elements, limit) {
-        if (limit === void 0) { limit = null; }
-        var values = [];
-        elements.map(function (el) {
+    const getValues = (elements, limit = null) => {
+        const values = [];
+        elements.map((el) => {
             if (isCheckField(el)) {
                 if (el.checked) {
                     values.push(el.value);
@@ -422,22 +385,22 @@ var InputFollow = (function () {
         return values;
     };
 
-    var check = function (formEl, values, target) {
-        var targetElement = getElement(formEl, target);
-        var targetValues = getValues(targetElement);
+    const check = (formEl, values, target) => {
+        const targetElement = getElement(formEl, target);
+        const targetValues = getValues(targetElement);
         if (values.length === 0) {
             return targetValues.length === 0;
         }
-        return values.every(function (value) { return targetValues.includes(value); });
+        return values.every((value) => targetValues.includes(value));
     };
 
-    var validate = function (formEl, elements, limit, validations) {
-        var errors = [];
-        var values = getValues(elements, limit);
+    const validate = (formEl, elements, limit, validations) => {
+        const errors = [];
+        const values = getValues(elements, limit);
         if (!validations) {
             return errors;
         }
-        validations.map(function (validation) {
+        validations.map((validation) => {
             if (!checkIf(formEl, validation)) {
                 return;
             }
@@ -458,18 +421,18 @@ var InputFollow = (function () {
         });
         return errors;
     };
-    var checkIf = function (formEl, validation) {
+    const checkIf = (formEl, validation) => {
         if (!validation.if) {
             return true;
         }
-        var result = validation.if.mode !== 'or';
-        Object.keys(validation.if.target).map(function (name) {
+        let result = validation.if.mode !== 'or';
+        Object.keys(validation.if.target).map((name) => {
             if (!validation.if) {
                 return;
             }
-            var ifTarget = validation.if.target[name];
-            var ifElement = getElement(formEl, name);
-            var ifValue = getValues(ifElement);
+            const ifTarget = validation.if.target[name];
+            const ifElement = getElement(formEl, name);
+            const ifValue = getValues(ifElement);
             if (validation.if.mode === 'or') {
                 result = result || ifValue.includes(ifTarget);
             }
@@ -479,7 +442,7 @@ var InputFollow = (function () {
         });
         return result;
     };
-    var checkValidate = function (formEl, ruleType, values) {
+    const checkValidate = (formEl, ruleType, values) => {
         switch (ruleType) {
             case 'required':
                 return check$c(values);
@@ -511,7 +474,7 @@ var InputFollow = (function () {
                 }
         }
     };
-    var validateSingle = function (formEl, validation, errors, values) {
+    const validateSingle = (formEl, validation, errors, values) => {
         if (!checkValidate(formEl, validation.type, values)) {
             errors.push({
                 type: Array.isArray(validation.type)
@@ -522,16 +485,16 @@ var InputFollow = (function () {
         }
         return errors;
     };
-    var validateMultipleOr = function (formEl, validation, errors, values) {
-        var result = checkValidate(formEl, validation.type, values);
+    const validateMultipleOr = (formEl, validation, errors, values) => {
+        let result = checkValidate(formEl, validation.type, values);
         if (validation.with) {
-            Object.keys(validation.with).map(function (name) {
+            Object.keys(validation.with).map((name) => {
                 if (!validation.with) {
                     return;
                 }
-                var withType = validation.with[name];
-                var withElements = getElement(formEl, name);
-                var withValues = getValues(withElements);
+                const withType = validation.with[name];
+                const withElements = getElement(formEl, name);
+                const withValues = getValues(withElements);
                 result = result || checkValidate(formEl, withType, withValues);
             });
         }
@@ -545,16 +508,16 @@ var InputFollow = (function () {
         }
         return errors;
     };
-    var validateMultipleAnd = function (formEl, validation, errors, values) {
-        var result = checkValidate(formEl, validation.type, values);
+    const validateMultipleAnd = (formEl, validation, errors, values) => {
+        let result = checkValidate(formEl, validation.type, values);
         if (validation.with) {
-            Object.keys(validation.with).map(function (name) {
+            Object.keys(validation.with).map((name) => {
                 if (!validation.with) {
                     return;
                 }
-                var withType = validation.with[name];
-                var withElements = getElement(formEl, name);
-                var withValues = getValues(withElements);
+                const withType = validation.with[name];
+                const withElements = getElement(formEl, name);
+                const withValues = getValues(withElements);
                 result = result && checkValidate(formEl, withType, withValues);
             });
         }
@@ -569,46 +532,46 @@ var InputFollow = (function () {
         return errors;
     };
 
-    var createElement = function (formEl, name, limit, validations, params, errors) {
-        var elements = getElement(formEl, name);
-        var withElements = (function () {
-            var results = [];
+    const createElement = (formEl, name, limit, validations, params, errors) => {
+        const elements = getElement(formEl, name);
+        const withElements = (() => {
+            const results = [];
             if (!validations) {
                 return results;
             }
-            validations.map(function (validation) {
+            validations.map((validation) => {
                 if (!validation.with) {
                     return;
                 }
-                Object.keys(validation.with).map(function (withName) {
-                    var fields = getElement(formEl, withName);
-                    results.push.apply(results, fields);
+                Object.keys(validation.with).map((withName) => {
+                    const fields = getElement(formEl, withName);
+                    results.push(...fields);
                 });
             });
             return results;
         })();
-        var ifElements = (function () {
-            var results = [];
+        const ifElements = (() => {
+            const results = [];
             if (!validations) {
                 return results;
             }
-            validations.map(function (validation) {
+            validations.map((validation) => {
                 if (!validation.if) {
                     return;
                 }
-                Object.keys(validation.if.target).map(function (ifName) {
-                    var fields = getElement(formEl, ifName);
-                    results.push.apply(results, fields);
+                Object.keys(validation.if.target).map((ifName) => {
+                    const fields = getElement(formEl, ifName);
+                    results.push(...fields);
                 });
             });
             return results;
         })();
-        var equalElements = (function () {
-            var results = [];
+        const equalElements = (() => {
+            const results = [];
             if (!validations) {
                 return results;
             }
-            validations.map(function (validation) {
+            validations.map((validation) => {
                 if (!Array.isArray(validation.type) ||
                     validation.type[0] !== 'equal') {
                     return;
@@ -616,64 +579,62 @@ var InputFollow = (function () {
                 if (!validation.type[1]) {
                     return;
                 }
-                var fields = getElement(formEl, validation.type[1]);
-                results.push.apply(results, fields);
+                const fields = getElement(formEl, validation.type[1]);
+                results.push(...fields);
             });
             return results;
         })();
         if (!elements.length) {
-            throw Error("Not found target field element: ".concat(name));
+            throw Error(`Not found target field element: ${name}`);
         }
         // Prepare or Find error message field
-        var messageField = (function () {
-            var _a;
+        const messageField = (() => {
             if (!validations || !validations.length) {
                 return;
             }
-            var existField = (_a = formEl.querySelector("[data-inputfollow-error=\"".concat(name, "\"]"))) !== null && _a !== void 0 ? _a : document.querySelector("[data-inputfollow-error=\"".concat(name, "\"]"));
+            const existField = formEl.querySelector(`[data-inputfollow-error="${name}"]`) ??
+                document.querySelector(`[data-inputfollow-error="${name}"]`);
             if (existField) {
                 existField.classList.add(params.error_message_class, params.empty_error_message_class);
                 return existField;
             }
-            var additionalField = document.createElement('ul');
+            const additionalField = document.createElement('ul');
             additionalField.classList.add(params.error_message_class, params.empty_error_message_class);
             additionalField.setAttribute('data-inputfollow-error', name);
             elements[0].insertAdjacentElement('afterend', additionalField);
             return additionalField;
         })();
-        var addInvalidClass = function (_elements, render) {
+        const addInvalidClass = (_elements, render) => {
             if (params.valid_class) {
-                _elements.forEach(function (el) {
+                _elements.forEach((el) => {
                     el.classList.remove(params.valid_class);
                 });
             }
             if (render) {
                 if (params.error_class) {
-                    _elements.forEach(function (el) {
+                    _elements.forEach((el) => {
                         el.classList.add(params.error_class);
                     });
                 }
             }
         };
-        var addValidClass = function (_elements) {
+        const addValidClass = (_elements) => {
             if (params.error_class) {
-                _elements.forEach(function (el) {
+                _elements.forEach((el) => {
                     el.classList.remove(params.error_class);
                 });
             }
             if (params.valid_class) {
-                _elements.forEach(function (el) {
+                _elements.forEach((el) => {
                     el.classList.add(params.valid_class);
                 });
             }
         };
-        var validate$1 = function (init, ignored) {
-            if (init === void 0) { init = false; }
-            if (ignored === void 0) { ignored = false; }
+        const validate$1 = (init = false, ignored = false) => {
             if (!name) {
                 return;
             }
-            var renderError = !ignored && (init !== true || params.initial_error_view);
+            const renderError = !ignored && (init !== true || params.initial_error_view);
             errors[name] = validate(formEl, elements, renderError ? limit : null, validations);
             if (!validations || !validations.length || !messageField) {
                 return;
@@ -684,9 +645,9 @@ var InputFollow = (function () {
                 addInvalidClass(ifElements, renderError);
                 if (renderError) {
                     messageField.innerHTML = '';
-                    errors[name].map(function (error) {
+                    errors[name].map((error) => {
                         if (error.message) {
-                            var messageElement = document.createElement('li');
+                            const messageElement = document.createElement('li');
                             messageElement.textContent = error.message;
                             messageField.appendChild(messageElement);
                         }
@@ -702,31 +663,30 @@ var InputFollow = (function () {
                 messageField.classList.add(params.empty_error_message_class);
             }
         };
-        var hasError = function () {
+        const hasError = () => {
             if (!name) {
                 return false;
             }
             return errors[name].length > 0;
         };
-        var getErrors = function () {
+        const getErrors = () => {
             if (!name) {
                 return [];
             }
             return errors[name];
         };
-        var addEvents = function (_elements, useCapture) {
-            if (useCapture === void 0) { useCapture = false; }
-            _elements.forEach(function (el) {
+        const addEvents = (_elements, useCapture = false) => {
+            _elements.forEach((el) => {
                 if (isCheckField(el)) {
-                    el.addEventListener('input', function () {
+                    el.addEventListener('input', () => {
                         validate$1();
                     }, useCapture);
                 }
                 else {
-                    el.addEventListener('input', function () {
+                    el.addEventListener('input', () => {
                         validate$1(false, true);
                     }, useCapture);
-                    el.addEventListener('blur', function () {
+                    el.addEventListener('blur', () => {
                         validate$1();
                     }, useCapture);
                 }
@@ -737,14 +697,14 @@ var InputFollow = (function () {
         addEvents(ifElements, false);
         addEvents(equalElements, false);
         return {
-            formEl: formEl,
-            elements: elements,
-            name: name,
-            limit: limit,
-            validations: validations,
+            formEl,
+            elements,
+            name,
+            limit,
+            validations,
             validate: validate$1,
-            hasError: hasError,
-            getErrors: getErrors,
+            hasError,
+            getErrors,
         };
     };
 
@@ -756,32 +716,31 @@ var InputFollow = (function () {
      *
      * @public
      */
-    var InputFollow = function (formEl, params) {
+    const InputFollow = (formEl, params) => {
         FormElementValidator.parse(formEl);
         InitialParamValidator.parse(params);
-        var targetFormElement = (function () {
+        const targetFormElement = (() => {
             /**
              * Convert formEl to HTMLFormElement if it's string
              */
             if (typeof formEl === 'string') {
-                var el = document.querySelector(formEl);
+                const el = document.querySelector(formEl);
                 if (!el) {
-                    throw new Error("Not found target form element: ".concat(formEl));
+                    throw new Error(`Not found target form element: ${formEl}`);
                 }
                 return el;
             }
             return formEl;
         })();
         if (targetFormElement.tagName.toLowerCase() !== 'form') {
-            throw new Error("Target element is not <form> element");
+            throw new Error(`Target element is not <form> element`);
         }
         targetFormElement.addEventListener('submit', function (e) {
-            var _a, _b;
-            var flag = true;
+            let flag = true;
             validate();
-            var errorFields = [];
-            Object.keys(errors).map(function (key) {
-                var error = errors[key];
+            const errorFields = [];
+            Object.keys(errors).map((key) => {
+                const error = errors[key];
                 if (error.length > 0) {
                     errorFields.push(key);
                     flag = false;
@@ -793,9 +752,9 @@ var InputFollow = (function () {
                     arrangedParams.on_failed(errors, errorFields);
                 }
                 if (arrangedParams.focus_invalid_field) {
-                    var firstErrorField = errorFields[0];
-                    var errorElements = getElements(firstErrorField);
-                    (_b = (_a = errorElements[0]) === null || _a === void 0 ? void 0 : _a.elements[0]) === null || _b === void 0 ? void 0 : _b.focus();
+                    const firstErrorField = errorFields[0];
+                    const errorElements = getElements(firstErrorField);
+                    errorElements[0]?.elements[0]?.focus();
                 }
             }
             else if (typeof arrangedParams.on_submit === 'function') {
@@ -807,7 +766,7 @@ var InputFollow = (function () {
         /**
          * Find submit button if it's specified
          */
-        var submitButton = (function () {
+        const submitButton = (() => {
             if (!params.submit_button) {
                 return null;
             }
@@ -819,12 +778,19 @@ var InputFollow = (function () {
         /**
          * Arranged params
          */
-        var arrangedParams = _assign({ error_class: 'has-error', error_message_class: 'inputfollow-error', empty_error_message_class: 'is-empty', valid_class: 'is-valid', initial_error_view: false }, params);
-        var validating = false;
-        var notify = function (currentErrors) {
-            var flag = true;
-            Object.keys(currentErrors).map(function (key) {
-                var error = currentErrors[key];
+        const arrangedParams = {
+            error_class: 'has-error',
+            error_message_class: 'inputfollow-error',
+            empty_error_message_class: 'is-empty',
+            valid_class: 'is-valid',
+            initial_error_view: false,
+            ...params,
+        };
+        let validating = false;
+        const notify = (currentErrors) => {
+            let flag = true;
+            Object.keys(currentErrors).map((key) => {
+                const error = currentErrors[key];
                 flag = flag && error.length <= 0;
             });
             if (flag) {
@@ -847,9 +813,9 @@ var InputFollow = (function () {
         /**
          * Prepare Proxy for observing errors values
          */
-        var errors = new Proxy({}, {
-            set: function (target, p, value, receiver) {
-                var set = Reflect.set(target, p, value, receiver);
+        const errors = new Proxy({}, {
+            set: (target, p, value, receiver) => {
+                const set = Reflect.set(target, p, value, receiver);
                 if (set && !validating) {
                     notify(target);
                 }
@@ -859,10 +825,9 @@ var InputFollow = (function () {
         /**
          * Preparing Checking Elements
          */
-        var elements = [];
-        arrangedParams.rules.map(function (_a) {
-            var name = _a.name, limit = _a.limit, validation = _a.validation;
-            var validations = (function () {
+        const elements = [];
+        arrangedParams.rules.map(({ name, limit, validation }) => {
+            const validations = (() => {
                 if (!validation) {
                     return null;
                 }
@@ -871,7 +836,7 @@ var InputFollow = (function () {
                 }
                 return [validation];
             })();
-            var Element = createElement(targetFormElement, name, limit !== null && limit !== void 0 ? limit : null, validations, arrangedParams, errors);
+            const Element = createElement(targetFormElement, name, limit ?? null, validations, arrangedParams, errors);
             if (!Element) {
                 return;
             }
@@ -880,10 +845,9 @@ var InputFollow = (function () {
         /**
          * Start validating
          */
-        var validate = function (init) {
-            if (init === void 0) { init = false; }
+        const validate = (init = false) => {
             validating = true;
-            elements.map(function (element) {
+            elements.map((element) => {
                 element.validate(init);
             });
             validating = false;
@@ -895,12 +859,12 @@ var InputFollow = (function () {
         /**
          * Get target elements
          */
-        var getElements = function (name) {
-            return elements.filter(function (el) { return el.name === name; });
+        const getElements = (name) => {
+            return elements.filter((el) => el.name === name);
         };
         // Initial validate
         validate(true);
-        return { formEl: targetFormElement, elements: elements, validate: validate, getElements: getElements };
+        return { formEl: targetFormElement, elements, validate, getElements };
     };
 
     return InputFollow;
