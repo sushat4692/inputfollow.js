@@ -20,8 +20,6 @@ jobs:
                   node-version: 20
                   cache: npm
                   registry-url: 'https://registry.npmjs.org'
-                  # ↓ package.json の name に含めたスコープを指定しておく
-                  scope: '@sushat4692'
                   always-auth: true
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
@@ -38,9 +36,9 @@ jobs:
               run: npm run build --if-present
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-            # リリース
+            # リリース（スコープなしのパッケージ名 inputfollow.js として公開）
             - name: Publish
-              run: npm publish --access=public
+              run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
             # Push tag to GitHub if package.json version's tag is not tagged
