@@ -1,5 +1,9 @@
-import * as z from 'zod/mini';
-export declare const rule: z.ZodMiniString<string>;
+/**
+ * Check required value
+ * @param {string} value
+ * @returns {boolean}
+ */
+export declare const rule: (value: string) => boolean;
 /**
  * Check required of target field element's value
  * @param {string[]} values

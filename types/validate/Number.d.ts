@@ -1,5 +1,3 @@
-import * as z from 'zod/mini';
-export declare const rule: z.ZodMiniNumber<unknown>;
 /**
  * Check numeric of target field element's value
  * @param {string[]} values

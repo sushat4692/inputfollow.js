@@ -1,6 +1,6 @@
 {
     "name": "inputfollow.js",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Input Validate, Input Limit etc.",
     "keywords": [
         "form",
@@ -50,9 +50,6 @@
         "test:watch": "vitest",
         "test:unit": "vitest run --project unit",
         "test:browser": "vitest run --project browser"
-    },
-    "dependencies": {
-        "zod": "^4.1.11"
     },
     "devDependencies": {
         "@babel/core": "^7.28.4",

@@ -1,6 +1,4 @@
-import * as z from 'zod/mini'
-
-export const rule = z.coerce.number()
+const rule = (value: string) => !Number.isNaN(Number(value))
 
 /**
  * Check numeric of target field element's value
@@ -8,8 +6,5 @@ export const rule = z.coerce.number()
  * @returns {boolean}
  */
 export const check = (values: string[]) => {
-    return values.reduce(
-        (prev, current) => prev && rule.safeParse(current).success,
-        true
-    )
+    return values.reduce((prev, current) => prev && rule(current), true)
 }
