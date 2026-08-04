@@ -109,8 +109,7 @@ var InputFollow = (function () {
         if (value.validation !== undefined) {
             var validation = value.validation;
             if (!isValidationOption(validation) &&
-                !(Array.isArray(validation) &&
-                    validation.every(isValidationOption))) {
+                !(Array.isArray(validation) && validation.every(isValidationOption))) {
                 return false;
             }
         }
@@ -127,8 +126,7 @@ var InputFollow = (function () {
     };
     var isFormElement = function (value) {
         return isString(value) ||
-            (typeof HTMLFormElement !== 'undefined' &&
-                value instanceof HTMLFormElement);
+            (typeof HTMLFormElement !== 'undefined' && value instanceof HTMLFormElement);
     };
     var isInitialParam = function (value) {
         if (!isRecord(value) || !isRules(value.rules)) {
@@ -183,7 +181,10 @@ var InputFollow = (function () {
         return values.reduce(function (prev, current) { return prev && rule$b(current); }, true);
     };
 
-    var rule$a = function (value) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); };
+    // Practical email validation (same as zod v4's regexes.email)
+    var rule$a = function (value) {
+        return /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/.test(value);
+    };
     /**
      * Check Email format of target field element's value
      * @param {string[]} values

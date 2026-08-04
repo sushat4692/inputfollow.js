@@ -1,6 +1,11 @@
 import { rule as ruleRequired } from './Required'
 
-const rule = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+// "Practical email validation" regex, taken from zod v4's regexes.email
+// https://github.com/colinhacks/zod (MIT License, Copyright (c) 2025 Colin McDonnell)
+const rule = (value: string) =>
+    /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/.test(
+        value
+    )
 
 /**
  * Check Email format of target field element's value
