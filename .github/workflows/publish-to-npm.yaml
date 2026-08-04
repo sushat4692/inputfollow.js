@@ -16,6 +16,7 @@ jobs:
             id-token: write
         steps:
             # npmのTrusted Publisher設定（package側でGitHub Actionsを信頼）によりOIDC認証するため、NODE_AUTH_TOKENは不要
+            # 注意: registry-urlを指定すると setup-node が GITHUB_TOKEN を npm 認証用に書き込み、OIDC より先に使われて E404 になるため指定しない
             - name: Checkout
               uses: actions/checkout@v3
             - name: Use Node.js And Setup .npmrc
@@ -23,7 +24,6 @@ jobs:
               with:
                   node-version: 20
                   cache: npm
-                  registry-url: 'https://registry.npmjs.org'
             # リリース可能か確認
             - name: Can Publish
               run: npx can-npm-publish --verbose
