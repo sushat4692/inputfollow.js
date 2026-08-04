@@ -183,8 +183,7 @@ describe('InputFollow validation flow', () => {
         const submitButton = form.querySelector<HTMLButtonElement>('#submit')!
         expect(submitButton.hasAttribute('disabled')).toBe(true)
 
-        const name =
-            form.querySelector<HTMLInputElement>('input[name="name"]')!
+        const name = form.querySelector<HTMLInputElement>('input[name="name"]')!
         name.value = 'taro'
         input(name)
         expect(submitButton.hasAttribute('disabled')).toBe(false)
