@@ -32,6 +32,7 @@
 ### 削除
 
 - api-documenter による Markdown ドキュメント（`docs/`）。
+- `@microsoft/api-extractor` への依存（API ドキュメントは TypeDoc で生成）。
 
 ## [1.0.0] - 2026-08-04
 

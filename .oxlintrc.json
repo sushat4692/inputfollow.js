@@ -7,8 +7,6 @@
     "ignorePatterns": [
         "dist/**",
         "types/**",
-        "docs/**",
-        "temp/**",
         ".rollup.cache/**",
         "demo/js/inputfollow*.js",
         "demo/css/**",

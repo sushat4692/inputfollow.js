@@ -9,8 +9,6 @@
     "ignorePatterns": [
         "dist/**",
         "types/**",
-        "docs/**",
-        "temp/**",
         ".rollup.cache/**",
         "demo/**",
         "AGENTS.md",

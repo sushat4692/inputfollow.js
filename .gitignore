@@ -1,5 +1,4 @@
 .rollup.cache
-temp
 playwright-report
 test-results
 .vitest-attachments
