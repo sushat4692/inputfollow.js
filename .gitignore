@@ -185,3 +185,9 @@ dist
 
 
 types/tsdoc-metadata.json
+
+# Documentation site (Astro / Starlight)
+site/dist
+site/.astro
+site/src/content/docs/api
+site/src/content/docs/ja/api

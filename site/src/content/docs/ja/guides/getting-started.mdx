@@ -1,0 +1,102 @@
+---
+title: はじめに
+description: inputfollow.js のインストールと基本的な使い方
+---
+
+## インストール
+
+### npm
+
+```bash
+npm install inputfollow.js
+```
+
+```js
+import { InputFollow } from 'inputfollow.js'
+
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'name',
+            validation: [{ type: 'required', message: '名前は必須です' }],
+        },
+    ],
+})
+```
+
+### script タグ
+
+UMD ビルド（`dist/inputfollow.js`）を読み込むと、グローバル関数 `InputFollow` が使えます。
+
+```html
+<script src="path/to/inputfollow.js"></script>
+<script>
+    InputFollow('#form', { rules: [] })
+</script>
+```
+
+## 基本的な使い方
+
+`InputFollow(formEl, params)` は `<form>` 要素（またはセレクタ文字列）と設定オブジェクトを受け取ります。
+文字列を渡した場合は `document.querySelector` で解決されます。
+
+```js
+const formEl = document.querySelector('#form')
+
+if (formEl) {
+    InputFollow(formEl, {
+        submit_button: '#submit',
+        focus_invalid_field: true,
+        rules: [
+            {
+                name: 'name',
+                validation: [
+                    { type: 'required', message: '名前は必須です' },
+                ],
+            },
+            {
+                name: 'number',
+                limit: 'number',
+                validation: [
+                    { type: 'number', message: '数値を入力してください' },
+                ],
+            },
+        ],
+    })
+}
+```
+
+`InputFollow` の呼び出し時に一度バリデーションが実行され、以降は入力・フォーカスアウト・送信のたびに検証されます。
+また、ブラウザ標準のバリデーションがコールバックを妨げないよう、フォームに `novalidate` を自動で付与します（`novalidate: false` で無効化できます）。
+
+## 戻り値
+
+```ts
+const { formEl, elements, validate, getElements } = InputFollow('#form', params)
+```
+
+| メンバー      | 型                                     | 説明                               |
+| ------------- | -------------------------------------- | ---------------------------------- |
+| `formEl`      | `HTMLFormElement`                      | 対象のフォーム要素                 |
+| `elements`    | フィールドオブジェクトの配列           | ルール1件につき1エントリ           |
+| `validate`    | `(init?: boolean) => ValidationResult` | バリデーションを実行して結果を返す |
+| `hasError`    | `() => boolean`                        | いずれかのフィールドにエラーがあるか |
+| `clear`       | `() => void`                           | 全フィールドのエラー状態をクリアする |
+| `getElements` | `(name: string) => field object[]`     | フィールド名でオブジェクトを取得する |
+| `destroy`     | `() => void`                           | リスナーと生成したメッセージを削除する |
+
+各フィールドオブジェクトは `validate()` / `hasError()` / `getErrors()` を持ちます。
+
+```js
+const api = InputFollow('#form', params)
+
+api.validate()
+api.getElements('email')[0]?.getErrors()
+```
+
+## 次のステップ
+
+- [ルールとオプション](../rules/)
+- [バリデーション](../validation/)
+- [入力制限](../limitations/)
+- [イベントと状態](../events/)

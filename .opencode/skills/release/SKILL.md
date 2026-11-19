@@ -36,7 +36,7 @@ description: inputfollow.js の gitflow リリース手順。release/vX.Y.Z ブ�
 5. **検証**
     - `npm test`（unit + browser 全件）
     - `npm run lint` / `npm run format:check`
-    - `npm run make:doc` を実行し docs/ に差分がないか確認（公開 API 変更がある場合はコミットに含める）
+    - `npm run docs` でドキュメントサイトが生成できることを確認（`site/dist` と API リファレンスは gitignore 済み）
 
 6. **master へマージ・公開**
     - `git checkout master && git merge --no-ff release/vX.Y.Z -m "Merge branch 'release/vX.Y.Z'"`
@@ -58,3 +58,4 @@ description: inputfollow.js の gitflow リリース手順。release/vX.Y.Z ブ�
 - release ブランチから直接 feature 開発をしない
 - `gh workflow run` での発火にはリポジトリの admin 権限が必要。権限エラーが出たら `gh auth switch` で `sushat4692` アカウントに切り替える
 - `npm run demo` は serve（http-server ではない）
+- ドキュメントサイトは `npm run docs:dev` で確認できる（`site/` は npm workspaces のメンバー）

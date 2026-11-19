@@ -1,0 +1,177 @@
+---
+interface Props {
+    title?: string
+    /** InputFollow に渡す設定（関数は指定できない） */
+    params: Record<string, unknown>
+    submitLabel?: string
+}
+
+const locale = Astro.locals.starlightRoute?.locale
+const isJa = locale === 'ja'
+const messages = isJa
+    ? {
+          success: '入力OK',
+          submit: '送信できる状態です',
+          failed: '入力内容を確認してください',
+          errors: '{count} 件のエラー',
+          reset: 'リセット',
+      }
+    : {
+          success: 'Looks good',
+          submit: 'Ready to submit',
+          failed: 'Please check the input',
+          errors: '{count} error(s)',
+          reset: 'Reset',
+      }
+
+const {
+    title,
+    params,
+    submitLabel = isJa ? '送信' : 'Submit',
+} = Astro.props
+const config = JSON.stringify(params)
+---
+
+<section class="live-demo">
+    {title && <p class="live-demo__title">{title}</p>}
+    <form
+        class="live-demo__form"
+        data-live-demo-form={config}
+        data-live-demo-messages={JSON.stringify(messages)}
+        novalidate>
+        <div class="live-demo__fields">
+            <slot />
+        </div>
+        <div class="live-demo__actions">
+            <button type="submit" class="live-demo__button">
+                {submitLabel}
+            </button>
+            <button
+                type="reset"
+                class="live-demo__button live-demo__button--ghost"
+            >
+                {messages.reset}
+            </button>
+            <output
+                class="live-demo__status"
+                data-live-demo-status
+                aria-live="polite"></output>
+        </div>
+    </form>
+</section>
+
+<script>
+    import { InputFollow } from '../../../src/index'
+
+    type DemoMessages = {
+        success: string
+        submit: string
+        failed: string
+        errors: string
+        reset: string
+    }
+    type Errors = Record<string, { type: string; message?: string }[]>
+    type DemoValidation = {
+        type: string
+        validate?: string | ((value: string) => boolean | string)
+        [key: string]: unknown
+    }
+    type DemoRule = {
+        name: string
+        validation?: DemoValidation | DemoValidation[]
+    }
+    type DemoParams = Record<string, unknown> & { rules?: DemoRule[] }
+
+    // Functions cannot be serialized into an attribute, so demos reference
+    // custom validators by name (e.g. `validate: 'not-admin'`).
+    const demoValidators: Record<
+        string,
+        (value: string) => boolean | string
+    > = {
+        'not-admin': (value) => value !== 'admin',
+    }
+
+    const resolveValidators = (params: DemoParams) => {
+        for (const rule of params.rules ?? []) {
+            const validations = Array.isArray(rule.validation)
+                ? rule.validation
+                : rule.validation
+                  ? [rule.validation]
+                  : []
+
+            for (const validation of validations) {
+                if (
+                    validation.type === 'custom' &&
+                    typeof validation.validate === 'string'
+                ) {
+                    validation.validate =
+                        demoValidators[validation.validate] ?? (() => true)
+                }
+            }
+        }
+
+        return params
+    }
+
+    for (const form of document.querySelectorAll<HTMLFormElement>(
+        'form[data-live-demo-form]'
+    )) {
+        const params = resolveValidators(
+            JSON.parse(
+                form.getAttribute('data-live-demo-form') ?? '{}'
+            ) as DemoParams
+        )
+        const messages = JSON.parse(
+            form.getAttribute('data-live-demo-messages') ?? '{}'
+        ) as DemoMessages
+        const status = form.querySelector<HTMLOutputElement>(
+            '[data-live-demo-status]'
+        )
+
+        // 初回バリデーションでは状態を出さず、操作後だけフィードバックする
+        let touched = false
+
+        const setStatus = (text: string, state: '' | 'success' | 'error') => {
+            if (!status) return
+            status.textContent = text
+            status.dataset.state = state
+        }
+
+        form.addEventListener(
+            'input',
+            () => {
+                touched = true
+            },
+            true
+        )
+
+        const api = InputFollow(form, {
+            ...params,
+            on_success: () => {
+                if (touched) setStatus(messages.success, 'success')
+            },
+            on_error: (errors: Errors) => {
+                if (!touched) return
+                const count = Object.values(errors).filter(
+                    (list) => list.length > 0
+                ).length
+                if (count === 0) {
+                    setStatus(messages.success, 'success')
+                    return
+                }
+                setStatus(
+                    messages.errors.replace('{count}', String(count)),
+                    'error'
+                )
+            },
+            on_submit: () => setStatus(messages.submit, 'success'),
+            on_failed: () => setStatus(messages.failed, 'error'),
+        } as never)
+
+        form.addEventListener('reset', () => {
+            touched = false
+            setStatus('', '')
+            queueMicrotask(() => api.validate(true))
+        })
+    }
+</script>

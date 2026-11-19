@@ -14,6 +14,11 @@
         ".rollup.cache/**",
         "demo/**",
         "AGENTS.md",
-        ".vscode/**"
+        ".vscode/**",
+        "site/dist/**",
+        "site/.astro/**",
+        "site/src/content/docs/api/**",
+        "site/src/content/docs/ja/api/**",
+        "site/src/content/docs/**/*.mdx"
     ]
 }

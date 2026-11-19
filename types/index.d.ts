@@ -1,34 +1,11 @@
-export type { ValidationType, WithOption, ModeOption, LimitationOption, ValidationOption, Rule, ValidatedError, Param, InitialParam, RootEvent, Target, FormElement, FieldElement, } from './types';
-import { InitialParam, FormElement, ValidatedError } from './types';
+export type { ValidationType, WithOption, ModeOption, LimitationOption, ValidationOption, CustomValidator, CustomValidatorContext, Rule, ValidatedError, ValidationResult, Param, InitialParam, RootEvent, Target, FormElement, FieldElement, FieldController, InputFollowInstance, } from './types';
+import { InitialParam, FormElement, InputFollowInstance } from './types';
 /**
- * InputFollow class
+ * InputFollow
  *
  * @remarks
- * You can see {@link https://sushat4692.github.io/inputfollow.js/ | Demo}.
+ * You can see {@link https://sushat4692.github.io/inputfollow.js/ | Documentation}.
  *
  * @public
  */
-export declare const InputFollow: (formEl: FormElement, params: InitialParam) => {
-    formEl: HTMLFormElement;
-    elements: {
-        formEl: HTMLFormElement;
-        elements: import("./types").FieldElement[];
-        name: string;
-        limit: import("./types").LimitationOption;
-        validations: import("./types").ValidationOption[] | null;
-        validate: (init?: boolean, ignored?: boolean) => void;
-        hasError: () => boolean;
-        getErrors: () => ValidatedError[];
-    }[];
-    validate: (init?: boolean) => void;
-    getElements: (name: string) => {
-        formEl: HTMLFormElement;
-        elements: import("./types").FieldElement[];
-        name: string;
-        limit: import("./types").LimitationOption;
-        validations: import("./types").ValidationOption[] | null;
-        validate: (init?: boolean, ignored?: boolean) => void;
-        hasError: () => boolean;
-        getErrors: () => ValidatedError[];
-    }[];
-};
+export declare const InputFollow: (formEl: FormElement, params: InitialParam) => InputFollowInstance;

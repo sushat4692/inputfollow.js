@@ -1,0 +1,93 @@
+---
+title: inputfollow.js
+description: フォームのバリデーションと入力制限を提供する TypeScript ライブラリ
+template: splash
+hero:
+    tagline: フォームのバリデーションと入力制限を、宣言的なルール定義で。
+    actions:
+        - text: はじめる
+          link: guides/getting-started/
+          icon: right-arrow
+          variant: primary
+        - text: API リファレンス
+          link: api/
+          icon: document
+          variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+import LiveDemo from '@components/LiveDemo.astro'
+
+`inputfollow.js` は、既存の `<form>` にバリデーションと入力制限を追加する小さな TypeScript ライブラリです。
+フィールドのルールを一度書くだけで、検証・エラーメッセージの表示・不正な送信のブロックまでを行います。
+
+<CardGrid>
+    <Card title="バリデーション" icon="approve-check-circle">
+        必須・メール・数値・コード・かな・英数字・一致確認などを組み合わせて指定できます。
+    </Card>
+    <Card title="入力制限" icon="pencil">
+        バリデーション時に許可された文字だけへ変換します（`number` / `code`）。
+    </Card>
+    <Card title="複数フィールド連携" icon="random">
+        `with` と `mode` で「どれか1つ」「すべて」、`if` で条件付きバリデーションを表現できます。
+    </Card>
+    <Card title="TypeScript" icon="seti:typescript">
+        型定義と TSDoc を同梱。ESM / UMD の両方でビルドされています。
+    </Card>
+</CardGrid>
+
+## 試してみる
+
+入力して送信してみてください。
+
+<LiveDemo
+    title="必須 + メール"
+    params={{
+        rules: [
+            {
+                name: 'demo-email',
+                validation: [
+                    { type: 'required', message: 'メールアドレスは必須です' },
+                    {
+                        type: 'email',
+                        message: 'メールアドレスの形式が不正です',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="demo-email">メールアドレス</label>
+        <input
+            id="demo-email"
+            name="demo-email"
+            type="email"
+            placeholder="you@example.com"
+        />
+    </div>
+</LiveDemo>
+
+## クイックスタート
+
+```bash
+npm install inputfollow.js
+```
+
+```js
+import { InputFollow } from 'inputfollow.js'
+
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'email',
+            validation: [
+                { type: 'required', message: 'メールアドレスは必須です' },
+                { type: 'email', message: 'メールアドレスの形式が不正です' },
+            ],
+        },
+    ],
+})
+```
+
+インストール方法と戻り値については [はじめに](./guides/getting-started/) を参照してください。

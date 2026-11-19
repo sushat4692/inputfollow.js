@@ -18,8 +18,11 @@
         "url": "git+https://github.com/sushat4692/inputfollow.js.git"
     },
     "directories": {
-        "doc": "docs"
+        "doc": "site"
     },
+    "workspaces": [
+        "site"
+    ],
     "files": [
         "package.json",
         "README.md",
@@ -28,21 +31,37 @@
         "dist"
     ],
     "type": "module",
-    "main": "dist/index.js",
+    "main": "dist/index.cjs",
     "module": "dist/index.es.js",
-    "browser": "dist/inputfollow.js",
+    "browser": "dist/index.es.js",
     "types": "types/index.d.ts",
+    "unpkg": "dist/inputfollow.min.js",
+    "jsdelivr": "dist/inputfollow.min.js",
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "import": "./dist/index.es.js",
+            "require": "./dist/index.cjs",
+            "default": "./dist/index.es.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "prebuild": "rimraf dist && rimraf types && rimraf .rollup.cache && rimraf tsconfig.tsbuildinfo && rimraf temp",
         "build": "rollup -c",
         "postbuild": "mv ./dist/types ./types",
         "demo": "serve ./demo",
-        "make": "npm run build && npm run make:demo:build && npm run make:doc",
+        "make": "npm run build && npm run make:demo:build && npm run docs:build",
         "make:demo": "npm run build && npm run make:demo:build",
         "make:demo:build": "npm run make:demo:js && npm run make:demo:css",
         "make:demo:js": "cp -f ./dist/inputfollow.js ./demo/js/inputfollow.js && cp -f ./dist/inputfollow.js.map ./demo/js/inputfollow.js.map && cp -f ./dist/inputfollow.min.js ./demo/js/inputfollow.min.js",
         "make:demo:css": "sass demo/scss/style.scss demo/css/style.css --source-map",
-        "make:doc": "api-extractor run --local --verbose && api-documenter markdown -i ./temp -o ./docs",
+        "make:doc": "npm run docs:build",
+        "docs": "npm run docs:build",
+        "docs:dev": "npm run dev -w site",
+        "docs:build": "npm run build -w site",
+        "docs:preview": "npm run preview -w site",
+        "api:report": "api-extractor run --local --verbose",
         "lint": "oxlint .",
         "format": "oxfmt",
         "format:check": "oxfmt --check",
@@ -52,7 +71,6 @@
         "test:browser": "vitest run --project browser"
     },
     "devDependencies": {
-        "@microsoft/api-documenter": "^7.30.10",
         "@microsoft/api-extractor": "^7.58.12",
         "@rollup/plugin-commonjs": "^29.0.3",
         "@rollup/plugin-node-resolve": "^16.0.3",

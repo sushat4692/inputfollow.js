@@ -6,6 +6,12 @@ import pluginTerser from '@rollup/plugin-terser'
 
 import pkg from './package.json' with { type: 'json' }
 
+// 出力先（package.json の main / module / browser / exports と対応）
+const browserBundle = 'dist/inputfollow.js'
+const browserBundleMin = 'dist/inputfollow.min.js'
+const esmBundle = 'dist/index.es.js'
+const cjsBundle = 'dist/index.cjs'
+
 // ライブラリに埋め込むcopyright
 const banner = `/*!
   ${pkg.name.replace(/^@.*\//, '')} v${pkg.version}
@@ -24,7 +30,7 @@ export default [
                 // exportされたモジュールを格納する変数
                 name: 'InputFollow',
                 // 出力先ファイル
-                file: pkg.browser,
+                file: browserBundle,
                 // ブラウザ用フォーマット
                 format: 'iife',
                 // ソースマップをインラインで出力
@@ -36,7 +42,7 @@ export default [
             {
                 name: 'InputFollow',
                 // minifyするので.minを付与する
-                file: pkg.browser.replace('.js', '.min.js'),
+                file: browserBundleMin,
                 format: 'iife',
                 banner,
                 // minify用プラグインを追加で実行する
@@ -64,7 +70,7 @@ export default [
         input: `src/index.ts`,
         output: [
             {
-                file: pkg.module,
+                file: esmBundle,
                 format: 'es',
                 sourcemap: 'inline',
                 banner,
@@ -83,7 +89,7 @@ export default [
         input: 'src/index.ts',
         output: [
             {
-                file: pkg.main,
+                file: cjsBundle,
                 format: 'cjs',
                 sourcemap: 'inline',
                 banner,

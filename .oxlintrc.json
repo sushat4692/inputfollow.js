@@ -12,7 +12,11 @@
         ".rollup.cache/**",
         "demo/js/inputfollow*.js",
         "demo/css/**",
-        "demo/js/*.map"
+        "demo/js/*.map",
+        "site/dist/**",
+        "site/.astro/**",
+        "site/src/content/docs/api/**",
+        "site/src/content/docs/ja/api/**"
     ],
     "categories": {
         "correctness": "error",
@@ -21,7 +25,10 @@
     "rules": {
         "no-unused-vars": [
             "error",
-            { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }
         ],
         "no-undef": "off",
         "no-underscore-dangle": "off"

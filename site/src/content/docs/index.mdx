@@ -1,0 +1,95 @@
+---
+title: inputfollow.js
+description: Declarative form validation and input limiting for the browser.
+template: splash
+hero:
+    tagline: Declarative validation and input limiting for your forms.
+    actions:
+        - text: Get started
+          link: guides/getting-started/
+          icon: right-arrow
+          variant: primary
+        - text: API reference
+          link: api/
+          icon: document
+          variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+import LiveDemo from '@components/LiveDemo.astro'
+
+`inputfollow.js` is a small TypeScript library that adds validation and input
+limiting to an existing `<form>`. Describe your fields once, and it takes care
+of validating, rendering error messages and blocking invalid submissions.
+
+<CardGrid>
+    <Card title="Validation" icon="approve-check-circle">
+        Required, e-mail, number, code, kana, alphanumeric and equality checks —
+        combine them freely per field.
+    </Card>
+    <Card title="Input limiting" icon="pencil">
+        Convert field values to the allowed characters on validation
+        (`number` and `code` limits).
+    </Card>
+    <Card title="Cross-field rules" icon="random">
+        Use `with` / `mode` for “at least one of” or “all of”, and `if` for
+        conditional validation.
+    </Card>
+    <Card title="TypeScript" icon="seti:typescript">
+        Ships with type definitions and TSDoc. Available as ESM and UMD builds.
+    </Card>
+</CardGrid>
+
+## Try it
+
+Type in the fields and submit the form.
+
+<LiveDemo
+    title="Required + E-mail"
+    params={{
+        rules: [
+            {
+                name: 'demo-email',
+                validation: [
+                    { type: 'required', message: 'E-mail is required' },
+                    { type: 'email', message: 'E-mail is not Email format' },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="demo-email">E-mail</label>
+        <input
+            id="demo-email"
+            name="demo-email"
+            type="email"
+            placeholder="you@example.com"
+        />
+    </div>
+</LiveDemo>
+
+## Quick start
+
+```bash
+npm install inputfollow.js
+```
+
+```js
+import { InputFollow } from 'inputfollow.js'
+
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'email',
+            validation: [
+                { type: 'required', message: 'E-mail is required' },
+                { type: 'email', message: 'E-mail is not Email format' },
+            ],
+        },
+    ],
+})
+```
+
+Continue with [Getting Started](./guides/getting-started/) to learn about
+installation options and the returned API.
