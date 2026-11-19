@@ -72,6 +72,11 @@ export default defineConfig({
                     ],
                 },
                 {
+                    label: 'Changelog',
+                    translations: { ja: '更新履歴' },
+                    link: '/changelog/',
+                },
+                {
                     label: 'API Reference',
                     translations: { ja: 'API リファレンス' },
                     items: [

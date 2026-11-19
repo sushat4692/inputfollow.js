@@ -1,0 +1,85 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+
+- Documentation site built with Astro + Starlight, available in English and
+  Japanese with live demos and an API reference.
+- Custom validators: `type: 'custom'` with a `validate` function.
+- Default error messages via the `messages` option.
+- Boolean conditions for `if.target` (checkbox / radio state or whether a text
+  field has a value).
+- `message_target` rule option to render a field's error message anywhere.
+- `validate()` now returns `{ valid, errors, errorFields }`.
+- `hasError()`, `clear()` and `destroy()` on the returned instance.
+- `initial_valid_view`, `novalidate` and `ignore_missing_fields` options.
+- `aria-invalid`, `aria-describedby`, `role="alert"` and `aria-live` on error
+  messages and invalid fields.
+- `FieldController`, `InputFollowInstance`, `ValidationResult` and
+  `CustomValidator` types, with TSDoc on the public API.
+- `exports` map and a `.cjs` CommonJS build.
+
+### Changed
+
+- `number` validation no longer accepts `Infinity`, hexadecimal, exponent
+  notation or blank values.
+- Duplicate rules for the same field are ignored with a warning.
+- Native form validation is disabled with `novalidate` by default.
+- The `is-valid` class is no longer added before the first interaction (use
+  `initial_valid_view: true` for the previous behavior).
+- The error state is cleared automatically when the form is reset.
+
+### Removed
+
+- `api-documenter` based Markdown documentation (`docs/`).
+
+## [1.0.0] - 2026-08-04
+
+### Changed
+
+- Replaced the build/demo tooling: dropped Babel and serve the standalone demo
+  with `serve`.
+- Added release automation and regenerated the demo bundles.
+
+## [0.2.0] - 2026-08-04
+
+### Changed
+
+- Replaced `zod/mini` with in-house validators.
+
+### Fixed
+
+- Adopted zod's practical e-mail validation regex.
+
+## [0.1.0] - 2026-08-04
+
+### Added
+
+- Hiragana, katakana, kana, half-width katakana, alpha and alphanumeric
+  validations.
+- Vitest unit / browser test suites and GitHub Actions CI.
+
+### Fixed
+
+- Validation bugs and the `or` mode behavior.
+
+### Changed
+
+- Replaced ESLint / Prettier with oxlint / oxfmt.
+
+## Earlier releases
+
+See the [tags](https://github.com/sushat4692/inputfollow.js/tags) and
+[releases](https://github.com/sushat4692/inputfollow.js/releases) for
+`v0.0.11` and earlier.
+
+[Unreleased]: https://github.com/sushat4692/inputfollow.js/compare/v1.0.0...develop
+[1.0.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v1.0.0
+[0.2.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.2.0
+[0.1.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.1.0

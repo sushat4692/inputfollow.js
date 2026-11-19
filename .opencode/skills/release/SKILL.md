@@ -27,6 +27,7 @@ description: inputfollow.js の gitflow リリース手順。release/vX.Y.Z ブ�
 3. **バージョン更新**
     - `npm version X.Y.Z --no-git-tag-version`（package.json と package-lock.json のみ更新）
     - コミットメッセージは過去の慣習に合わせ **`Updated version number`**
+    - `CHANGELOG.md` / `CHANGELOG.ja.md` の `[Unreleased]` を新バージョン（リリース日付き）に移す
 
 4. **⚠️ demo バンドル再生成（必須・忘れやすい）**
     - `npm run build && npm run make:demo:js`

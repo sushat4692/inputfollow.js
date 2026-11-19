@@ -58,8 +58,8 @@
         "make:demo:css": "sass demo/scss/style.scss demo/css/style.css --source-map",
         "make:doc": "npm run docs:build",
         "docs": "npm run docs:build",
-        "docs:dev": "npm run dev -w site",
-        "docs:build": "npm run build -w site",
+        "docs:dev": "npm run changelog:sync && npm run dev -w site",
+        "docs:build": "npm run changelog:sync && npm run build -w site",
         "docs:preview": "npm run preview -w site",
         "api:report": "api-extractor run --local --verbose",
         "lint": "oxlint .",
@@ -68,7 +68,8 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:unit": "vitest run --project unit",
-        "test:browser": "vitest run --project browser"
+        "test:browser": "vitest run --project browser",
+        "changelog:sync": "node scripts/sync-changelog.mjs"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "^7.58.12",

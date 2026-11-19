@@ -191,3 +191,5 @@ site/dist
 site/.astro
 site/src/content/docs/api
 site/src/content/docs/ja/api
+site/src/content/docs/changelog.md
+site/src/content/docs/ja/changelog.md
