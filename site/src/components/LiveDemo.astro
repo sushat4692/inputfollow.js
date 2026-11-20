@@ -1,9 +1,13 @@
 ---
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components'
+import DemoFrame from './DemoFrame.astro'
+
 interface Props {
     title?: string
     /** InputFollow に渡す設定（関数は指定できない） */
     params: Record<string, unknown>
     submitLabel?: string
+    lang?: string
 }
 
 const locale = Astro.locals.starlightRoute?.locale
@@ -28,36 +32,88 @@ const {
     title,
     params,
     submitLabel = isJa ? '送信' : 'Submit',
+    lang = 'js',
 } = Astro.props
 const config = JSON.stringify(params)
+const messagesJson = JSON.stringify(messages)
+
+// Functions cannot be serialized into the demo config, so demos reference
+// named validators. The same names are expanded into real code below.
+const validatorSources: Record<string, string> = {
+    'not-admin': "(value) => value !== 'admin'",
+    'available-user': 'async (value) => !(await isUsernameTaken(value))',
+}
+
+const quote = (value: string) =>
+    `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
+
+const serialize = (value: unknown, indent = 0): string => {
+    const pad = '    '.repeat(indent)
+    const inner = '    '.repeat(indent + 1)
+
+    if (typeof value === 'string') {
+        return quote(value)
+    }
+
+    if (typeof value === 'number' || typeof value === 'boolean') {
+        return String(value)
+    }
+
+    if (Array.isArray(value)) {
+        if (value.length === 0) {
+            return '[]'
+        }
+
+        return `[\n${value
+            .map((item) => inner + serialize(item, indent + 1))
+            .join(',\n')},\n${pad}]`
+    }
+
+    if (value !== null && typeof value === 'object') {
+        const entries = Object.entries(value as Record<string, unknown>)
+
+        if (entries.length === 0) {
+            return '{}'
+        }
+
+        return `{\n${entries
+            .map(([key, item]) => {
+                if (key === 'validate' && typeof item === 'string') {
+                    return `${inner}${key}: ${
+                        validatorSources[item] ?? quote(item)
+                    }`
+                }
+
+                return `${inner}${key}: ${serialize(item, indent + 1)}`
+            })
+            .join(',\n')},\n${pad}}`
+    }
+
+    return String(value)
+}
+
+const code = `InputFollow('#form', ${serialize(params)})`
+const demoLabel = isJa ? 'デモ' : 'Demo'
+const sourceLabel = isJa ? 'ソース' : 'Source'
 ---
 
 <section class="live-demo">
     {title && <p class="live-demo__title">{title}</p>}
-    <form
-        class="live-demo__form"
-        data-live-demo-form={config}
-        data-live-demo-messages={JSON.stringify(messages)}
-        novalidate>
-        <div class="live-demo__fields">
-            <slot />
-        </div>
-        <div class="live-demo__actions">
-            <button type="submit" class="live-demo__button">
-                {submitLabel}
-            </button>
-            <button
-                type="reset"
-                class="live-demo__button live-demo__button--ghost"
+    <Tabs>
+        <TabItem label={demoLabel}>
+            <DemoFrame
+                config={config}
+                messages={messagesJson}
+                submitLabel={submitLabel}
+                resetLabel={messages.reset}
             >
-                {messages.reset}
-            </button>
-            <output
-                class="live-demo__status"
-                data-live-demo-status
-                aria-live="polite"></output>
-        </div>
-    </form>
+                <slot />
+            </DemoFrame>
+        </TabItem>
+        <TabItem label={sourceLabel}>
+            <Code code={code} lang={lang} wrap />
+        </TabItem>
+    </Tabs>
 </section>
 
 <script>
@@ -72,7 +128,8 @@ const config = JSON.stringify(params)
     }
     type Errors = Record<string, { type: string; message?: string }[]>
     type DemoValidation = {
-        type: string
+        type?: string
+        async?: boolean
         validate?: string | ((value: string) => boolean | string)
         [key: string]: unknown
     }
@@ -82,8 +139,8 @@ const config = JSON.stringify(params)
     }
     type DemoParams = Record<string, unknown> & { rules?: DemoRule[] }
 
-    // Functions cannot be serialized into an attribute, so demos reference
-    // custom validators by name (e.g. `validate: 'not-admin'`).
+    // Validators are passed by name because functions cannot be serialized
+    // into an attribute.
     const demoValidators: Record<
         string,
         (value: string) => boolean | string | Promise<boolean | string>
@@ -160,8 +217,6 @@ const config = JSON.stringify(params)
         const api = InputFollow(form, {
             ...params,
             on_success: () => {
-                // Async validators are skipped while typing, so only show the
-                // success state after a form submission.
                 if (touched && !hasAsyncValidation) {
                     setStatus(messages.success, 'success')
                 }

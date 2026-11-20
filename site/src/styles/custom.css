@@ -156,3 +156,15 @@
 .live-demo__status[data-state='error'] {
     color: var(--demo-error);
 }
+
+/* Let wrapped demo source break long tokens (names, patterns) too. */
+.live-demo .expressive-code pre.wrap code,
+.live-demo .expressive-code pre.wrap .code {
+    overflow-wrap: anywhere;
+}
+
+/* Grid items default to min-width:auto, which prevents wrapping. */
+.live-demo .expressive-code pre.wrap .ec-line,
+.live-demo .expressive-code pre.wrap .ec-line > .code {
+    min-width: 0;
+}
