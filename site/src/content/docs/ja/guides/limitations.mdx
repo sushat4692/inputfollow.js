@@ -1,0 +1,75 @@
+---
+title: 入力制限
+description: limit オプションによる入力中の文字制限
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+`Rule` の `limit` を指定すると、バリデーション実行時（フォーカスアウトや送信時）に
+許可されない文字を除去します。バリデーション（送信時の検証）とは独立して動作し、両方を併用できます。
+
+| `limit`          | 許可される入力            |
+| ---------------- | ------------------------- |
+| `'number'`       | 半角数字                  |
+| `'code'`         | 半角数字と `-` `+` `*`    |
+| `null`（デフォルト） | 制限なし              |
+
+## 数値のみ
+
+<LiveDemo
+    title={'limit: "number"'}
+    params={{
+        rules: [
+            {
+                name: 'v-number',
+                limit: 'number',
+                validation: [
+                    { type: 'number', message: '数値を入力してください' },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-number">数値</label>
+        <input
+            id="v-number"
+            name="v-number"
+            type="text"
+            inputmode="numeric"
+            placeholder="英字を入力してみてください"
+        />
+    </div>
+</LiveDemo>
+
+## コード（数字と `-` `+` `*`）
+
+<LiveDemo
+    title={'limit: "code"'}
+    params={{
+        rules: [
+            {
+                name: 'v-code',
+                limit: 'code',
+                validation: [
+                    {
+                        type: 'code',
+                        message: '数字または "-" "+" で入力してください',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-code">コード</label>
+        <input
+            id="v-code"
+            name="v-code"
+            type="text"
+            placeholder="例: 03-1234-5678"
+        />
+    </div>
+</LiveDemo>
+
+`limit` は入力値を変換するだけです。必須チェックなどは `validation` に指定してください。

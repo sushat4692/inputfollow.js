@@ -1,8 +1,12 @@
-import { validate as execValidate } from '../validate'
+import {
+    validate as execValidate,
+    validateAsync as execValidateAsync,
+} from '../validate'
 
 import {
     Param,
     FieldElement,
+    FieldController,
     ValidatedError,
     ValidationOption,
     LimitationOption,
@@ -15,9 +19,18 @@ export const createElement = (
     limit: LimitationOption,
     validations: ValidationOption[] | null,
     params: Param,
-    errors: { [key: string]: ValidatedError[] }
-) => {
+    errors: { [key: string]: ValidatedError[] },
+    messageTarget?: string
+): FieldController | null => {
     const elements = getElement(formEl, name)
+
+    if (!elements.length) {
+        if (params.ignore_missing_fields) {
+            return null
+        }
+
+        throw Error(`Not found target field element: ${name}`)
+    }
 
     const withElements = (() => {
         const results: FieldElement[] = []
@@ -87,9 +100,30 @@ export const createElement = (
         return results
     })()
 
-    if (!elements.length) {
-        throw Error(`Not found target field element: ${name}`)
+    const messageSelector = `[data-inputfollow-error="${name}"]`
+    const messageId = `inputfollow-error-${name.replace(
+        /[^a-zA-Z0-9_-]+/g,
+        '-'
+    )}`
+
+    const findMessageField = () => {
+        if (messageTarget) {
+            const target =
+                formEl.querySelector<HTMLElement>(messageTarget) ??
+                document.querySelector<HTMLElement>(messageTarget)
+
+            if (target) {
+                return target
+            }
+        }
+
+        return (
+            formEl.querySelector<HTMLElement>(messageSelector) ??
+            document.querySelector<HTMLElement>(messageSelector)
+        )
     }
+
+    let generatedMessageField = false
 
     // Prepare or Find error message field
     const messageField = (() => {
@@ -97,27 +131,67 @@ export const createElement = (
             return
         }
 
-        const existField =
-            formEl.querySelector(`[data-inputfollow-error="${name}"]`) ??
-            document.querySelector(`[data-inputfollow-error="${name}"]`)
-        if (existField) {
-            existField.classList.add(
-                params.error_message_class,
-                params.empty_error_message_class
-            )
-            return existField
+        let field = findMessageField()
+
+        if (!field) {
+            field = document.createElement('ul')
+            field.setAttribute('data-inputfollow-error', name)
+            elements[0].insertAdjacentElement('afterend', field)
+            generatedMessageField = true
         }
 
-        const additionalField = document.createElement('ul')
-        additionalField.classList.add(
+        field.classList.add(
             params.error_message_class,
             params.empty_error_message_class
         )
-        additionalField.setAttribute('data-inputfollow-error', name)
-        elements[0].insertAdjacentElement('afterend', additionalField)
 
-        return additionalField
+        if (!field.id) {
+            field.id = messageId
+        }
+
+        if (!field.hasAttribute('role')) {
+            field.setAttribute('role', 'alert')
+        }
+
+        if (!field.hasAttribute('aria-live')) {
+            field.setAttribute('aria-live', 'polite')
+        }
+
+        return field
     })()
+
+    const setAriaInvalid = (invalid: boolean) => {
+        elements.forEach((el) => {
+            if (invalid) {
+                el.setAttribute('aria-invalid', 'true')
+            } else {
+                el.removeAttribute('aria-invalid')
+            }
+        })
+    }
+
+    const setDescribedBy = (on: boolean) => {
+        const id = messageField?.id
+
+        if (!id) {
+            return
+        }
+
+        elements.forEach((el) => {
+            const ids = (el.getAttribute('aria-describedby') ?? '')
+                .split(/\s+/)
+                .filter(Boolean)
+            const next = on
+                ? Array.from(new Set([...ids, id]))
+                : ids.filter((value) => value !== id)
+
+            if (next.length > 0) {
+                el.setAttribute('aria-describedby', next.join(' '))
+            } else {
+                el.removeAttribute('aria-describedby')
+            }
+        })
+    }
 
     const addInvalidClass = (_elements: FieldElement[], render: boolean) => {
         if (params.valid_class) {
@@ -148,21 +222,23 @@ export const createElement = (
         }
     }
 
-    const validate = (init: boolean = false, ignored: boolean = false) => {
-        if (!name) {
+    const renderMessages = () => {
+        if (!messageField) {
             return
         }
 
-        const renderError =
-            !ignored && (init !== true || params.initial_error_view)
+        messageField.innerHTML = ''
+        errors[name].map((error) => {
+            if (error.message) {
+                const messageElement = document.createElement('li')
+                messageElement.textContent = error.message
+                messageField.appendChild(messageElement)
+            }
+        })
+        messageField.classList.remove(params.empty_error_message_class)
+    }
 
-        errors[name] = execValidate(
-            formEl,
-            elements,
-            renderError ? limit : null,
-            validations
-        )
-
+    const applyResult = (init: boolean, renderError: boolean) => {
         if (!validations || !validations.length || !messageField) {
             return
         }
@@ -173,24 +249,63 @@ export const createElement = (
             addInvalidClass(ifElements, renderError)
 
             if (renderError) {
-                messageField.innerHTML = ''
-                errors[name].map((error) => {
-                    if (error.message) {
-                        const messageElement = document.createElement('li')
-                        messageElement.textContent = error.message
-                        messageField.appendChild(messageElement)
-                    }
-                })
-                messageField.classList.remove(params.empty_error_message_class)
+                renderMessages()
+                setAriaInvalid(true)
+                setDescribedBy(true)
             }
         } else {
-            addValidClass(elements)
-            addValidClass(withElements)
-            addValidClass(ifElements)
+            // Show the valid state only after the user has interacted with the
+            // form (or when `initial_valid_view` is enabled).
+            if (!init || params.initial_valid_view) {
+                addValidClass(elements)
+                addValidClass(withElements)
+                addValidClass(ifElements)
+            }
 
             messageField.innerHTML = ''
             messageField.classList.add(params.empty_error_message_class)
+            setAriaInvalid(false)
+            setDescribedBy(false)
         }
+    }
+
+    const validate = (init: boolean = false, ignored: boolean = false) => {
+        if (!name) {
+            return
+        }
+
+        const renderError =
+            !ignored && (init !== true || params.initial_error_view)
+
+        errors[name] = execValidate(
+            formEl,
+            name,
+            elements,
+            renderError ? limit : null,
+            validations,
+            params.messages
+        )
+
+        applyResult(init, renderError)
+    }
+
+    const validateAsync = async (init: boolean = false) => {
+        if (!name) {
+            return
+        }
+
+        const renderError = init !== true || params.initial_error_view
+
+        errors[name] = await execValidateAsync(
+            formEl,
+            name,
+            elements,
+            renderError ? limit : null,
+            validations,
+            params.messages
+        )
+
+        applyResult(init, renderError)
     }
 
     const hasError = () => {
@@ -209,34 +324,67 @@ export const createElement = (
         return errors[name]
     }
 
+    const clear = () => {
+        errors[name] = []
+
+        ;[elements, withElements, ifElements].forEach((_elements) => {
+            _elements.forEach((el) => {
+                if (params.error_class) {
+                    el.classList.remove(params.error_class)
+                }
+                if (params.valid_class) {
+                    el.classList.remove(params.valid_class)
+                }
+            })
+        })
+
+        setAriaInvalid(false)
+        setDescribedBy(false)
+
+        if (messageField) {
+            messageField.innerHTML = ''
+            messageField.classList.add(params.empty_error_message_class)
+        }
+    }
+
+    const listeners: {
+        el: FieldElement
+        type: 'input' | 'blur'
+        handler: () => void
+        capture: boolean
+    }[] = []
+
     const addEvents = (
         _elements: FieldElement[],
         useCapture: boolean = false
     ) => {
         _elements.forEach((el) => {
             if (isCheckField(el)) {
-                el.addEventListener(
-                    'input',
-                    () => {
-                        validate()
-                    },
-                    useCapture
-                )
+                const onInput = () => validate()
+                el.addEventListener('input', onInput, useCapture)
+                listeners.push({
+                    el,
+                    type: 'input',
+                    handler: onInput,
+                    capture: useCapture,
+                })
             } else {
-                el.addEventListener(
-                    'input',
-                    () => {
-                        validate(false, true)
-                    },
-                    useCapture
-                )
-                el.addEventListener(
-                    'blur',
-                    () => {
-                        validate()
-                    },
-                    useCapture
-                )
+                const onInput = () => validate(false, true)
+                const onBlur = () => validate()
+                el.addEventListener('input', onInput, useCapture)
+                el.addEventListener('blur', onBlur, useCapture)
+                listeners.push({
+                    el,
+                    type: 'input',
+                    handler: onInput,
+                    capture: useCapture,
+                })
+                listeners.push({
+                    el,
+                    type: 'blur',
+                    handler: onBlur,
+                    capture: useCapture,
+                })
             }
         })
     }
@@ -245,6 +393,20 @@ export const createElement = (
     addEvents(ifElements, false)
     addEvents(equalElements, false)
 
+    const destroy = () => {
+        listeners.forEach(({ el, type, handler, capture }) => {
+            el.removeEventListener(type, handler, capture)
+        })
+        listeners.length = 0
+
+        setAriaInvalid(false)
+        setDescribedBy(false)
+
+        if (messageField && generatedMessageField) {
+            messageField.remove()
+        }
+    }
+
     return {
         formEl,
         elements,
@@ -252,7 +414,10 @@ export const createElement = (
         limit,
         validations,
         validate,
+        validateAsync,
         hasError,
         getErrors,
+        clear,
+        destroy,
     }
 }

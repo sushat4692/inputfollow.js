@@ -1,0 +1,401 @@
+---
+title: バリデーション
+description: バリデーション種別と複数フィールド連携
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+## バリデーション種別
+
+`ValidationOption` の `type` に指定できる値です。
+
+| `type`                    | 内容                            |
+| ------------------------- | ------------------------------- |
+| `required`                | 必須入力                        |
+| `email`                   | メールアドレス形式              |
+| `number`                  | 数値                            |
+| `code`                    | 数値または `-` `+` `*`          |
+| `hiragana`                | ひらがな                        |
+| `katakana`                | カタカナ                        |
+| `kana`                    | ひらがなまたはカタカナ          |
+| `hankaku-kana`            | 半角カタカナ                    |
+| `alpha`                   | 半角英字                        |
+| `alphanumeric`            | 半角英数字                      |
+| `zen-alpha`               | 全角英字                        |
+| `zen-alphanumeric`        | 全角英数字                      |
+| `['equal', 'field_name']` | 指定フィールドと値が一致するか  |
+| `'custom'`                | 独自の関数（`validate`）        |
+
+`validation` は配列で複数指定でき、上から順に評価されます。
+1つだけの場合は配列にせず直接指定することもできます。
+
+## 制約（constraints）
+
+`ValidationOption` には制約も指定できます。空の値ではスキップされるため、必須にする場合は
+`required` と併用してください。
+
+| オプション                | 型                  | 内容                     |
+| ------------------------- | ------------------- | ------------------------ |
+| `min` / `max`             | `number`            | 数値の範囲               |
+| `minlength` / `maxlength` | `number`            | 文字列の長さ             |
+| `pattern`                 | `string \| RegExp`  | 値が一致すべき正規表現   |
+
+制約は `type` と同時に評価されます。制約だけを使う場合は `type` を省略できます。
+失敗した制約名（`min` / `max` / `minlength` / `maxlength` / `pattern`）が
+`messages` の参照キーになります。
+
+<LiveDemo
+    title="minlength / maxlength / pattern"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-user',
+                validation: [
+                    {
+                        minlength: 3,
+                        maxlength: 10,
+                        pattern: '^[a-z0-9_]+$',
+                        message:
+                            '3〜10文字の半角英小文字・数字・アンダースコアで入力してください',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-user">ユーザー名</label>
+        <input
+            id="v-constraint-user"
+            name="v-constraint-user"
+            type="text"
+            placeholder="例: taro_01"
+        />
+    </div>
+</LiveDemo>
+
+<LiveDemo
+    title="min / max"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-age',
+                validation: [
+                    {
+                        type: 'number',
+                        min: 1,
+                        max: 100,
+                        message: '1〜100 の数値を入力してください',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-age">年齢</label>
+        <input
+            id="v-constraint-age"
+            name="v-constraint-age"
+            type="text"
+            inputmode="numeric"
+        />
+    </div>
+</LiveDemo>
+
+### デフォルトメッセージ
+
+`message` は省略可能です。省略した場合は `messages` オプションの該当する種別のメッセージが使われます。
+
+```js
+InputFollow('#form', {
+    messages: { required: 'この項目は必須です' },
+    rules: [{ name: 'name', validation: [{ type: 'required' }] }],
+})
+```
+
+### 必須 + メール
+
+<LiveDemo
+    title="required / email"
+    params={{
+        rules: [
+            {
+                name: 'v-email',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'メールアドレスは必須です',
+                    },
+                    {
+                        type: 'email',
+                        message: 'メールアドレスの形式が不正です',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-email">メールアドレス</label>
+        <input
+            id="v-email"
+            name="v-email"
+            type="email"
+            placeholder="you@example.com"
+        />
+    </div>
+</LiveDemo>
+
+## カスタムバリデータ
+
+`type: 'custom'` と `validate` 関数で独自の検証を書けます。
+値が正しければ `true`（または何も返さない）、不正なら `false`（設定したメッセージを使用）か、
+エラーメッセージ文字列を返します。
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            message: 'このユーザー名は使用できません',
+            validate: (value) => value !== 'admin',
+        },
+    ],
+}
+```
+
+関数は `(value, { formEl, values, field })` を受け取り、同名の要素それぞれについて実行されます。
+
+<LiveDemo
+    title="カスタムバリデータ"
+    params={{
+        rules: [
+            {
+                name: 'v-custom-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        message: 'ユーザー名 "admin" は使用できません',
+                        validate: 'not-admin',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-custom-user">ユーザー名</label>
+        <input
+            id="v-custom-user"
+            name="v-custom-user"
+            type="text"
+            placeholder="&quot;admin&quot; を試してみてください"
+        />
+    </div>
+</LiveDemo>
+
+### 非同期バリデーション
+
+`async: true` を付けると、`validateAsync()` とフォーム送信時だけ実行されます。
+入力中はスキップされます。
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            async: true,
+            message: 'このユーザー名は既に使われています',
+            validate: async (value) => !(await isTaken(value)),
+        },
+    ],
+}
+
+const api = InputFollow('#form', params)
+const result = await api.validateAsync()
+```
+
+非同期バリデータがあるフォームの送信は、検証が終わるまで保留されます。
+`on_submit` が未指定の場合は、検証成功後にネイティブの送信を実行します。
+
+<LiveDemo
+    title="非同期バリデータ"
+    params={{
+        rules: [
+            {
+                name: 'v-async-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        async: true,
+                        message: 'このユーザー名は既に使われています',
+                        validate: 'available-user',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-async-user">ユーザー名</label>
+        <input
+            id="v-async-user"
+            name="v-async-user"
+            type="text"
+            placeholder={'"taken" を試してください（600ms）'}
+        />
+    </div>
+</LiveDemo>
+
+## 複数フィールドの連携
+
+`with` に関連フィールド、`mode` に評価方法を指定します。
+
+| `mode` | 動作                                                       |
+| ------ | ---------------------------------------------------------- |
+| `or`   | `with` のいずれか1つ（または自身）が満たされれば OK        |
+| `and`  | `with` のすべて（および自身）が満たされれば OK（デフォルト） |
+
+### どちらか一方が必須（`mode: 'or'`）
+
+<LiveDemo
+    title={'mode: "or"'}
+    params={{
+        rules: [
+            {
+                name: 'v-or-phone',
+                validation: [
+                    {
+                        type: 'required',
+                        message: '電話番号かメールアドレスが必須です',
+                        mode: 'or',
+                        with: { 'v-or-mail': 'required' },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-or-phone">電話番号</label>
+        <input id="v-or-phone" name="v-or-phone" type="tel" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-or-mail">メールアドレス</label>
+        <input id="v-or-mail" name="v-or-mail" type="email" />
+    </div>
+</LiveDemo>
+
+### 両方とも必須（`mode: 'and'`）
+
+<LiveDemo
+    title={'mode: "and"'}
+    params={{
+        rules: [
+            {
+                name: 'v-and-a',
+                validation: [
+                    {
+                        type: 'required',
+                        message: '両方の入力が必須です',
+                        mode: 'and',
+                        with: { 'v-and-b': 'required' },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-and-a">フィールド A</label>
+        <input id="v-and-a" name="v-and-a" type="text" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-and-b">フィールド B</label>
+        <input id="v-and-b" name="v-and-b" type="text" />
+    </div>
+</LiveDemo>
+
+## 条件付きバリデーション
+
+`if` で他のフィールドの状態を条件にできます。
+`target` は「フィールド名 → 期待する値」のオブジェクトです。
+
+```js
+{
+    name: 'if_target',
+    validation: [
+        {
+            type: 'required',
+            message: 'チェック時はテキスト入力が必須です',
+            if: {
+                mode: 'and',
+                target: { if_from: true },
+            },
+        },
+    ],
+}
+```
+
+<LiveDemo
+    title="if + target"
+    params={{
+        rules: [
+            {
+                name: 'v-if-text',
+                validation: [
+                    {
+                        type: 'required',
+                        message: '会社名を入力してください',
+                        if: {
+                            mode: 'and',
+                            target: { 'v-if-check': true },
+                        },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field live-demo__field--inline">
+        <input id="v-if-check" name="v-if-check" type="checkbox" />
+        <label for="v-if-check">会社に所属している</label>
+    </div>
+    <div class="live-demo__field">
+        <label for="v-if-text">会社名</label>
+        <input id="v-if-text" name="v-if-text" type="text" />
+    </div>
+</LiveDemo>
+
+## 値の一致
+
+`['equal', '対象フィールド名']` で2つのフィールドの値が一致するか検証します（パスワード確認など）。
+
+<LiveDemo
+    title="equal"
+    params={{
+        rules: [
+            {
+                name: 'v-eq-confirm',
+                validation: [
+                    {
+                        type: ['equal', 'v-eq-password'],
+                        message: '値が一致しません',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-eq-password">パスワード</label>
+        <input id="v-eq-password" name="v-eq-password" type="password" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-eq-confirm">パスワード（確認）</label>
+        <input id="v-eq-confirm" name="v-eq-confirm" type="password" />
+    </div>
+</LiveDemo>

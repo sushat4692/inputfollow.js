@@ -1,0 +1,70 @@
+---
+title: Rules & Options
+description: Reference for rules and initial parameters
+---
+
+The second argument of `InputFollow` is an object with `rules` and optional
+parameters.
+
+## Rules
+
+`rules` has one entry per field.
+
+| Parameter     | Type                                       | Description                        |
+| ------------- | ------------------------------------------ | ---------------------------------- |
+| `name`        | `string \| string[]`                       | The `name` attribute of the field, or a group of names |
+| `limit?`      | `'number' \| 'code' \| null`                | Input limiting type                |
+| `validation?` | `ValidationOption \| ValidationOption[]`    | Validation settings                |
+| `message_target?` | `string`                                | Selector of the error message element |
+
+Pass an array to `name` to treat several fields as a group. The rule is
+attached to the first field and the other fields are validated through `with`
+(use `mode` to choose `or` / `and`).
+
+```js
+{
+    name: ['phone', 'email'],
+    validation: [{ type: 'required', mode: 'or', message: 'Either field is required' }],
+}
+```
+
+```js
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'tel',
+            limit: 'code',
+            validation: [
+                { type: 'required', message: 'Tel is required' },
+                {
+                    type: 'code',
+                    message: 'Tel must be numeric or "-" or "+"',
+                },
+            ],
+        },
+    ],
+})
+```
+
+## Options
+
+| Parameter                   | Type                                                       | Default             | Description                                        |
+| --------------------------- | ---------------------------------------------------------- | ------------------- | -------------------------------------------------- |
+| `error_class`               | `string`                                                   | `has-error`         | Class added to invalid fields                      |
+| `error_message_class`       | `string`                                                   | `inputfollow-error` | Class of the error message element                 |
+| `empty_error_message_class` | `string`                                                   | `is-empty`          | Class of the message element when there is no error |
+| `valid_class`               | `string`                                                   | `is-valid`          | Class added to valid fields                        |
+| `initial_error_view`        | `boolean`                                                  | `false`             | Render errors on page load                         |
+| `initial_valid_view`        | `boolean`                                                  | `false`             | Add the valid class on the initial validation       |
+| `novalidate`                | `boolean`                                                  | `true`              | Set `novalidate` on the form                       |
+| `ignore_missing_fields`     | `boolean`                                                  | `false`             | Skip rules whose field does not exist              |
+| `messages`                  | `Partial<Record<string, string>>`                           | `{}`                | Default error messages keyed by validation type    |
+| `focus_invalid_field`       | `boolean`                                                  | `false`             | Focus the first invalid field on submit            |
+| `submit_button`             | `string \| HTMLInputElement \| HTMLButtonElement`           |                     | Button to disable while invalid                    |
+| `on_validate`               | `() => void`                                               |                     | Called when validation runs                        |
+| `on_success`                | `() => void`                                               |                     | Called when every field is valid                   |
+| `on_error`                  | `(errors) => void`                                         |                     | Called when at least one field has an error        |
+| `on_submit`                 | `() => void`                                               |                     | Called when a valid form is submitted              |
+| `on_failed`                 | `(errors, errorFields) => void`                            |                     | Called when an invalid form is submitted           |
+
+See [Events & State](../events/) for callback details.

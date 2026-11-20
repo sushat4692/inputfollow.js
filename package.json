@@ -1,6 +1,6 @@
 {
     "name": "inputfollow.js",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Input Validate, Input Limit etc.",
     "keywords": [
         "form",
@@ -18,7 +18,7 @@
         "url": "git+https://github.com/sushat4692/inputfollow.js.git"
     },
     "directories": {
-        "doc": "docs"
+        "doc": "site"
     },
     "files": [
         "package.json",
@@ -28,32 +28,48 @@
         "dist"
     ],
     "type": "module",
-    "main": "dist/index.js",
+    "main": "dist/index.cjs",
     "module": "dist/index.es.js",
-    "browser": "dist/inputfollow.js",
+    "browser": "dist/index.es.js",
     "types": "types/index.d.ts",
+    "unpkg": "dist/inputfollow.min.js",
+    "jsdelivr": "dist/inputfollow.min.js",
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "import": "./dist/index.es.js",
+            "require": "./dist/index.cjs",
+            "default": "./dist/index.es.js"
+        },
+        "./package.json": "./package.json",
+        "./inputfollow.css": "./dist/inputfollow.css"
+    },
     "scripts": {
-        "prebuild": "rimraf dist && rimraf types && rimraf .rollup.cache && rimraf tsconfig.tsbuildinfo && rimraf temp",
+        "prebuild": "rimraf dist && rimraf types && rimraf .rollup.cache && rimraf tsconfig.tsbuildinfo",
         "build": "rollup -c",
-        "postbuild": "mv ./dist/types ./types",
-        "demo": "serve ./demo",
-        "make": "npm run build && npm run make:demo:build && npm run make:doc",
-        "make:demo": "npm run build && npm run make:demo:build",
-        "make:demo:build": "npm run make:demo:js && npm run make:demo:css",
-        "make:demo:js": "cp -f ./dist/inputfollow.js ./demo/js/inputfollow.js && cp -f ./dist/inputfollow.js.map ./demo/js/inputfollow.js.map && cp -f ./dist/inputfollow.min.js ./demo/js/inputfollow.min.js",
-        "make:demo:css": "sass demo/scss/style.scss demo/css/style.css --source-map",
-        "make:doc": "api-extractor run --local --verbose && api-documenter markdown -i ./temp -o ./docs",
+        "postbuild": "mv ./dist/types ./types && cp -f styles/inputfollow.css ./dist/inputfollow.css",
+        "make": "npm run build && npm run docs:build",
+        "make:doc": "npm run docs:build",
+        "docs": "npm run docs:build",
+        "docs:dev": "npm run changelog:sync && npm run dev --prefix site",
+        "docs:build": "npm run changelog:sync && npm run build --prefix site",
+        "docs:preview": "npm run preview --prefix site",
         "lint": "oxlint .",
         "format": "oxfmt",
         "format:check": "oxfmt --check",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:unit": "vitest run --project unit",
-        "test:browser": "vitest run --project browser"
+        "test:browser": "vitest run --project browser",
+        "changelog:sync": "node scripts/sync-changelog.mjs",
+        "changeset": "changeset",
+        "changeset:status": "changeset status",
+        "changeset:version": "changeset version && npm install --package-lock-only"
     },
     "devDependencies": {
-        "@microsoft/api-documenter": "^7.30.10",
-        "@microsoft/api-extractor": "^7.58.12",
+        "@changesets/cli": "^3.0.3",
+        "@emnapi/core": "2.0.0-beta.2",
+        "@emnapi/runtime": "2.0.0-beta.2",
         "@rollup/plugin-commonjs": "^29.0.3",
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-terser": "^1.0.0",
@@ -65,8 +81,6 @@
         "playwright": "^1.62.1",
         "rimraf": "^6.1.3",
         "rollup": "^4.62.4",
-        "sass": "^1.102.0",
-        "serve": "^14.2.6",
         "tslib": "^2.8.1",
         "typescript": "^5.9.3",
         "vitest": "^4.1.10"

@@ -1,0 +1,134 @@
+---
+title: イベントと状態
+description: コールバックとエラー状態の扱い
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+## コールバック
+
+| コールバック  | タイミング                           | 引数                   |
+| ------------- | ------------------------------------ | ---------------------- |
+| `on_validate` | バリデーションが実行されたとき       | なし                   |
+| `on_success`  | すべてのフィールドが正常なとき       | なし                   |
+| `on_error`    | エラーがあるとき                     | `errors`               |
+| `on_submit`   | 正常な状態で送信されたとき           | なし                   |
+| `on_failed`   | エラーがある状態で送信されたとき     | `errors`, `errorFields` |
+
+`errors` は「フィールド名 → `ValidatedError[]`」のオブジェクト、`errorFields` はエラーがあるフィールド名の配列です。
+
+```js
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'name',
+            validation: [{ type: 'required', message: '名前は必須です' }],
+        },
+    ],
+    on_validate: () => console.log('validating...'),
+    on_success: () => console.log('all fields are valid'),
+    on_error: (errors) => console.log(errors),
+    on_submit: () => {
+        // on_submit を指定すると、正常時の送信は preventDefault される
+        console.log('ready to submit')
+    },
+    on_failed: (errors, errorFields) => console.log(errorFields),
+})
+```
+
+<LiveDemo
+    title="初回エラー表示 + コールバック"
+    params={{
+        initial_error_view: true,
+        rules: [
+            {
+                name: 'v-events-name',
+                validation: [
+                    { type: 'required', message: '名前は必須です' },
+                ],
+            },
+            {
+                name: 'v-events-mail',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'メールアドレスは必須です',
+                    },
+                    {
+                        type: 'email',
+                        message: 'メールアドレスの形式が不正です',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-events-name">名前</label>
+        <input id="v-events-name" name="v-events-name" type="text" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-events-mail">メールアドレス</label>
+        <input id="v-events-mail" name="v-events-mail" type="email" />
+    </div>
+</LiveDemo>
+
+## 結果とライフサイクル
+
+`validate()` は現在の状態を返します。インスタンスは `hasError()` / `clear()` /
+`destroy()` も提供します。
+
+```js
+const api = InputFollow('#form', { rules: [...] })
+
+const { valid, errors, errorFields } = api.validate()
+
+api.hasError() // いずれかのフィールドにエラーがあれば true
+api.clear() // 値を変えずにエラー状態をクリアする
+api.destroy() // リスナーと生成したメッセージを削除する
+```
+
+フォームの `reset` イベントでもエラー状態は自動的にクリアされます。
+
+## エラー表示
+
+エラー状態はクラス名で表現されます。スタイルはアプリケーション側で定義してください。
+
+| 対象                     | オプション                  | デフォルト          |
+| ------------------------ | --------------------------- | ------------------- |
+| エラーのフィールド       | `error_class`               | `has-error`         |
+| エラーメッセージ         | `error_message_class`       | `inputfollow-error` |
+| エラーが無いメッセージ   | `empty_error_message_class` | `is-empty`          |
+| 正常なフィールド         | `valid_class`               | `is-valid`          |
+
+```css
+.has-error {
+    border-color: #a94442;
+}
+.inputfollow-error {
+    color: #a94442;
+}
+.inputfollow-error.is-empty {
+    display: none;
+}
+```
+
+`[data-inputfollow-error="フィールド名"]` の要素がフォーム内（またはドキュメント内）にある場合は、それがメッセージ要素として再利用されます。
+
+## 手動でのバリデーション
+
+`initial_error_view: true` を指定すると初回読み込み時からエラーを表示します。
+任意のタイミングで再検証したい場合は戻り値の `validate()` を呼びます。
+
+```js
+const api = InputFollow('#form', { initial_error_view: true, rules: [] })
+
+api.validate()
+```
+
+## アクセシビリティ
+
+エラーのあるフィールドには `aria-invalid="true"` が付き、メッセージとは
+`aria-describedby` で関連付けられます。生成されるメッセージ要素には
+`role="alert"` と `aria-live="polite"` が設定されます。メッセージを別の場所に
+表示する場合は `message_target` を指定してください。

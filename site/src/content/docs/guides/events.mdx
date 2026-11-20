@@ -1,0 +1,135 @@
+---
+title: Events & State
+description: Callbacks and error state
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+## Callbacks
+
+| Callback      | When                                      | Arguments                    |
+| ------------- | ----------------------------------------- | ---------------------------- |
+| `on_validate` | Validation has run                        | none                         |
+| `on_success`  | Every field is valid                      | none                         |
+| `on_error`    | At least one field has an error           | `errors`                     |
+| `on_submit`   | A valid form is submitted                 | none                         |
+| `on_failed`   | An invalid form is submitted              | `errors`, `errorFields`      |
+
+`errors` maps a field name to an array of `ValidatedError`, and `errorFields`
+contains the names of the fields with errors.
+
+```js
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'name',
+            validation: [{ type: 'required', message: 'Name is required' }],
+        },
+    ],
+    on_validate: () => console.log('validating...'),
+    on_success: () => console.log('all fields are valid'),
+    on_error: (errors) => console.log(errors),
+    on_submit: () => {
+        // When on_submit is provided, a valid submission is prevented
+        console.log('ready to submit')
+    },
+    on_failed: (errors, errorFields) => console.log(errorFields),
+})
+```
+
+<LiveDemo
+    title="Initial errors + callbacks"
+    submitLabel="Submit"
+    params={{
+        initial_error_view: true,
+        rules: [
+            {
+                name: 'v-events-name',
+                validation: [
+                    { type: 'required', message: 'Name is required' },
+                ],
+            },
+            {
+                name: 'v-events-mail',
+                validation: [
+                    { type: 'required', message: 'E-mail is required' },
+                    {
+                        type: 'email',
+                        message: 'E-mail is not Email format',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-events-name">Name</label>
+        <input id="v-events-name" name="v-events-name" type="text" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-events-mail">E-mail</label>
+        <input id="v-events-mail" name="v-events-mail" type="email" />
+    </div>
+</LiveDemo>
+
+## Result and lifecycle
+
+`validate()` returns the current state. The instance also exposes `hasError()`,
+`clear()` and `destroy()`.
+
+```js
+const api = InputFollow('#form', { rules: [...] })
+
+const { valid, errors, errorFields } = api.validate()
+
+api.hasError() // true while any field has an error
+api.clear() // clear the error state without changing values
+api.destroy() // remove listeners and generated messages
+```
+
+The form's `reset` event clears the error state automatically.
+
+## Error state
+
+The error state is expressed with class names. Provide the styling in your
+application.
+
+| Target                | Option                      | Default             |
+| --------------------- | --------------------------- | ------------------- |
+| Invalid fields        | `error_class`               | `has-error`         |
+| Error messages        | `error_message_class`       | `inputfollow-error` |
+| Messages without error| `empty_error_message_class` | `is-empty`          |
+| Valid fields          | `valid_class`               | `is-valid`          |
+
+```css
+.has-error {
+    border-color: #a94442;
+}
+.inputfollow-error {
+    color: #a94442;
+}
+.inputfollow-error.is-empty {
+    display: none;
+}
+```
+
+If a `[data-inputfollow-error="field_name"]` element exists in the form (or in
+the document), it is reused as the message container.
+
+## Validating manually
+
+Set `initial_error_view: true` to show errors on page load. Call `validate()`
+on the returned object to re-run validation at any time.
+
+```js
+const api = InputFollow('#form', { initial_error_view: true, rules: [] })
+
+api.validate()
+```
+
+## Accessibility
+
+Invalid fields get `aria-invalid="true"` and are linked to their message with
+`aria-describedby`. Generated message containers have `role="alert"` and
+`aria-live="polite"`. Use `message_target` when you render the message
+somewhere else.

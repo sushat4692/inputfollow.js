@@ -1,0 +1,116 @@
+---
+title: Getting Started
+description: Installation and basic usage of inputfollow.js
+---
+
+## Install
+
+### npm
+
+```bash
+npm install inputfollow.js
+```
+
+```js
+import { InputFollow } from 'inputfollow.js'
+
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'name',
+            validation: [{ type: 'required', message: 'Name is required' }],
+        },
+    ],
+})
+```
+
+### Script tag
+
+Load the UMD build (`dist/inputfollow.js`) and the global `InputFollow`
+function is available.
+
+```html
+<script src="path/to/inputfollow.js"></script>
+<script>
+    InputFollow('#form', { rules: [] })
+</script>
+```
+
+### Optional styles
+
+A minimal stylesheet for the default class names is included:
+
+```js
+import 'inputfollow.js/inputfollow.css'
+```
+
+With a script tag, load `dist/inputfollow.css` using a `<link>` element.
+
+## Basic usage
+
+`InputFollow(formEl, params)` takes a `<form>` element (or a selector string)
+and a configuration object. Strings are resolved with `document.querySelector`.
+
+```js
+const formEl = document.querySelector('#form')
+
+if (formEl) {
+    InputFollow(formEl, {
+        submit_button: '#submit',
+        focus_invalid_field: true,
+        rules: [
+            {
+                name: 'name',
+                validation: [
+                    { type: 'required', message: 'Name is required' },
+                ],
+            },
+            {
+                name: 'number',
+                limit: 'number',
+                validation: [
+                    { type: 'number', message: 'Number must be numeric' },
+                ],
+            },
+        ],
+    })
+}
+```
+
+Validation runs once when `InputFollow` is called, then again on input, blur
+and submit. `InputFollow` also sets `novalidate` on the form so the browser's
+native validation does not block the library callbacks (pass `novalidate: false`
+to keep the native behavior).
+
+## Return value
+
+```ts
+const { formEl, elements, validate, getElements } = InputFollow('#form', params)
+```
+
+| Member        | Type                                | Description                              |
+| ------------- | ----------------------------------- | ---------------------------------------- |
+| `formEl`      | `HTMLFormElement`                   | The target form element                  |
+| `elements`    | field objects                       | One entry per rule                       |
+| `validate`    | `(init?: boolean) => ValidationResult` | Run synchronous validation and return the result |
+| `validateAsync` | `(init?: boolean) => Promise<ValidationResult>` | Run validation including async validators |
+| `hasError`    | `() => boolean`                     | Whether any field currently has an error |
+| `clear`       | `() => void`                        | Clear the error state of every field     |
+| `getElements` | `(name: string) => field object[]`  | Get field objects by field name          |
+| `destroy`     | `() => void`                        | Remove listeners and generated messages  |
+
+Each field object exposes `validate()`, `hasError()` and `getErrors()`.
+
+```js
+const api = InputFollow('#form', params)
+
+api.validate()
+api.getElements('email')[0]?.getErrors()
+```
+
+## Next steps
+
+- [Rules & Options](../rules/)
+- [Validation](../validation/)
+- [Input Limiting](../limitations/)
+- [Events & State](../events/)

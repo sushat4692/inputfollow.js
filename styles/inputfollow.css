@@ -1,0 +1,24 @@
+/*
+ * Optional styles for inputfollow.js.
+ *
+ * import 'inputfollow.js/inputfollow.css'
+ */
+
+.has-error {
+    border-color: #e5484d;
+}
+
+.is-valid {
+    border-color: #30a46c;
+}
+
+.inputfollow-error {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+    color: #e5484d;
+    font-size: 0.875em;
+}
+
+.inputfollow-error.is-empty {
+    display: none;
+}

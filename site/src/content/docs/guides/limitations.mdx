@@ -1,0 +1,77 @@
+---
+title: Input Limiting
+description: Restrict characters while typing with the limit option
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+Setting `limit` on a rule converts the field value to the allowed characters
+whenever validation runs (on blur or submit). It works independently of
+validation, and both can be used together.
+
+| `limit`               | Allowed input                    |
+| --------------------- | -------------------------------- |
+| `'number'`            | Half-width digits                |
+| `'code'`              | Half-width digits and `-`, `+`, `*` |
+| `null` (default)      | No restriction                   |
+
+## Numbers only
+
+<LiveDemo
+    title={'limit: "number"'}
+    params={{
+        rules: [
+            {
+                name: 'v-number',
+                limit: 'number',
+                validation: [
+                    { type: 'number', message: 'Number must be numeric' },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-number">Number</label>
+        <input
+            id="v-number"
+            name="v-number"
+            type="text"
+            inputmode="numeric"
+            placeholder="Try typing letters"
+        />
+    </div>
+</LiveDemo>
+
+## Codes (digits and `-`, `+`, `*`)
+
+<LiveDemo
+    title={'limit: "code"'}
+    params={{
+        rules: [
+            {
+                name: 'v-code',
+                limit: 'code',
+                validation: [
+                    {
+                        type: 'code',
+                        message: 'Code must be numeric or "-" or "+"',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-code">Code</label>
+        <input
+            id="v-code"
+            name="v-code"
+            type="text"
+            placeholder="e.g. 03-1234-5678"
+        />
+    </div>
+</LiveDemo>
+
+`limit` only converts the input value. Add `validation` for required checks
+and other rules.

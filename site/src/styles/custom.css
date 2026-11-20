@@ -1,0 +1,170 @@
+:root {
+    --sl-content-width: 52rem;
+    --demo-border: var(--sl-color-gray-5);
+    --demo-error: #e5484d;
+    --demo-success: #30a46c;
+}
+
+/* Starlight の本文テーブルは横スクロール可能なまま、幅を広めに使う */
+.sl-markdown-content table {
+    display: table;
+    width: 100%;
+}
+
+/* ---------------------------------------------------------------- *
+ * Inline demo (site/src/components/LiveDemo.astro)
+ * ---------------------------------------------------------------- */
+
+.live-demo {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--demo-border);
+    border-radius: 0.75rem;
+    background: var(--sl-color-bg-nav);
+}
+
+.live-demo__title {
+    margin: 0 0 0.75rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+}
+
+.live-demo__fields {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.live-demo__field {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.live-demo__field > label,
+.live-demo__field > .live-demo__label {
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+}
+
+.live-demo__field input[type='text'],
+.live-demo__field input[type='email'],
+.live-demo__field input[type='password'],
+.live-demo__field input[type='tel'],
+.live-demo__field textarea,
+.live-demo__field select {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--demo-border);
+    border-radius: 0.4rem;
+    background: var(--sl-color-bg);
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+}
+
+.live-demo__field input:focus-visible,
+.live-demo__field textarea:focus-visible,
+.live-demo__field select:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 1px;
+}
+
+.live-demo__field--inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.live-demo__field--inline > label {
+    font-weight: 400;
+}
+
+.live-demo__field input[type='checkbox'],
+.live-demo__field input[type='radio'] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--sl-color-accent);
+}
+
+/* ライブラリが付与するクラス（スコープ外なのでグローバルに定義） */
+.live-demo .has-error {
+    border-color: var(--demo-error) !important;
+}
+
+.live-demo .is-valid {
+    border-color: var(--demo-success);
+}
+
+.live-demo .inputfollow-error {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--demo-error);
+    font-size: var(--sl-text-sm);
+}
+
+.live-demo .inputfollow-error.is-empty {
+    display: none;
+}
+
+.live-demo__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/*
+ * Starlight's prose styles add a top margin to adjacent siblings
+ * (`button + button`, etc.). Reset it inside the demo form.
+ */
+.live-demo .live-demo__actions > * {
+    margin: 0;
+}
+
+.live-demo__button {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 999rem;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-black);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.live-demo__button--ghost {
+    border-color: var(--demo-border);
+    background: transparent;
+    color: var(--sl-color-gray-2);
+}
+
+.live-demo__status {
+    font-size: var(--sl-text-sm);
+}
+
+.live-demo__status:empty {
+    display: none;
+}
+
+.live-demo__status[data-state='success'] {
+    color: var(--demo-success);
+}
+
+.live-demo__status[data-state='error'] {
+    color: var(--demo-error);
+}
+
+/* Let wrapped demo source break long tokens (names, patterns) too. */
+.live-demo .expressive-code pre.wrap code,
+.live-demo .expressive-code pre.wrap .code {
+    overflow-wrap: anywhere;
+}
+
+/* Grid items default to min-width:auto, which prevents wrapping. */
+.live-demo .expressive-code pre.wrap .ec-line,
+.live-demo .expressive-code pre.wrap .ec-line > .code {
+    min-width: 0;
+}

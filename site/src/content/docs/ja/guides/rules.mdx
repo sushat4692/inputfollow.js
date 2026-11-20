@@ -1,0 +1,68 @@
+---
+title: ルールとオプション
+description: rules と初期パラメータの一覧
+---
+
+`InputFollow` の第2引数に渡すオブジェクトのリファレンスです。
+
+## ルール
+
+`rules` はフィールド1つにつき1エントリです。
+
+| パラメータ    | 型                                      | 説明                       |
+| ------------- | --------------------------------------- | -------------------------- |
+| `name`        | `string \| string[]`                    | 対象フィールドの `name` 属性、またはグループ名の配列 |
+| `limit?`      | `'number' \| 'code' \| null`             | 入力制限の種類             |
+| `validation?` | `ValidationOption \| ValidationOption[]` | バリデーション設定         |
+| `message_target?` | `string`                            | エラーメッセージ要素のセレクタ |
+
+`name` に配列を渡すと複数フィールドをグループとして扱えます。ルールは先頭のフィールドに
+紐づき、残りのフィールドは `with` で検証されます（`mode` で `or` / `and` を選択）。
+
+```js
+{
+    name: ['phone', 'email'],
+    validation: [{ type: 'required', mode: 'or', message: 'いずれかは必須です' }],
+}
+```
+
+```js
+InputFollow('#form', {
+    rules: [
+        {
+            name: 'tel',
+            limit: 'code',
+            validation: [
+                { type: 'required', message: '電話番号は必須です' },
+                {
+                    type: 'code',
+                    message: '数字または "-" "+" で入力してください',
+                },
+            ],
+        },
+    ],
+})
+```
+
+## オプション
+
+| パラメータ                  | 型                                                    | デフォルト          | 説明                                     |
+| --------------------------- | ----------------------------------------------------- | ------------------- | ---------------------------------------- |
+| `error_class`               | `string`                                              | `has-error`         | エラー時のフィールドに付与するクラス     |
+| `error_message_class`       | `string`                                              | `inputfollow-error` | エラーメッセージ要素のクラス             |
+| `empty_error_message_class` | `string`                                              | `is-empty`          | エラーが無いときのメッセージ要素のクラス |
+| `valid_class`               | `string`                                              | `is-valid`          | 正常時のフィールドに付与するクラス       |
+| `initial_error_view`        | `boolean`                                             | `false`             | 初回読み込み時にエラーを表示するか       |
+| `initial_valid_view`        | `boolean`                                             | `false`             | 初回バリデーションで valid クラスを付与するか |
+| `novalidate`                | `boolean`                                             | `true`              | フォームに `novalidate` を付与するか     |
+| `ignore_missing_fields`     | `boolean`                                             | `false`             | 存在しないフィールドのルールを無視するか |
+| `messages`                  | `Partial<Record<string, string>>`                     | `{}`                | バリデーション種別ごとのデフォルトメッセージ |
+| `focus_invalid_field`       | `boolean`                                             | `false`             | 送信時に最初のエラーフィールドへフォーカスするか |
+| `submit_button`             | `string \| HTMLInputElement \| HTMLButtonElement`      |                     | エラー時に `disabled` を付与する送信ボタン |
+| `on_validate`               | `() => void`                                          |                     | バリデーション実行時に呼ばれる           |
+| `on_success`                | `() => void`                                          |                     | すべてのフィールドが正常なときに呼ばれる |
+| `on_error`                  | `(errors) => void`                                    |                     | エラーがあるときに呼ばれる               |
+| `on_submit`                 | `() => void`                                          |                     | 正常な状態で送信されたときに呼ばれる     |
+| `on_failed`                 | `(errors, errorFields) => void`                       |                     | エラーがある状態で送信されたときに呼ばれる |
+
+コールバックの詳細は [イベントと状態](../events/) を参照してください。

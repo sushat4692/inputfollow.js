@@ -1,0 +1,30 @@
+---
+interface Props {
+    config: string
+    messages: string
+    submitLabel: string
+    resetLabel: string
+}
+
+const { config, messages, submitLabel, resetLabel } = Astro.props
+---
+
+<form
+    class="live-demo__form"
+    data-live-demo-form={config}
+    data-live-demo-messages={messages}
+    novalidate>
+    <div class="live-demo__fields">
+        <slot />
+    </div>
+    <div class="live-demo__actions">
+        <button type="submit" class="live-demo__button">{submitLabel}</button>
+        <button type="reset" class="live-demo__button live-demo__button--ghost">
+            {resetLabel}
+        </button>
+        <output
+            class="live-demo__status"
+            data-live-demo-status
+            aria-live="polite"></output>
+    </div>
+</form>

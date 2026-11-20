@@ -1,0 +1,399 @@
+---
+title: Validation
+description: Validation types, cross-field rules and conditional validation
+---
+
+import LiveDemo from '@components/LiveDemo.astro'
+
+## Validation types
+
+The value of `type` in a `ValidationOption`:
+
+| `type`                        | Checks                                        |
+| ----------------------------- | --------------------------------------------- |
+| `required`                    | The field is not empty                        |
+| `email`                       | E-mail address format                         |
+| `number`                      | Numeric                                       |
+| `code`                        | Numeric or `-`, `+`, `*`                      |
+| `hiragana`                    | Hiragana                                      |
+| `katakana`                    | Katakana                                      |
+| `kana`                        | Hiragana or katakana                          |
+| `hankaku-kana`                | Half-width katakana                           |
+| `alpha`                       | Half-width alphabetic characters              |
+| `alphanumeric`                | Half-width alphanumeric characters            |
+| `zen-alpha`                   | Full-width alphabetic characters              |
+| `zen-alphanumeric`            | Full-width alphanumeric characters            |
+| `['equal', 'field_name']`     | The value equals another field                |
+| `'custom'`                    | Your own function (`validate`)                |
+
+`validation` accepts an array and evaluates the entries in order. A single
+option can be passed without an array.
+
+## Constraints
+
+`ValidationOption` can also carry constraints. They are skipped for empty
+values, so combine them with `required` when the field is mandatory.
+
+| Option                    | Type                | Description                          |
+| ------------------------- | ------------------- | ------------------------------------ |
+| `min` / `max`             | `number`            | Numeric range                        |
+| `minlength` / `maxlength` | `number`            | String length                        |
+| `pattern`                 | `string \| RegExp`  | Regular expression the value matches |
+
+Constraints are evaluated together with `type`; omit `type` when you only need
+constraints. The failing constraint name (`min`, `max`, `minlength`,
+`maxlength`, `pattern`) is used for the `messages` lookup.
+
+<LiveDemo
+    title="minlength / maxlength / pattern"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-user',
+                validation: [
+                    {
+                        minlength: 3,
+                        maxlength: 10,
+                        pattern: '^[a-z0-9_]+$',
+                        message:
+                            'Use 3-10 lowercase letters, numbers or underscores',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-user">Username</label>
+        <input
+            id="v-constraint-user"
+            name="v-constraint-user"
+            type="text"
+            placeholder="e.g. taro_01"
+        />
+    </div>
+</LiveDemo>
+
+<LiveDemo
+    title="min / max"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-age',
+                validation: [
+                    {
+                        type: 'number',
+                        min: 1,
+                        max: 100,
+                        message: 'Enter a number between 1 and 100',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-age">Age</label>
+        <input
+            id="v-constraint-age"
+            name="v-constraint-age"
+            type="text"
+            inputmode="numeric"
+        />
+    </div>
+</LiveDemo>
+
+### Default messages
+
+`message` is optional. When it is omitted, the value of the `messages` option
+keyed by the validation type is used.
+
+```js
+InputFollow('#form', {
+    messages: { required: 'This field is required' },
+    rules: [{ name: 'name', validation: [{ type: 'required' }] }],
+})
+```
+
+### Required + E-mail
+
+<LiveDemo
+    title="required / email"
+    params={{
+        rules: [
+            {
+                name: 'v-email',
+                validation: [
+                    { type: 'required', message: 'E-mail is required' },
+                    { type: 'email', message: 'E-mail is not Email format' },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-email">E-mail</label>
+        <input
+            id="v-email"
+            name="v-email"
+            type="email"
+            placeholder="you@example.com"
+        />
+    </div>
+</LiveDemo>
+
+## Custom validators
+
+Use `type: 'custom'` with a `validate` function. Return `true` (or nothing)
+when the value is valid, `false` to use the configured message, or a string to
+use it as the error message.
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            message: 'This username is reserved',
+            validate: (value) => value !== 'admin',
+        },
+    ],
+}
+```
+
+The function receives `(value, { formEl, values, field })` and runs for each
+element that shares the field name.
+
+<LiveDemo
+    title="custom validator"
+    params={{
+        rules: [
+            {
+                name: 'v-custom-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        message: 'The username "admin" is reserved',
+                        validate: 'not-admin',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-custom-user">Username</label>
+        <input
+            id="v-custom-user"
+            name="v-custom-user"
+            type="text"
+            placeholder="Try &quot;admin&quot;"
+        />
+    </div>
+</LiveDemo>
+
+### Async validators
+
+Set `async: true` to run a validator only from `validateAsync()` and form
+submission. Async validators are skipped while typing.
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            async: true,
+            message: 'This username is already taken',
+            validate: async (value) => !(await isTaken(value)),
+        },
+    ],
+}
+
+const api = InputFollow('#form', params)
+const result = await api.validateAsync()
+```
+
+Submitting a form with async validators is prevented until they resolve. When
+`on_submit` is not configured, the form is submitted natively after a
+successful validation.
+
+<LiveDemo
+    title="async validator"
+    params={{
+        rules: [
+            {
+                name: 'v-async-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        async: true,
+                        message: 'This username is already taken',
+                        validate: 'available-user',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-async-user">Username</label>
+        <input
+            id="v-async-user"
+            name="v-async-user"
+            type="text"
+            placeholder={'Try "taken" (600ms delay)'}
+        />
+    </div>
+</LiveDemo>
+
+## Cross-field rules
+
+`with` lists the related fields and `mode` controls how they are combined.
+
+| `mode` | Behavior                                                           |
+| ------ | ------------------------------------------------------------------ |
+| `or`   | Valid when at least one of the fields (including itself) is filled |
+| `and`  | Valid when all fields (including itself) are filled (default)      |
+
+### Either field is required (`mode: 'or'`)
+
+<LiveDemo
+    title={'mode: "or"'}
+    params={{
+        rules: [
+            {
+                name: 'v-or-phone',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'Phone or E-mail is required',
+                        mode: 'or',
+                        with: { 'v-or-mail': 'required' },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-or-phone">Phone</label>
+        <input id="v-or-phone" name="v-or-phone" type="tel" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-or-mail">E-mail</label>
+        <input id="v-or-mail" name="v-or-mail" type="email" />
+    </div>
+</LiveDemo>
+
+### Both fields are required (`mode: 'and'`)
+
+<LiveDemo
+    title={'mode: "and"'}
+    params={{
+        rules: [
+            {
+                name: 'v-and-a',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'Both fields are required',
+                        mode: 'and',
+                        with: { 'v-and-b': 'required' },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-and-a">Field A</label>
+        <input id="v-and-a" name="v-and-a" type="text" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-and-b">Field B</label>
+        <input id="v-and-b" name="v-and-b" type="text" />
+    </div>
+</LiveDemo>
+
+## Conditional validation
+
+`if` makes a rule depend on other fields. `target` maps a field name to the
+value it should have.
+
+```js
+{
+    name: 'if_target',
+    validation: [
+        {
+            type: 'required',
+            message: 'If this is checked, the text field is required',
+            if: {
+                mode: 'and',
+                target: { if_from: true },
+            },
+        },
+    ],
+}
+```
+
+<LiveDemo
+    title="if + target"
+    params={{
+        rules: [
+            {
+                name: 'v-if-text',
+                validation: [
+                    {
+                        type: 'required',
+                        message: 'Please fill in your company name',
+                        if: {
+                            mode: 'and',
+                            target: { 'v-if-check': true },
+                        },
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field live-demo__field--inline">
+        <input id="v-if-check" name="v-if-check" type="checkbox" />
+        <label for="v-if-check">I have a company</label>
+    </div>
+    <div class="live-demo__field">
+        <label for="v-if-text">Company name</label>
+        <input id="v-if-text" name="v-if-text" type="text" />
+    </div>
+</LiveDemo>
+
+## Equality
+
+`['equal', 'field_name']` validates that two fields have the same value, which
+is useful for password confirmation.
+
+<LiveDemo
+    title="equal"
+    params={{
+        rules: [
+            {
+                name: 'v-eq-confirm',
+                validation: [
+                    {
+                        type: ['equal', 'v-eq-password'],
+                        message: 'The values must be the same',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-eq-password">Password</label>
+        <input id="v-eq-password" name="v-eq-password" type="password" />
+    </div>
+    <div class="live-demo__field">
+        <label for="v-eq-confirm">Confirm password</label>
+        <input id="v-eq-confirm" name="v-eq-confirm" type="password" />
+    </div>
+</LiveDemo>
