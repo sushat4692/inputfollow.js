@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-20
+
 ### Added
 
 - Documentation site built with Astro + Starlight, available in English and
@@ -84,7 +86,8 @@ See the [tags](https://github.com/sushat4692/inputfollow.js/tags) and
 [releases](https://github.com/sushat4692/inputfollow.js/releases) for
 `v0.0.11` and earlier.
 
-[Unreleased]: https://github.com/sushat4692/inputfollow.js/compare/v1.0.0...develop
+[Unreleased]: https://github.com/sushat4692/inputfollow.js/compare/v1.1.0...develop
+[1.1.0]: https://github.com/sushat4692/inputfollow.js/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v1.0.0
 [0.2.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.2.0
 [0.1.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.1.0

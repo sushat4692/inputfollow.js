@@ -7,6 +7,8 @@
 
 ## [未リリース]
 
+## [1.1.0] - 2026-11-20
+
 ### 追加
 
 - Astro + Starlight によるドキュメントサイト（英語 / 日本語、ライブデモ、API リファレンス）。
@@ -76,7 +78,8 @@
 [タグ](https://github.com/sushat4692/inputfollow.js/tags) と
 [リリース](https://github.com/sushat4692/inputfollow.js/releases) を参照してください。
 
-[未リリース]: https://github.com/sushat4692/inputfollow.js/compare/v1.0.0...develop
+[未リリース]: https://github.com/sushat4692/inputfollow.js/compare/v1.1.0...develop
+[1.1.0]: https://github.com/sushat4692/inputfollow.js/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v1.0.0
 [0.2.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.2.0
 [0.1.0]: https://github.com/sushat4692/inputfollow.js/releases/tag/v0.1.0
