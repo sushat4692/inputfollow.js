@@ -38,7 +38,7 @@ src/             … implementation
 CHANGELOG.md     … changelog (source of truth, synced into the docs site)
 CHANGELOG.ja.md  … Japanese changelog
 demo/            … standalone demo page (scss → css, copies built JS from dist)
-site/            … documentation site (Astro + Starlight, npm workspaces member)
+site/            … documentation site (Astro + Starlight, separate package with its own lockfile)
   astro.config.mjs … Starlight / starlight-typedoc config (base: /inputfollow.js)
   src/content/docs … English docs (root locale) and Japanese docs under ja/
   src/components/LiveDemo.astro … interactive demos embedded in the docs
@@ -60,6 +60,9 @@ dist/            … build output (gitignored)
 | Command | Description |
 | --- | --- |
 | `npm run build` | Build with Rollup (generates `dist/` and `types/`) |
+| `npx changeset` | Record a changeset for the current change (feature/fix branches) |
+| `npm run changeset:status` | Show the changesets waiting for a release |
+| `npm run changeset:version` | Apply changesets (bump version + update the lockfile) |
 | `npm run demo` | Serve the standalone demo with `serve` |
 | `npm run docs` | Build the documentation site (`site/dist/`) |
 | `npm run docs:dev` | Start the documentation site dev server |
@@ -75,11 +78,26 @@ dist/            … build output (gitignored)
 | `npm run test:browser` | Run only the real-browser (chromium) integration tests |
 | `npm run test:watch` | Run tests in watch mode |
 
+- The docs site has its own `site/package.json` and `site/package-lock.json`.
+  Install it with `npm ci --prefix site` (the `docs` scripts expect it)
 - Type checking: `tsc --noEmit` (note the project references in `tsconfig.json`,
   so be careful with `-b`) or `npm run build`
 - Lint: `npm run lint` (oxlint, configured in `.oxlintrc.json`)
 - Format: `npm run format` (oxfmt, configured in `.oxfmtrc.json`; `demo/**` and
   `site/**/*.mdx` are excluded)
+
+## Versioning (changesets)
+
+- Add a changeset for every user-facing change on a feature/fix branch:
+  `npx changeset` (choose major / minor / patch and write a short English summary)
+- On a release branch, run `npm run changeset:version` to apply the collected
+  changesets. It bumps `package.json` and updates `package-lock.json`
+- `changelog` generation is disabled in `.changeset/config.json`: keep
+  `CHANGELOG.md` / `CHANGELOG.ja.md` curated by hand (both languages) and move
+  the `[Unreleased]` section on release
+- Do not bump the version manually; the gitflow release branch uses changesets
+- `baseBranch` is `develop`. The npm publish workflow is unchanged (OIDC,
+  tag creation)
 
 ## Documentation site
 

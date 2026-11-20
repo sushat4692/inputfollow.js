@@ -12,6 +12,7 @@
         "astro": "^7.4.13",
         "starlight-typedoc": "^0.23.3",
         "typedoc": "^0.28.20",
-        "typedoc-plugin-markdown": "^4.14.1"
+        "typedoc-plugin-markdown": "^4.14.1",
+        "typescript": "^5.9.3"
     }
 }

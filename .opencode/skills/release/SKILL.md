@@ -24,10 +24,11 @@ description: inputfollow.js の gitflow リリース手順。release/vX.Y.Z ブ�
 2. **release ブランチ作成**
     - `git checkout develop && git checkout -b release/vX.Y.Z`
 
-3. **バージョン更新**
-    - `npm version X.Y.Z --no-git-tag-version`（package.json と package-lock.json のみ更新）
+3. **バージョン更新（changesets）**
+    - `npm run changeset:status` で未リリースの changeset を確認（feature ブランチで `npx changeset` を追加しておく。未追加のままリリースする場合は release ブランチで `npx changeset` を作成する）
+    - `npm run changeset:version` で changeset を集約し、package.json と package-lock.json を更新
     - コミットメッセージは過去の慣習に合わせ **`Updated version number`**
-    - `CHANGELOG.md` / `CHANGELOG.ja.md` の `[Unreleased]` を新バージョン（リリース日付き）に移す
+    - `CHANGELOG.md` / `CHANGELOG.ja.md` の `[Unreleased]` を新バージョン（リリース日付き）に移す（changeset の内容を英日で反映）
 
 4. **⚠️ demo バンドル再生成（必須・忘れやすい）**
     - `npm run build && npm run make:demo:js`
