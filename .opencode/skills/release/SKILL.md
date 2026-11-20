@@ -60,4 +60,5 @@ description: inputfollow.js の gitflow リリース手順。release/vX.Y.Z ブ�
 - release ブランチから直接 feature 開発をしない
 - `gh workflow run` での発火にはリポジトリの admin 権限が必要。権限エラーが出たら `gh auth switch` で `sushat4692` アカウントに切り替える
 - `npm run demo` は serve（http-server ではない）
-- ドキュメントサイトは `npm run docs:dev` で確認できる（`site/` は npm workspaces のメンバー）
+- ドキュメントサイトは `npm run docs:dev` で確認できる（`site/` は独立パッケージ。`npm ci --prefix site` が必要）
+- バージョンは changesets で管理する（`npx changeset` → `npm run changeset:version`）
