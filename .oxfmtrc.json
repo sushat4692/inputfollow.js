@@ -10,7 +10,6 @@
         "dist/**",
         "types/**",
         ".rollup.cache/**",
-        "demo/**",
         "AGENTS.md",
         ".vscode/**",
         "site/dist/**",
@@ -19,6 +18,8 @@
         "site/src/content/docs/ja/api/**",
         "site/src/content/docs/**/*.mdx",
         "site/src/content/docs/changelog.md",
-        "site/src/content/docs/ja/changelog.md"
+        "site/src/content/docs/ja/changelog.md",
+        "package-lock.json",
+        "site/package-lock.json"
     ]
 }
