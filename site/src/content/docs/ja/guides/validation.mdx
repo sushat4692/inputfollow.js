@@ -29,6 +29,80 @@ import LiveDemo from '@components/LiveDemo.astro'
 `validation` は配列で複数指定でき、上から順に評価されます。
 1つだけの場合は配列にせず直接指定することもできます。
 
+## 制約（constraints）
+
+`ValidationOption` には制約も指定できます。空の値ではスキップされるため、必須にする場合は
+`required` と併用してください。
+
+| オプション                | 型                  | 内容                     |
+| ------------------------- | ------------------- | ------------------------ |
+| `min` / `max`             | `number`            | 数値の範囲               |
+| `minlength` / `maxlength` | `number`            | 文字列の長さ             |
+| `pattern`                 | `string \| RegExp`  | 値が一致すべき正規表現   |
+
+制約は `type` と同時に評価されます。制約だけを使う場合は `type` を省略できます。
+失敗した制約名（`min` / `max` / `minlength` / `maxlength` / `pattern`）が
+`messages` の参照キーになります。
+
+<LiveDemo
+    title="minlength / maxlength / pattern"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-user',
+                validation: [
+                    {
+                        minlength: 3,
+                        maxlength: 10,
+                        pattern: '^[a-z0-9_]+$',
+                        message:
+                            '3〜10文字の半角英小文字・数字・アンダースコアで入力してください',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-user">ユーザー名</label>
+        <input
+            id="v-constraint-user"
+            name="v-constraint-user"
+            type="text"
+            placeholder="例: taro_01"
+        />
+    </div>
+</LiveDemo>
+
+<LiveDemo
+    title="min / max"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-age',
+                validation: [
+                    {
+                        type: 'number',
+                        min: 1,
+                        max: 100,
+                        message: '1〜100 の数値を入力してください',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-age">年齢</label>
+        <input
+            id="v-constraint-age"
+            name="v-constraint-age"
+            type="text"
+            inputmode="numeric"
+        />
+    </div>
+</LiveDemo>
+
 ### デフォルトメッセージ
 
 `message` は省略可能です。省略した場合は `messages` オプションの該当する種別のメッセージが使われます。
@@ -118,6 +192,60 @@ InputFollow('#form', {
             name="v-custom-user"
             type="text"
             placeholder="&quot;admin&quot; を試してみてください"
+        />
+    </div>
+</LiveDemo>
+
+### 非同期バリデーション
+
+`async: true` を付けると、`validateAsync()` とフォーム送信時だけ実行されます。
+入力中はスキップされます。
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            async: true,
+            message: 'このユーザー名は既に使われています',
+            validate: async (value) => !(await isTaken(value)),
+        },
+    ],
+}
+
+const api = InputFollow('#form', params)
+const result = await api.validateAsync()
+```
+
+非同期バリデータがあるフォームの送信は、検証が終わるまで保留されます。
+`on_submit` が未指定の場合は、検証成功後にネイティブの送信を実行します。
+
+<LiveDemo
+    title="非同期バリデータ"
+    params={{
+        rules: [
+            {
+                name: 'v-async-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        async: true,
+                        message: 'このユーザー名は既に使われています',
+                        validate: 'available-user',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-async-user">ユーザー名</label>
+        <input
+            id="v-async-user"
+            name="v-async-user"
+            type="text"
+            placeholder={'"taken" を試してください（600ms）'}
         />
     </div>
 </LiveDemo>

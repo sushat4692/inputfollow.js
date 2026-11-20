@@ -36,6 +36,16 @@ function is available.
 </script>
 ```
 
+### Optional styles
+
+A minimal stylesheet for the default class names is included:
+
+```js
+import 'inputfollow.js/inputfollow.css'
+```
+
+With a script tag, load `dist/inputfollow.css` using a `<link>` element.
+
 ## Basic usage
 
 `InputFollow(formEl, params)` takes a `<form>` element (or a selector string)
@@ -82,7 +92,8 @@ const { formEl, elements, validate, getElements } = InputFollow('#form', params)
 | ------------- | ----------------------------------- | ---------------------------------------- |
 | `formEl`      | `HTMLFormElement`                   | The target form element                  |
 | `elements`    | field objects                       | One entry per rule                       |
-| `validate`    | `(init?: boolean) => ValidationResult` | Run validation and return the result  |
+| `validate`    | `(init?: boolean) => ValidationResult` | Run synchronous validation and return the result |
+| `validateAsync` | `(init?: boolean) => Promise<ValidationResult>` | Run validation including async validators |
 | `hasError`    | `() => boolean`                     | Whether any field currently has an error |
 | `clear`       | `() => void`                        | Clear the error state of every field     |
 | `getElements` | `(name: string) => field object[]`  | Get field objects by field name          |

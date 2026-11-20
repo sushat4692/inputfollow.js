@@ -29,11 +29,57 @@ import {
     FieldController,
     InputFollowInstance,
     ValidationResult,
+    Rule,
+    ValidationType,
 } from './types'
 import { createElement } from './model/Element'
 
 const errorFieldsOf = (currentErrors: Record<string, ValidatedError[]>) =>
     Object.keys(currentErrors).filter((key) => currentErrors[key].length > 0)
+
+const toArray = <T>(value: T | T[]): T[] =>
+    Array.isArray(value) ? value : [value]
+
+type NormalizedRule = Omit<Rule[number], 'name'> & { name: string }
+
+/**
+ * Expand a rule whose `name` is an array into a rule for the first field,
+ * validating the remaining fields through `with`.
+ */
+const expandGroupRule = (rule: Rule[number]): NormalizedRule => {
+    const names = toArray(rule.name)
+
+    if (names.length <= 1) {
+        return { ...rule, name: names[0] }
+    }
+
+    const [primary, ...others] = names
+    const validations = rule.validation ? toArray(rule.validation) : undefined
+
+    return {
+        ...rule,
+        name: primary,
+        validation: validations?.map((validation) => {
+            if (validation.with) {
+                return validation
+            }
+
+            if (
+                typeof validation.type !== 'string' ||
+                validation.type === 'custom'
+            ) {
+                return validation
+            }
+
+            return {
+                ...validation,
+                with: Object.fromEntries(
+                    others.map((other) => [other, validation.type])
+                ) as Record<string, ValidationType>,
+            }
+        }),
+    }
+}
 
 /**
  * InputFollow
@@ -157,8 +203,11 @@ export const InputFollow = (
      */
     const elements: FieldController[] = []
     const registeredNames = new Set<string>()
+    let hasAsyncValidation = false
 
-    arrangedParams.rules.map(({ name, limit, validation, message_target }) => {
+    arrangedParams.rules.map(expandGroupRule).map((rule) => {
+        const { name, limit, validation, message_target } = rule
+
         if (registeredNames.has(name)) {
             console.warn(
                 `[inputfollow.js] Duplicate rule for field "${name}" was ignored.`
@@ -179,6 +228,10 @@ export const InputFollow = (
 
             return [validation]
         })()
+
+        if (validations?.some((v) => v.async === true)) {
+            hasAsyncValidation = true
+        }
 
         const Element = createElement(
             targetFormElement,
@@ -204,11 +257,44 @@ export const InputFollow = (
     /**
      * Start validating
      */
-    const validate = (init: boolean = false): ValidationResult => {
+    const runValidation = (
+        init: boolean,
+        notifyResult: boolean
+    ): ValidationResult => {
         validating = true
         elements.map((element) => {
             element.validate(init)
         })
+        validating = false
+
+        const state = notifyResult
+            ? notify(errors)
+            : {
+                  valid: errorFieldsOf(errors).length === 0,
+                  errorFields: errorFieldsOf(errors),
+              }
+
+        if (notifyResult && typeof arrangedParams.on_validate === 'function') {
+            arrangedParams.on_validate()
+        }
+
+        return {
+            valid: state.valid,
+            errors: snapshot(),
+            errorFields: state.errorFields,
+        }
+    }
+
+    const validate = (init: boolean = false): ValidationResult =>
+        runValidation(init, true)
+
+    const validateAsync = async (
+        init: boolean = false
+    ): Promise<ValidationResult> => {
+        validating = true
+        await Promise.all(
+            elements.map((element) => element.validateAsync(init))
+        )
         validating = false
 
         const { valid, errorFields } = notify(errors)
@@ -239,27 +325,92 @@ export const InputFollow = (
         return elements.filter((el) => el.name === name)
     }
 
-    const submitHandler = (event: Event) => {
-        const result = validate()
-
-        if (!result.valid) {
-            event.preventDefault()
-
-            if (typeof arrangedParams.on_failed === 'function') {
-                arrangedParams.on_failed(result.errors, result.errorFields)
-            }
-
-            if (arrangedParams.focus_invalid_field) {
-                const firstErrorField = result.errorFields[0]
-                const errorElements = getElements(firstErrorField)
-                errorElements[0]?.elements[0]?.focus()
-            }
-        } else if (typeof arrangedParams.on_submit === 'function') {
-            // Call on_submit callback if it's specified, and prevent default
-            // submission
-            event.preventDefault()
-            arrangedParams.on_submit()
+    const focusFirstInvalid = (errorFields: string[]) => {
+        if (!arrangedParams.focus_invalid_field) {
+            return
         }
+
+        const firstErrorField = errorFields[0]
+        const errorElements = getElements(firstErrorField)
+        errorElements[0]?.elements[0]?.focus()
+    }
+
+    let pendingSubmit = false
+
+    const submitHandler = (event: Event) => {
+        if (!hasAsyncValidation) {
+            const result = validate()
+
+            if (!result.valid) {
+                event.preventDefault()
+
+                if (typeof arrangedParams.on_failed === 'function') {
+                    arrangedParams.on_failed(result.errors, result.errorFields)
+                }
+
+                focusFirstInvalid(result.errorFields)
+            } else if (typeof arrangedParams.on_submit === 'function') {
+                // Call on_submit callback if it's specified, and prevent
+                // default submission
+                event.preventDefault()
+                arrangedParams.on_submit()
+            }
+
+            return
+        }
+
+        // Async validation cannot decide synchronously, so always prevent the
+        // native submit and submit again after the async validators resolve.
+        event.preventDefault()
+
+        if (pendingSubmit) {
+            return
+        }
+
+        pendingSubmit = true
+
+        const syncResult = runValidation(false, false)
+
+        if (!syncResult.valid) {
+            pendingSubmit = false
+            notify(errors)
+            if (typeof arrangedParams.on_validate === 'function') {
+                arrangedParams.on_validate()
+            }
+            if (typeof arrangedParams.on_failed === 'function') {
+                arrangedParams.on_failed(
+                    syncResult.errors,
+                    syncResult.errorFields
+                )
+            }
+            focusFirstInvalid(syncResult.errorFields)
+            return
+        }
+
+        void validateAsync()
+            .then((result) => {
+                pendingSubmit = false
+
+                if (!result.valid) {
+                    if (typeof arrangedParams.on_failed === 'function') {
+                        arrangedParams.on_failed(
+                            result.errors,
+                            result.errorFields
+                        )
+                    }
+                    focusFirstInvalid(result.errorFields)
+                    return
+                }
+
+                if (typeof arrangedParams.on_submit === 'function') {
+                    arrangedParams.on_submit()
+                } else {
+                    targetFormElement.submit()
+                }
+            })
+            .catch(() => {
+                pendingSubmit = false
+            })
     }
 
     const resetHandler = () => {
@@ -289,6 +440,7 @@ export const InputFollow = (
         formEl: targetFormElement,
         elements,
         validate,
+        validateAsync,
         hasError,
         clear,
         getElements,

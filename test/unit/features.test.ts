@@ -413,3 +413,277 @@ describe('accessibility', () => {
         expect(name.getAttribute('aria-describedby')).toBe('name-error')
     })
 })
+
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
+
+describe('constraints', () => {
+    it('applies min and max to numeric values', () => {
+        const formEl = createForm('<input type="text" name="num">')
+        InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'num',
+                    validation: [
+                        {
+                            type: 'number',
+                            min: 1,
+                            max: 10,
+                            message: 'out of range',
+                        },
+                    ],
+                },
+            ],
+        })
+        const num = formEl.querySelector<HTMLInputElement>('[name="num"]')!
+
+        num.value = '0'
+        blur(num)
+        expect(num.classList.contains('has-error')).toBe(true)
+        expect(messages(formEl, 'num')).toEqual(['out of range'])
+
+        num.value = '11'
+        blur(num)
+        expect(num.classList.contains('has-error')).toBe(true)
+
+        num.value = '5'
+        blur(num)
+        expect(num.classList.contains('has-error')).toBe(false)
+
+        num.value = ''
+        blur(num)
+        expect(num.classList.contains('has-error')).toBe(false)
+    })
+
+    it('uses default messages for constraints', () => {
+        const formEl = createForm('<input type="text" name="num">')
+        InputFollow(formEl, {
+            messages: { min: 'too small' },
+            rules: [
+                {
+                    name: 'num',
+                    validation: [{ type: 'number', min: 1 }],
+                },
+            ],
+        })
+        const num = formEl.querySelector<HTMLInputElement>('[name="num"]')!
+
+        num.value = '0'
+        blur(num)
+        expect(messages(formEl, 'num')).toEqual(['too small'])
+    })
+
+    it('applies minlength and maxlength', () => {
+        const formEl = createForm('<input type="text" name="text">')
+        InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'text',
+                    validation: [
+                        { minlength: 3, maxlength: 5, message: 'length' },
+                    ],
+                },
+            ],
+        })
+        const text = formEl.querySelector<HTMLInputElement>('[name="text"]')!
+
+        text.value = 'ab'
+        blur(text)
+        expect(messages(formEl, 'text')).toEqual(['length'])
+
+        text.value = ''
+        blur(text)
+        expect(text.classList.contains('has-error')).toBe(false)
+
+        text.value = 'abcd'
+        blur(text)
+        expect(text.classList.contains('has-error')).toBe(false)
+
+        text.value = 'abcdef'
+        blur(text)
+        expect(text.classList.contains('has-error')).toBe(true)
+    })
+
+    it('applies a pattern', () => {
+        const formEl = createForm('<input type="text" name="lower">')
+        InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'lower',
+                    validation: [
+                        { pattern: '^[a-z]+$', message: 'lowercase only' },
+                    ],
+                },
+            ],
+        })
+        const lower = formEl.querySelector<HTMLInputElement>('[name="lower"]')!
+
+        lower.value = 'ABC'
+        blur(lower)
+        expect(messages(formEl, 'lower')).toEqual(['lowercase only'])
+
+        lower.value = 'abc'
+        blur(lower)
+        expect(lower.classList.contains('has-error')).toBe(false)
+    })
+})
+
+describe('group rules', () => {
+    it('validates a group declared with an array name', () => {
+        const formEl = createForm(`
+            <input type="text" name="phone">
+            <input type="text" name="email">
+        `)
+        const api = InputFollow(formEl, {
+            rules: [
+                {
+                    name: ['phone', 'email'],
+                    validation: [
+                        {
+                            type: 'required',
+                            mode: 'or',
+                            message: 'phone or e-mail is required',
+                        },
+                    ],
+                },
+            ],
+        })
+        const phone = formEl.querySelector<HTMLInputElement>('[name="phone"]')!
+        const email = formEl.querySelector<HTMLInputElement>('[name="email"]')!
+
+        expect(api.getElements('phone')).toHaveLength(1)
+        expect(api.getElements('email')).toHaveLength(0)
+
+        submit(formEl)
+        expect(messages(formEl, 'phone')).toEqual([
+            'phone or e-mail is required',
+        ])
+
+        email.value = 'a@example.com'
+        submit(formEl)
+        expect(phone.classList.contains('has-error')).toBe(false)
+        expect(api.validate().valid).toBe(true)
+    })
+
+    it('requires every group member with mode "and"', () => {
+        const formEl = createForm(`
+            <input type="text" name="a">
+            <input type="text" name="b">
+        `)
+        const api = InputFollow(formEl, {
+            rules: [
+                {
+                    name: ['a', 'b'],
+                    validation: [
+                        { type: 'required', mode: 'and', message: 'both' },
+                    ],
+                },
+            ],
+        })
+        const a = formEl.querySelector<HTMLInputElement>('[name="a"]')!
+
+        a.value = 'one'
+        expect(api.validate().valid).toBe(false)
+
+        formEl.querySelector<HTMLInputElement>('[name="b"]')!.value = 'two'
+        expect(api.validate().valid).toBe(true)
+    })
+})
+
+describe('async validation', () => {
+    it('skips async validators during synchronous validation', async () => {
+        const validator = vi.fn(async (value: string) => value !== 'taken')
+        const formEl = createForm('<input type="text" name="user">')
+        const api = InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'user',
+                    validation: [
+                        {
+                            type: 'custom',
+                            async: true,
+                            validate: validator,
+                            message: 'already taken',
+                        },
+                    ],
+                },
+            ],
+        })
+        const user = formEl.querySelector<HTMLInputElement>('[name="user"]')!
+
+        expect(api.validate().valid).toBe(true)
+        expect(validator).not.toHaveBeenCalled()
+
+        user.value = 'taken'
+        const result = await api.validateAsync()
+
+        expect(validator).toHaveBeenCalledWith('taken', expect.anything())
+        expect(result.valid).toBe(false)
+        expect(result.errorFields).toEqual(['user'])
+        expect(messages(formEl, 'user')).toEqual(['already taken'])
+        expect(user.getAttribute('aria-invalid')).toBe('true')
+    })
+
+    it('submits after async validation passes', async () => {
+        const onFailed = vi.fn()
+        const onSubmit = vi.fn()
+        const formEl = createForm('<input type="text" name="user">')
+        InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'user',
+                    validation: [
+                        {
+                            type: 'custom',
+                            async: true,
+                            validate: async () => true,
+                            message: 'invalid',
+                        },
+                    ],
+                },
+            ],
+            on_failed: onFailed,
+            on_submit: onSubmit,
+        })
+        const user = formEl.querySelector<HTMLInputElement>('[name="user"]')!
+        user.value = 'ok'
+
+        const event = submit(formEl)
+        expect(event.defaultPrevented).toBe(true)
+
+        await flush()
+        expect(onFailed).not.toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls on_failed when async validation fails', async () => {
+        const onFailed = vi.fn()
+        const onSubmit = vi.fn()
+        const formEl = createForm('<input type="text" name="user">')
+        InputFollow(formEl, {
+            rules: [
+                {
+                    name: 'user',
+                    validation: [
+                        {
+                            type: 'custom',
+                            async: true,
+                            validate: async () => 'already taken',
+                        },
+                    ],
+                },
+            ],
+            on_failed: onFailed,
+            on_submit: onSubmit,
+        })
+        const user = formEl.querySelector<HTMLInputElement>('[name="user"]')!
+        user.value = 'taken'
+
+        submit(formEl)
+        await flush()
+
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onFailed).toHaveBeenCalledTimes(1)
+        expect(user.classList.contains('has-error')).toBe(true)
+        expect(messages(formEl, 'user')).toEqual(['already taken'])
+    })
+})

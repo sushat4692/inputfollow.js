@@ -11,10 +11,20 @@ description: rules と初期パラメータの一覧
 
 | パラメータ    | 型                                      | 説明                       |
 | ------------- | --------------------------------------- | -------------------------- |
-| `name`        | `string`                                | 対象フィールドの `name` 属性 |
+| `name`        | `string \| string[]`                    | 対象フィールドの `name` 属性、またはグループ名の配列 |
 | `limit?`      | `'number' \| 'code' \| null`             | 入力制限の種類             |
 | `validation?` | `ValidationOption \| ValidationOption[]` | バリデーション設定         |
 | `message_target?` | `string`                            | エラーメッセージ要素のセレクタ |
+
+`name` に配列を渡すと複数フィールドをグループとして扱えます。ルールは先頭のフィールドに
+紐づき、残りのフィールドは `with` で検証されます（`mode` で `or` / `and` を選択）。
+
+```js
+{
+    name: ['phone', 'email'],
+    validation: [{ type: 'required', mode: 'or', message: 'いずれかは必須です' }],
+}
+```
 
 ```js
 InputFollow('#form', {

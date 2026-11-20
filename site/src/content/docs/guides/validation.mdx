@@ -29,6 +29,80 @@ The value of `type` in a `ValidationOption`:
 `validation` accepts an array and evaluates the entries in order. A single
 option can be passed without an array.
 
+## Constraints
+
+`ValidationOption` can also carry constraints. They are skipped for empty
+values, so combine them with `required` when the field is mandatory.
+
+| Option                    | Type                | Description                          |
+| ------------------------- | ------------------- | ------------------------------------ |
+| `min` / `max`             | `number`            | Numeric range                        |
+| `minlength` / `maxlength` | `number`            | String length                        |
+| `pattern`                 | `string \| RegExp`  | Regular expression the value matches |
+
+Constraints are evaluated together with `type`; omit `type` when you only need
+constraints. The failing constraint name (`min`, `max`, `minlength`,
+`maxlength`, `pattern`) is used for the `messages` lookup.
+
+<LiveDemo
+    title="minlength / maxlength / pattern"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-user',
+                validation: [
+                    {
+                        minlength: 3,
+                        maxlength: 10,
+                        pattern: '^[a-z0-9_]+$',
+                        message:
+                            'Use 3-10 lowercase letters, numbers or underscores',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-user">Username</label>
+        <input
+            id="v-constraint-user"
+            name="v-constraint-user"
+            type="text"
+            placeholder="e.g. taro_01"
+        />
+    </div>
+</LiveDemo>
+
+<LiveDemo
+    title="min / max"
+    params={{
+        rules: [
+            {
+                name: 'v-constraint-age',
+                validation: [
+                    {
+                        type: 'number',
+                        min: 1,
+                        max: 100,
+                        message: 'Enter a number between 1 and 100',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-constraint-age">Age</label>
+        <input
+            id="v-constraint-age"
+            name="v-constraint-age"
+            type="text"
+            inputmode="numeric"
+        />
+    </div>
+</LiveDemo>
+
 ### Default messages
 
 `message` is optional. When it is omitted, the value of the `messages` option
@@ -114,6 +188,61 @@ element that shares the field name.
             name="v-custom-user"
             type="text"
             placeholder="Try &quot;admin&quot;"
+        />
+    </div>
+</LiveDemo>
+
+### Async validators
+
+Set `async: true` to run a validator only from `validateAsync()` and form
+submission. Async validators are skipped while typing.
+
+```js
+{
+    name: 'username',
+    validation: [
+        {
+            type: 'custom',
+            async: true,
+            message: 'This username is already taken',
+            validate: async (value) => !(await isTaken(value)),
+        },
+    ],
+}
+
+const api = InputFollow('#form', params)
+const result = await api.validateAsync()
+```
+
+Submitting a form with async validators is prevented until they resolve. When
+`on_submit` is not configured, the form is submitted natively after a
+successful validation.
+
+<LiveDemo
+    title="async validator"
+    params={{
+        rules: [
+            {
+                name: 'v-async-user',
+                validation: [
+                    {
+                        type: 'custom',
+                        async: true,
+                        message: 'This username is already taken',
+                        validate: 'available-user',
+                    },
+                ],
+            },
+        ],
+    }}
+>
+    <div class="live-demo__field">
+        <label for="v-async-user">Username</label>
+        <input
+            id="v-async-user"
+            name="v-async-user"
+            type="text"
+            placeholder={'Try "taken" (600ms delay)'}
         />
     </div>
 </LiveDemo>

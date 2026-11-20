@@ -42,6 +42,7 @@ site/            … documentation site (Astro + Starlight, npm workspaces membe
   astro.config.mjs … Starlight / starlight-typedoc config (base: /inputfollow.js)
   src/content/docs … English docs (root locale) and Japanese docs under ja/
   src/components/LiveDemo.astro … interactive demos embedded in the docs
+styles/          … optional stylesheet shipped as dist/inputfollow.css
 types/           … generated type definitions (do not edit)
 dist/            … build output (gitignored)
 ```
@@ -110,6 +111,9 @@ dist/            … build output (gitignored)
 - Defaults live in `arrangedParams` in `src/index.ts` (`error_class: 'has-error'`, `valid_class: 'is-valid'`, `novalidate: true`, `initial_valid_view: false`, ...)
 - Validation types: `required` / `email` / `number` / `code` / `hiragana` / `katakana` / `kana` / `hankaku-kana` / `alpha` / `alphanumeric` / `zen-alpha` / `zen-alphanumeric` / `['equal', 'field_name']` / `custom` (with `validate`)
 - Input limiting types: `number` / `code`. Limiting is applied when validation runs (blur / submit), not on every keystroke
-- Cross-field rules: `mode` (`or` / `and`) with `with`, and conditional validation with `if` (`target`, string or boolean values)
+- Cross-field rules: `mode` (`or` / `and`) with `with`, group rules (`name: ['a', 'b']`) and conditional validation with `if` (`target`, string or boolean values)
+- Constraints: `min` / `max`, `minlength` / `maxlength`, `pattern`; `type` can be omitted when only constraints are used
+- Async validators: `async: true` + `validateAsync()`; form submit is prevented until they resolve
+- Optional styles live in `styles/inputfollow.css` and are copied to `dist/inputfollow.css` by `postbuild`
 - Avoid breaking changes and extend with additive options. Bump `package.json` version on a gitflow release branch
-- `package.json` uses an `exports` map: `import` → `dist/index.es.js`, `require` → `dist/index.cjs`. The IIFE bundle (`dist/inputfollow.js`) is only for `<script>` tags and CDNs (`unpkg` / `jsdelivr`)
+- `package.json` uses an `exports` map: `import` → `dist/index.es.js`, `require` → `dist/index.cjs`, `./inputfollow.css` → `dist/inputfollow.css`. The IIFE bundle (`dist/inputfollow.js`) is only for `<script>` tags and CDNs (`unpkg` / `jsdelivr`)

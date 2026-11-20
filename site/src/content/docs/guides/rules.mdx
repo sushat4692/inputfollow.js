@@ -12,10 +12,21 @@ parameters.
 
 | Parameter     | Type                                       | Description                        |
 | ------------- | ------------------------------------------ | ---------------------------------- |
-| `name`        | `string`                                   | The `name` attribute of the field  |
+| `name`        | `string \| string[]`                       | The `name` attribute of the field, or a group of names |
 | `limit?`      | `'number' \| 'code' \| null`                | Input limiting type                |
 | `validation?` | `ValidationOption \| ValidationOption[]`    | Validation settings                |
 | `message_target?` | `string`                                | Selector of the error message element |
+
+Pass an array to `name` to treat several fields as a group. The rule is
+attached to the first field and the other fields are validated through `with`
+(use `mode` to choose `or` / `and`).
+
+```js
+{
+    name: ['phone', 'email'],
+    validation: [{ type: 'required', mode: 'or', message: 'Either field is required' }],
+}
+```
 
 ```js
 InputFollow('#form', {

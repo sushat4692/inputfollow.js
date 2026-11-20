@@ -35,6 +35,16 @@ UMD ビルド（`dist/inputfollow.js`）を読み込むと、グローバル関�
 </script>
 ```
 
+### 任意のスタイル
+
+デフォルトのクラス名に対応した最小限のスタイルを同梱しています。
+
+```js
+import 'inputfollow.js/inputfollow.css'
+```
+
+script タグの場合は `dist/inputfollow.css` を `<link>` で読み込んでください。
+
 ## 基本的な使い方
 
 `InputFollow(formEl, params)` は `<form>` 要素（またはセレクタ文字列）と設定オブジェクトを受け取ります。
@@ -79,7 +89,8 @@ const { formEl, elements, validate, getElements } = InputFollow('#form', params)
 | ------------- | -------------------------------------- | ---------------------------------- |
 | `formEl`      | `HTMLFormElement`                      | 対象のフォーム要素                 |
 | `elements`    | フィールドオブジェクトの配列           | ルール1件につき1エントリ           |
-| `validate`    | `(init?: boolean) => ValidationResult` | バリデーションを実行して結果を返す |
+| `validate`    | `(init?: boolean) => ValidationResult` | 同期バリデーションを実行して結果を返す |
+| `validateAsync` | `(init?: boolean) => Promise<ValidationResult>` | 非同期バリデータを含めて実行する |
 | `hasError`    | `() => boolean`                        | いずれかのフィールドにエラーがあるか |
 | `clear`       | `() => void`                           | 全フィールドのエラー状態をクリアする |
 | `getElements` | `(name: string) => field object[]`     | フィールド名でオブジェクトを取得する |

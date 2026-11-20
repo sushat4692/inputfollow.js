@@ -86,9 +86,13 @@ const config = JSON.stringify(params)
     // custom validators by name (e.g. `validate: 'not-admin'`).
     const demoValidators: Record<
         string,
-        (value: string) => boolean | string
+        (value: string) => boolean | string | Promise<boolean | string>
     > = {
         'not-admin': (value) => value !== 'admin',
+        'available-user': async (value) => {
+            await new Promise((resolve) => setTimeout(resolve, 600))
+            return value !== 'taken'
+        },
     }
 
     const resolveValidators = (params: DemoParams) => {
@@ -127,6 +131,14 @@ const config = JSON.stringify(params)
         const status = form.querySelector<HTMLOutputElement>(
             '[data-live-demo-status]'
         )
+        const hasAsyncValidation = (params.rules ?? []).some((rule) => {
+            const validations = Array.isArray(rule.validation)
+                ? rule.validation
+                : rule.validation
+                  ? [rule.validation]
+                  : []
+            return validations.some((validation) => validation.async === true)
+        })
 
         // 初回バリデーションでは状態を出さず、操作後だけフィードバックする
         let touched = false
@@ -148,7 +160,11 @@ const config = JSON.stringify(params)
         const api = InputFollow(form, {
             ...params,
             on_success: () => {
-                if (touched) setStatus(messages.success, 'success')
+                // Async validators are skipped while typing, so only show the
+                // success state after a form submission.
+                if (touched && !hasAsyncValidation) {
+                    setStatus(messages.success, 'success')
+                }
             },
             on_error: (errors: Errors) => {
                 if (!touched) return

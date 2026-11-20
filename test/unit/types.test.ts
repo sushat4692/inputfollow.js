@@ -150,3 +150,76 @@ describe('types new initial params', () => {
         ).toBe(false)
     })
 })
+
+describe('types constraints and async validation', () => {
+    it('accepts constraints without a type', () => {
+        const rules = [
+            {
+                name: 'text',
+                validation: [
+                    {
+                        minlength: 3,
+                        maxlength: 10,
+                        pattern: '^[a-z]+$',
+                    },
+                ],
+            },
+            {
+                name: 'num',
+                validation: [{ type: 'number', min: 1, max: 10 }],
+            },
+        ]
+        expect(RuleValidator.safeParse(rules).success).toBe(true)
+    })
+
+    it('accepts an async custom validator', () => {
+        const rules = [
+            {
+                name: 'user',
+                validation: [
+                    {
+                        type: 'custom',
+                        async: true,
+                        validate: async (value: string) => value !== 'taken',
+                    },
+                ],
+            },
+        ]
+        expect(RuleValidator.safeParse(rules).success).toBe(true)
+    })
+
+    it('rejects async validation without a validate function', () => {
+        const rules = [
+            { name: 'user', validation: [{ type: 'required', async: true }] },
+        ]
+        expect(RuleValidator.safeParse(rules).success).toBe(false)
+    })
+
+    it('rejects invalid constraints', () => {
+        expect(
+            RuleValidator.safeParse([
+                { name: 'x', validation: [{ minlength: -1 }] },
+            ]).success
+        ).toBe(false)
+        expect(
+            RuleValidator.safeParse([
+                { name: 'x', validation: [{ pattern: 1 }] },
+            ]).success
+        ).toBe(false)
+    })
+
+    it('accepts group name arrays', () => {
+        const rules = [
+            {
+                name: ['phone', 'email'],
+                validation: [{ type: 'required', mode: 'or' }],
+            },
+        ]
+        expect(RuleValidator.safeParse(rules).success).toBe(true)
+    })
+
+    it('rejects an empty group name array', () => {
+        const rules = [{ name: [], validation: [] }]
+        expect(RuleValidator.safeParse(rules).success).toBe(false)
+    })
+})

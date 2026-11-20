@@ -11,6 +11,10 @@
 
 - Astro + Starlight によるドキュメントサイト（英語 / 日本語、ライブデモ、API リファレンス）。
 - カスタムバリデータ（`type: 'custom'` と `validate` 関数）。
+- バリデーション制約（`min` / `max`、`minlength` / `maxlength`、`pattern`）。
+- グループルール（`name` に配列を渡して複数フィールドをまとめて検証）。
+- 非同期バリデータ（`async: true` と `validateAsync()`）。送信は完了まで保留。
+- 任意のスタイルシート（`inputfollow.js/inputfollow.css`）。
 - `messages` オプションによるデフォルトエラーメッセージ。
 - `if.target` の boolean 条件（チェックボックス / ラジオの状態、テキストの入力有無）。
 - エラーメッセージの表示先を指定する `message_target`。

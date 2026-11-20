@@ -34,7 +34,7 @@ export type CustomValidatorContext = {
  * message string when it is invalid.
  * @public
  */
-export type CustomValidator = (value: string, context: CustomValidatorContext) => boolean | string | void;
+export type CustomValidator = (value: string, context: CustomValidatorContext) => boolean | string | void | Promise<boolean | string | void>;
 /**
  * Fields that are checked together with the target field.
  * @public
@@ -73,9 +73,11 @@ export declare const ValidationOptionValidator: Validator<ValidationOption>;
 export type ValidationOption = {
     /**
      * Validation type. Use `'custom'` together with `validate` to run your own
-     * function.
+     * function. Omit `type` to only apply the constraints below.
      */
-    type: ValidationType | 'custom';
+    type?: ValidationType | 'custom';
+    /** Run this validation only from `validateAsync()` / form submit. */
+    async?: boolean;
     /** How to combine `with` fields. Defaults to `and`. */
     mode?: ModeOption;
     /** Related fields to validate together with this field. */
@@ -95,6 +97,16 @@ export type ValidationOption = {
     message_target?: string;
     /** Custom validator used when `type` is `'custom'`. */
     validate?: CustomValidator;
+    /** Minimum numeric value. */
+    min?: number;
+    /** Maximum numeric value. */
+    max?: number;
+    /** Minimum string length. */
+    minlength?: number;
+    /** Maximum string length. */
+    maxlength?: number;
+    /** Regular expression the value must match. */
+    pattern?: string | RegExp;
 };
 /**
  * Validation and input limiting rules for one field.
@@ -105,8 +117,12 @@ export declare const RuleValidator: Validator<Rule>;
  * @public
  */
 export type Rule = {
-    /** The `name` attribute of the target field. */
-    name: string;
+    /**
+     * The `name` attribute of the target field. Pass an array to treat the
+     * fields as a group (the rule is attached to the first field and the other
+     * fields are validated through `with`).
+     */
+    name: string | string[];
     /** Input limiting type. */
     limit?: LimitationOption;
     /** Validation settings. */
@@ -149,6 +165,7 @@ export type FieldController = {
     limit: LimitationOption;
     validations: ValidationOption[] | null;
     validate: (init?: boolean, ignored?: boolean) => void;
+    validateAsync: (init?: boolean) => Promise<void>;
     hasError: () => boolean;
     getErrors: () => ValidatedError[];
     /** Clear the error state of this field */
@@ -163,8 +180,10 @@ export type FieldController = {
 export type InputFollowInstance = {
     formEl: HTMLFormElement;
     elements: FieldController[];
-    /** Run validation and return the result */
+    /** Run synchronous validation and return the result */
     validate: (init?: boolean) => ValidationResult;
+    /** Run validation including `async: true` validators */
+    validateAsync: (init?: boolean) => Promise<ValidationResult>;
     /** Whether any field currently has an error */
     hasError: () => boolean;
     /** Clear the error state of every field */

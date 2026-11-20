@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Documentation site built with Astro + Starlight, available in English and
   Japanese with live demos and an API reference.
 - Custom validators: `type: 'custom'` with a `validate` function.
+- Validation constraints: `min` / `max`, `minlength` / `maxlength` and `pattern`.
+- Group rules: pass an array to `name` to validate several fields together.
+- Async validators (`async: true` + `validateAsync()`); form submission waits for them.
+- An optional stylesheet (`inputfollow.js/inputfollow.css`).
 - Default error messages via the `messages` option.
 - Boolean conditions for `if.target` (checkbox / radio state or whether a text
   field has a value).

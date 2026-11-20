@@ -66,14 +66,29 @@ const isWithOption = (value: unknown): value is WithOption =>
 const isLimitationOption = (value: unknown): value is LimitationOption =>
     value === 'number' || value === 'code' || value === null
 
+const isFiniteNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value)
+
+const isNonNegativeInteger = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isInteger(value) && value >= 0
+
+const isPattern = (value: unknown): value is string | RegExp =>
+    isString(value) || value instanceof RegExp
+
 const isValidationOption = (value: unknown): value is ValidationOption => {
     if (!isRecord(value)) {
         return false
     }
 
-    const isCustom = value.type === 'custom'
+    const isCustom =
+        value.type === 'custom' ||
+        (value.type === undefined && value.validate !== undefined)
 
-    if (!isCustom && !isValidationType(value.type)) {
+    if (
+        value.type !== undefined &&
+        value.type !== 'custom' &&
+        !isValidationType(value.type)
+    ) {
         return false
     }
 
@@ -82,6 +97,37 @@ const isValidationOption = (value: unknown): value is ValidationOption => {
     }
 
     if (value.validate !== undefined && !isFunction(value.validate)) {
+        return false
+    }
+
+    if (value.async !== undefined && typeof value.async !== 'boolean') {
+        return false
+    }
+
+    if (value.async === true && !isFunction(value.validate)) {
+        return false
+    }
+
+    const hasConstraint =
+        value.min !== undefined ||
+        value.max !== undefined ||
+        value.minlength !== undefined ||
+        value.maxlength !== undefined ||
+        value.pattern !== undefined
+
+    if (!isCustom && value.type === undefined && !hasConstraint) {
+        return false
+    }
+
+    if (
+        (value.min !== undefined && !isFiniteNumber(value.min)) ||
+        (value.max !== undefined && !isFiniteNumber(value.max)) ||
+        (value.minlength !== undefined &&
+            !isNonNegativeInteger(value.minlength)) ||
+        (value.maxlength !== undefined &&
+            !isNonNegativeInteger(value.maxlength)) ||
+        (value.pattern !== undefined && !isPattern(value.pattern))
+    ) {
         return false
     }
 
@@ -118,8 +164,12 @@ const isValidationOption = (value: unknown): value is ValidationOption => {
     return true
 }
 
+const isRuleName = (value: unknown): value is string | string[] =>
+    isString(value) ||
+    (Array.isArray(value) && value.length > 0 && value.every(isString))
+
 const isRule = (value: unknown): value is Rule[number] => {
-    if (!isRecord(value) || !isString(value.name)) {
+    if (!isRecord(value) || !isRuleName(value.name)) {
         return false
     }
 
@@ -355,7 +405,7 @@ export type CustomValidatorContext = {
 export type CustomValidator = (
     value: string,
     context: CustomValidatorContext
-) => boolean | string | void
+) => boolean | string | void | Promise<boolean | string | void>
 
 /**
  * Fields that are checked together with the target field.
@@ -400,9 +450,11 @@ export const ValidationOptionValidator =
 export type ValidationOption = {
     /**
      * Validation type. Use `'custom'` together with `validate` to run your own
-     * function.
+     * function. Omit `type` to only apply the constraints below.
      */
-    type: ValidationType | 'custom'
+    type?: ValidationType | 'custom'
+    /** Run this validation only from `validateAsync()` / form submit. */
+    async?: boolean
     /** How to combine `with` fields. Defaults to `and`. */
     mode?: ModeOption
     /** Related fields to validate together with this field. */
@@ -422,6 +474,16 @@ export type ValidationOption = {
     message_target?: string
     /** Custom validator used when `type` is `'custom'`. */
     validate?: CustomValidator
+    /** Minimum numeric value. */
+    min?: number
+    /** Maximum numeric value. */
+    max?: number
+    /** Minimum string length. */
+    minlength?: number
+    /** Maximum string length. */
+    maxlength?: number
+    /** Regular expression the value must match. */
+    pattern?: string | RegExp
 }
 
 /**
@@ -433,8 +495,12 @@ export const RuleValidator = createValidator<Rule>(isRules)
  * @public
  */
 export type Rule = {
-    /** The `name` attribute of the target field. */
-    name: string
+    /**
+     * The `name` attribute of the target field. Pass an array to treat the
+     * fields as a group (the rule is attached to the first field and the other
+     * fields are validated through `with`).
+     */
+    name: string | string[]
     /** Input limiting type. */
     limit?: LimitationOption
     /** Validation settings. */
@@ -478,6 +544,7 @@ export type FieldController = {
     limit: LimitationOption
     validations: ValidationOption[] | null
     validate: (init?: boolean, ignored?: boolean) => void
+    validateAsync: (init?: boolean) => Promise<void>
     hasError: () => boolean
     getErrors: () => ValidatedError[]
     /** Clear the error state of this field */
@@ -493,8 +560,10 @@ export type FieldController = {
 export type InputFollowInstance = {
     formEl: HTMLFormElement
     elements: FieldController[]
-    /** Run validation and return the result */
+    /** Run synchronous validation and return the result */
     validate: (init?: boolean) => ValidationResult
+    /** Run validation including `async: true` validators */
+    validateAsync: (init?: boolean) => Promise<ValidationResult>
     /** Whether any field currently has an error */
     hasError: () => boolean
     /** Clear the error state of every field */

@@ -44,12 +44,13 @@
             "require": "./dist/index.cjs",
             "default": "./dist/index.es.js"
         },
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./inputfollow.css": "./dist/inputfollow.css"
     },
     "scripts": {
         "prebuild": "rimraf dist && rimraf types && rimraf .rollup.cache && rimraf tsconfig.tsbuildinfo",
         "build": "rollup -c",
-        "postbuild": "mv ./dist/types ./types",
+        "postbuild": "mv ./dist/types ./types && cp -f styles/inputfollow.css ./dist/inputfollow.css",
         "demo": "serve ./demo",
         "make": "npm run build && npm run make:demo:build && npm run docs:build",
         "make:demo": "npm run build && npm run make:demo:build",

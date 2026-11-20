@@ -1,4 +1,7 @@
-import { validate as execValidate } from '../validate'
+import {
+    validate as execValidate,
+    validateAsync as execValidateAsync,
+} from '../validate'
 
 import {
     Param,
@@ -235,23 +238,7 @@ export const createElement = (
         messageField.classList.remove(params.empty_error_message_class)
     }
 
-    const validate = (init: boolean = false, ignored: boolean = false) => {
-        if (!name) {
-            return
-        }
-
-        const renderError =
-            !ignored && (init !== true || params.initial_error_view)
-
-        errors[name] = execValidate(
-            formEl,
-            name,
-            elements,
-            renderError ? limit : null,
-            validations,
-            params.messages
-        )
-
+    const applyResult = (init: boolean, renderError: boolean) => {
         if (!validations || !validations.length || !messageField) {
             return
         }
@@ -280,6 +267,45 @@ export const createElement = (
             setAriaInvalid(false)
             setDescribedBy(false)
         }
+    }
+
+    const validate = (init: boolean = false, ignored: boolean = false) => {
+        if (!name) {
+            return
+        }
+
+        const renderError =
+            !ignored && (init !== true || params.initial_error_view)
+
+        errors[name] = execValidate(
+            formEl,
+            name,
+            elements,
+            renderError ? limit : null,
+            validations,
+            params.messages
+        )
+
+        applyResult(init, renderError)
+    }
+
+    const validateAsync = async (init: boolean = false) => {
+        if (!name) {
+            return
+        }
+
+        const renderError = init !== true || params.initial_error_view
+
+        errors[name] = await execValidateAsync(
+            formEl,
+            name,
+            elements,
+            renderError ? limit : null,
+            validations,
+            params.messages
+        )
+
+        applyResult(init, renderError)
     }
 
     const hasError = () => {
@@ -388,6 +414,7 @@ export const createElement = (
         limit,
         validations,
         validate,
+        validateAsync,
         hasError,
         getErrors,
         clear,
