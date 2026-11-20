@@ -21,9 +21,7 @@ Always create a new branch from the latest `develop` before starting work. Never
 merge a `feature/*` branch directly into `master`.
 
 Follow `.opencode/skills/release/SKILL.md` for release work (creating
-`release/vX.Y.Z` through publishing to npm). **`demo/js/inputfollow*.js` must be
-regenerated with `npm run build && npm run make:demo:js` and committed on every
-release** so that the version banner and the latest code stay in sync.
+`release/vX.Y.Z` through publishing to npm).
 
 ## Directory structure
 
@@ -37,7 +35,6 @@ src/             … implementation
   utils/Tag.ts   … element helpers
 CHANGELOG.md     … changelog (source of truth, synced into the docs site)
 CHANGELOG.ja.md  … Japanese changelog
-demo/            … standalone demo page (scss → css, copies built JS from dist)
 site/            … documentation site (Astro + Starlight, separate package with its own lockfile)
   astro.config.mjs … Starlight / starlight-typedoc config (base: /inputfollow.js)
   src/content/docs … English docs (root locale) and Japanese docs under ja/
@@ -63,12 +60,10 @@ dist/            … build output (gitignored)
 | `npx changeset` | Record a changeset for the current change (feature/fix branches) |
 | `npm run changeset:status` | Show the changesets waiting for a release |
 | `npm run changeset:version` | Apply changesets (bump version + update the lockfile) |
-| `npm run demo` | Serve the standalone demo with `serve` |
 | `npm run docs` | Build the documentation site (`site/dist/`) |
 | `npm run docs:dev` | Start the documentation site dev server |
 | `npm run docs:preview` | Preview the built documentation site |
-| `npm run make` | build + demo build + documentation site |
-| `npm run make:demo` | build + demo build |
+| `npm run make` | build + documentation site |
 | `npm run make:doc` | Alias of `npm run docs` |
 | `npm run lint` | Lint with oxlint |
 | `npm run format` | Format with oxfmt |
@@ -83,8 +78,8 @@ dist/            … build output (gitignored)
 - Type checking: `tsc --noEmit` (note the project references in `tsconfig.json`,
   so be careful with `-b`) or `npm run build`
 - Lint: `npm run lint` (oxlint, configured in `.oxlintrc.json`)
-- Format: `npm run format` (oxfmt, configured in `.oxfmtrc.json`; `demo/**` and
-  `site/**/*.mdx` are excluded)
+- Format: `npm run format` (oxfmt, configured in `.oxfmtrc.json`; `site/**/*.mdx`
+  is excluded)
 
 ## Versioning (changesets)
 
@@ -102,7 +97,7 @@ dist/            … build output (gitignored)
 ## Documentation site
 
 - English is the primary language (`site/src/content/docs/` root). Japanese lives under `site/src/content/docs/ja/`
-- Each feature page embeds a minimal form with `LiveDemo.astro` (the standalone `demo/` is for local checks)
+- Each feature page embeds a minimal form with `LiveDemo.astro`
 - The changelog pages are synced from the root `CHANGELOG.md` / `CHANGELOG.ja.md` by `npm run changelog:sync` (the `docs` scripts run it automatically)
 - Published at https://sushat4692.github.io/inputfollow.js/ (`.github/workflows/deploy.yml` deploys `site/dist` to the gh-pages branch on `master` push)
 - Use relative links inside content components so they resolve under `base: '/inputfollow.js'`

@@ -10,7 +10,6 @@
         "dist/**",
         "types/**",
         ".rollup.cache/**",
-        "demo/**",
         "AGENTS.md",
         ".vscode/**",
         "site/dist/**",

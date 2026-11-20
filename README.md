@@ -32,7 +32,6 @@ Input limiting is applied when validation runs (on blur or submit).
 - [API reference](https://sushat4692.github.io/inputfollow.js/api/)
 
 Every feature is documented with a small live demo you can try in the browser.
-For local development, `npm run demo` starts the standalone demo page.
 
 ## Usage
 
@@ -56,8 +55,6 @@ InputFollow(...);
     InputFollow(...);
 </script>
 ```
-
-You can get from source code from [here](https://github.com/sushat4692/inputfollow.js/tree/master/demo/js).
 
 ### Styles
 
