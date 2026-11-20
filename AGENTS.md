@@ -91,8 +91,11 @@ dist/            … build output (gitignored)
   `CHANGELOG.md` / `CHANGELOG.ja.md` curated by hand (both languages) and move
   the `[Unreleased]` section on release
 - Do not bump the version manually; the gitflow release branch uses changesets
-- `baseBranch` is `develop`. The npm publish workflow is unchanged (OIDC,
-  tag creation)
+- `baseBranch` is `develop`. The npm publish workflow uses OIDC and skips
+  publishing when the version already exists
+- Regenerate the lockfile for Linux CI when needed:
+  `rm package-lock.json && npm install --package-lock-only --os=linux --cpu=x64 --libc=glibc`
+  (a macOS-generated lockfile may omit peer dependencies such as `@emnapi/*`)
 
 ## Documentation site
 

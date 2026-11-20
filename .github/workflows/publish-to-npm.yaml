@@ -28,21 +28,32 @@ jobs:
                   # npm 11+（OIDC publish対応）が必要なため Node 24 を使用
                   node-version: 24
                   cache: npm
-            # リリース可能か確認
+            # リリース可能か確認（既に公開済みのバージョンなら以降をスキップ）
             - name: Can Publish
-              run: npx can-npm-publish --verbose
+              id: can-publish
+              run: |
+                  if npx can-npm-publish --verbose; then
+                      echo "publish=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "publish=false" >> "$GITHUB_OUTPUT"
+                  fi
             - name: Install
+              if: steps.can-publish.outputs.publish == 'true'
               run: npm install
             - name: Build
+              if: steps.can-publish.outputs.publish == 'true'
               run: npm run build --if-present
             # リリース（スコープなしのパッケージ名 inputfollow.js として公開）
             - name: Publish
+              if: steps.can-publish.outputs.publish == 'true'
               run: npm publish
             # Push tag to GitHub if package.json version's tag is not tagged
             - name: package-version
+              if: steps.can-publish.outputs.publish == 'true'
               run: node -p -e '`PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
             # Gitでリリースタグを作成
             - name: package-version-to-git-tag
+              if: steps.can-publish.outputs.publish == 'true'
               uses: pkgdeps/git-tag-action@v2
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
